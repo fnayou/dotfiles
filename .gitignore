@@ -1,0 +1,37 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local Claude overrides
+CLAUDE.local.md
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_ed25519
+*.agekey
+*.gpg
+*.enc
+credentials.json
+tokens.json
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Logs
+*.log
+
+# Local machine files
+*.local
+*.local.*

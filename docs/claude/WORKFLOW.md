@@ -1,0 +1,96 @@
+# Workflow
+
+This document describes the standard workflow for all significant work in this repository.
+
+## Overview
+
+```
+1. Discuss need
+      ↓
+2. Create or update PRD
+      ↓
+3. Create or update architecture
+      ↓
+4. Create plan
+      ↓
+5. Implement
+      ↓
+6. Review
+      ↓
+7. Commit
+      ↓
+8. Iterate
+```
+
+## Steps
+
+### 1. Discuss need
+
+Start by discussing the goal with Claude. Clarify:
+
+- What problem needs solving?
+- What platform(s) are affected?
+- What is explicitly out of scope?
+
+Do not jump to implementation.
+
+### 2. Create or update PRD
+
+Use the `create-prd` skill to produce a formal PRD under `docs/prd/`.
+
+The PRD defines goals, non-goals, scope, safety requirements, and acceptance criteria.
+
+**No significant work starts without an approved PRD.**
+
+### 3. Create or update architecture
+
+Use the Architect agent or `create-architecture` skill to produce an architecture document under `docs/architecture/`.
+
+The architecture defines structure, decisions, tradeoffs, and risks.
+
+**No plan is created without an approved architecture when the change is structural.**
+
+### 4. Create plan
+
+Use the Planner agent or `create-plan` skill to produce an implementation plan under `docs/plans/`.
+
+The plan defines ordered tasks, affected files, safety checks, validation commands, and rollback strategy.
+
+**Builder must not start without an approved plan.**
+
+### 5. Implement
+
+Use the Builder agent to implement the approved plan items only.
+
+The Builder makes minimal, focused changes and reports what was done, what was skipped, and what is next.
+
+### 6. Review
+
+Use the Reviewer agent or `review-change` skill to validate all changes.
+
+The Reviewer checks safety, privacy, cross-platform correctness, and documentation quality.
+
+**Commit only after the Reviewer issues PASS on all three verdicts.**
+
+### 7. Commit
+
+After Reviewer approval:
+
+- Run `git diff --staged` to confirm what will be committed.
+- Verify no secrets are staged.
+- Write a commit message that explains intent, not just what changed.
+- Commit.
+
+### 8. Iterate
+
+After a commit, return to step 1 for the next item.
+
+## Current repository status
+
+The dotfiles implementation must **not start** until:
+
+1. The Claude Code operating layer is created (done).
+2. The operating layer is reviewed by the Reviewer agent.
+3. The user confirms readiness to begin dotfiles implementation.
+
+Do not skip this gate.
