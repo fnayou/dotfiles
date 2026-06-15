@@ -6,8 +6,8 @@ Private personal dotfiles repository for macOS and EndeavourOS / Arch Linux.
 
 ```
 Claude Code operating layer: complete
-Dotfiles implementation:     not started
-GNU Stow packages:           not created
+GNU Stow scaffold:           created (placeholder/example files only)
+Real managed dotfile packages: not started
 Home directory:              unmodified
 ```
 
@@ -69,6 +69,10 @@ CLAUDE.md         Claude Code entry point
   - `stow/arch/` — EndeavourOS / Arch-specific config.
 - Common, macOS, and Arch packages always treated separately.
 - Optional Docker test harness for safe Linux validation.
+
+## Documentation
+
+- [GNU Stow usage guide](docs/stow-usage.md) — dry-run workflow, install steps, conflict handling, adding packages.
 
 ## Basic commands
 
