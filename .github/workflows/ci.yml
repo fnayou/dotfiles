@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  hygiene:
+    name: Repository Hygiene
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show repository tree
+        run: find . -not -path './.git/*' | sort
+
+      - name: Verify expected files and directories exist
+        run: |
+          echo "Checking required files..."
+          MISSING=0
+          check_file() {
+            if [ ! -e "$1" ]; then
+              echo "MISSING: $1"
+              MISSING=1
+            else
+              echo "OK: $1"
+            fi
+          }
+          check_file "AGENTS.md"
+          check_file "CLAUDE.md"
+          check_file "README.md"
+          check_file ".gitignore"
+          check_file ".editorconfig"
+          check_file "docs/prd/"
+          check_file "docs/plans/"
+          check_file "docs/reviews/"
+          check_file ".claude/agents/"
+          check_file ".claude/rules/"
+          check_file ".claude/skills/"
+          if [ "$MISSING" -eq 1 ]; then
+            echo "File check FAILED"
+            exit 1
+          fi
+          echo "File check passed"
+
+      - name: Check for Markdown files
+        run: |
+          echo "Checking for Markdown files..."
+          count=$(find . -not -path './.git/*' -name '*.md' | wc -l)
+          echo "Found $count Markdown file(s)"
+          if [ "$count" -eq 0 ]; then
+            echo "WARNING: No Markdown files found"
+            exit 1
+          fi
+          echo "Markdown check passed"
+
+      - name: Shell script syntax check
+        run: |
+          echo "Checking shell scripts..."
+          scripts=$(find . -not -path './.git/*' -name '*.sh')
+          if [ -z "$scripts" ]; then
+            echo "No shell scripts found — skipping syntax check"
+            exit 0
+          fi
+          FAILED=0
+          while IFS= read -r script; do
+            if bash -n "$script"; then
+              echo "OK: $script"
+            else
+              echo "FAIL: $script"
+              FAILED=1
+            fi
+          done <<< "$scripts"
+          if [ "$FAILED" -eq 1 ]; then
+            echo "Shell syntax check FAILED"
+            exit 1
+          fi
+          echo "Shell syntax check passed"
+
+      - name: Secret pattern scan
+        run: |
+          echo "Scanning for secret patterns..."
+          FAILED=0
+
+          check_pattern() {
+            local label="$1"
+            shift
+            local results
+            results=$(grep -rn \
+              --exclude-dir='.git' \
+              --exclude-dir='.github' \
+              "$@" . 2>/dev/null || true)
+            if [ -n "$results" ]; then
+              echo "FAIL [$label]:"
+              echo "$results"
+              FAILED=1
+            fi
+          }
+
+          # High-confidence: cryptographic material — skip Markdown (docs may cite examples)
+          check_pattern "private-key"      --exclude="*.md" -e "PRIVATE KEY"
+          check_pattern "openssh-key"      --exclude="*.md" -e "BEGIN OPENSSH"
+          check_pattern "github-pat"       --exclude="*.md" -e "ghp_"
+          check_pattern "github-token-var" --exclude="*.md" -e "GITHUB_TOKEN="
+          check_pattern "aws-secret"       --exclude="*.md" -e "AWS_SECRET_ACCESS_KEY"
+
+          # Broader patterns: check only shell and env files to reduce false positives
+          check_pattern "password-assign" \
+            --include="*.sh" --include="*.env" \
+            -e "password="
+
+          check_pattern "token-assign" \
+            --include="*.sh" --include="*.env" \
+            -e "token="
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo "Secret scan FAILED"
+            exit 1
+          fi
+          echo "Secret scan passed"
