@@ -1,0 +1,27 @@
+version: "3"
+
+tasks:
+  detect:
+    desc: "Print detected OS (macos or arch)"
+    cmds:
+      - bash scripts/detect-os.sh
+
+  check:
+    desc: "Verify prerequisites (stow, git, task) are installed"
+    cmds:
+      - bash scripts/check.sh
+
+  list:
+    desc: "List Stow packages — output is <area>/<package>, use as: task dry-run AREA=<area> PACKAGE=<package>"
+    cmds:
+      - find stow -mindepth 2 -maxdepth 2 -type d -print | sed 's|^stow/||'
+
+  dry-run:
+    desc: "Dry-run a Stow package — usage: task dry-run AREA=<common|macos|arch> PACKAGE=<name>"
+    preconditions:
+      - sh: '[ -n "{{.AREA}}" ]'
+        msg: "AREA is required: common, macos, or arch"
+      - sh: '[ -n "{{.PACKAGE}}" ]'
+        msg: "PACKAGE is required, e.g. PACKAGE=git"
+    cmds:
+      - stow --dir=stow/{{.AREA}} --target="$HOME" --simulate {{.PACKAGE}}
