@@ -1,0 +1,2 @@
+# Ignore the real OMP config (local copy of the .example file — never committed).
+omp.toml
