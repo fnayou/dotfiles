@@ -257,9 +257,9 @@ Never put any of the following into `.gitconfig.common`:
 Before stowing the zsh package, ensure all shell-tier dependencies are installed.
 See [docs/shell-dependencies.md](shell-dependencies.md) for the check and install steps.
 
-The `stow/common/zsh/` package provides three example files — one shared layer and one per platform. None are stowed directly — copy each locally, review, then stow. The real files (`shared.zsh`, `macos.zsh`, `arch.zsh`) are git-ignored and will not be committed.
+The `stow/common/zsh/` package provides example files — a shared layer, one per platform, a managed entry point (`index.zsh`), and a reference `~/.zshrc` template. None are stowed directly — copy each locally, review, then stow. The real files (`shared.zsh`, `macos.zsh`, `arch.zsh`, `index.zsh`, and the optional `local.zsh`) are git-ignored and will not be committed.
 
-`~/.zshrc` is **never managed by Stow**. After stowing, the user manually appends a source block to their existing `~/.zshrc` — see Step 5.
+`~/.zshrc` is **never managed by Stow**. After stowing, the user manually adds **one guarded include block** to their existing `~/.zshrc` that sources the managed entry point `~/.config/zsh/index.zsh` — see Step 5. For the full safe migration path (Model 4 → Model 3, backup, incremental cutover, rollback), see [docs/zsh-migration.md](zsh-migration.md).
 
 ### Files in this package
 
@@ -268,14 +268,18 @@ The `stow/common/zsh/` package provides three example files — one shared layer
 | `stow/common/zsh/.config/zsh/shared.zsh.example` | `shared.zsh` | Portable cross-platform zsh config (sourced on all platforms) |
 | `stow/common/zsh/.config/zsh/macos.zsh.example` | `macos.zsh` | macOS-specific zsh config (sourced on macOS only) |
 | `stow/common/zsh/.config/zsh/arch.zsh.example` | `arch.zsh` | Arch/EndeavourOS-specific zsh config (sourced on Arch only) |
+| `stow/common/zsh/.config/zsh/index.zsh.example` | `index.zsh` | Managed entry point — sources the layers in order (sourced by the `~/.zshrc` include block) |
+| `stow/common/zsh/.config/zsh/zshrc.example` | *(reference only — never stowed to `~/.zshrc`)* | Template for your real `~/.zshrc`; contains the guarded managed include block |
+| *(no `.example`)* | `local.zsh` | Optional machine-specific/sensitive overrides — git-ignored, never committed, sourced last (ADR-0023) |
 
 After copying and stowing, Stow creates symlinks in `~/.config/zsh/`:
 
 - `~/.config/zsh/shared.zsh` → `stow/common/zsh/.config/zsh/shared.zsh`
 - `~/.config/zsh/macos.zsh` → `stow/common/zsh/.config/zsh/macos.zsh`
 - `~/.config/zsh/arch.zsh` → `stow/common/zsh/.config/zsh/arch.zsh`
+- `~/.config/zsh/index.zsh` → `stow/common/zsh/.config/zsh/index.zsh`
 
-All three are symlinked on every platform. Runtime OS detection in `~/.zshrc` determines which platform file is sourced — the unused platform file is harmless.
+All platform files are symlinked on every platform. Runtime OS detection inside `index.zsh` determines which platform file is sourced — the unused platform file is harmless. `zshrc.example` stows to `~/.config/zsh/zshrc.example` (a reference copy); it is **never** linked to `~/.zshrc`.
 
 ### Step 1 — Copy the example files locally
 
@@ -316,22 +320,17 @@ Review the output carefully. Expected output shows three symlinks that would be 
 stow --dir=stow/common --target="$HOME" zsh
 ```
 
-### Step 5 — Add the source block to your real `~/.zshrc`
+### Step 5 — Add the guarded include block to your real `~/.zshrc`
 
-Open your real `~/.zshrc` in an editor and append the following block. This file is **never managed by Stow** — this is a one-time manual step:
+Open your real `~/.zshrc` in an editor and add the following **single guarded block**, placing it **last** so the managed defaults and `local.zsh` take effect after your own lines. This file is **never managed by Stow** — this is a one-time manual step (back up `~/.zshrc` first; see [docs/zsh-migration.md](zsh-migration.md)):
 
 ```zsh
-# Managed zsh config — sourced from dotfiles
-source "$HOME/.config/zsh/shared.zsh"
-
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  source "$HOME/.config/zsh/macos.zsh"
-elif [[ -f /etc/arch-release ]]; then
-  source "$HOME/.config/zsh/arch.zsh"
-fi
+# >>> dotfiles managed (zsh) — added manually; delete this block to disable >>>
+[[ -r "$HOME/.config/zsh/index.zsh" ]] && source "$HOME/.config/zsh/index.zsh"
+# <<< dotfiles managed (zsh) <<<
 ```
 
-Your existing `~/.zshrc` content is unaffected — these lines are appended after it.
+`index.zsh` sources the layers in order — `shared.zsh`, the OS-detected platform file, the optional `omp.zsh`, then the optional `local.zsh`. The block is guarded: if `index.zsh` is absent, the line is a no-op and your shell still starts. Your existing `~/.zshrc` content is unaffected — only this block is added. To revert, delete the three delimited lines.
 
 ### Step 6 — Verify adoption
 
