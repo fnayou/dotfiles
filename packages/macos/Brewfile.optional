@@ -1,0 +1,5 @@
+# macOS — optional extras
+# Install: brew bundle --file=packages/macos/Brewfile.optional
+#
+# Not required for a working shell. Add tools here as needed.
+# This file is intentionally empty — contents are deferred.

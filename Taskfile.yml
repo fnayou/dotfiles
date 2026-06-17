@@ -25,3 +25,32 @@ tasks:
         msg: "PACKAGE is required, e.g. PACKAGE=git"
     cmds:
       - stow --dir=stow/{{.AREA}} --target="$HOME" --simulate {{.PACKAGE}}
+
+  deps:check:zsh:
+    desc: "Check zsh shell-tier dependencies (fzf, zoxide, eza, oh-my-posh, zinit) — read-only, never installs"
+    cmds:
+      - bash scripts/check-zsh-deps.sh
+
+  deps:macos:shell:
+    desc: "Print manual install commands for macOS zsh shell dependencies — prints only, does not install"
+    cmds:
+      - |
+        echo ""
+        echo "Shell dependency install commands (macOS)"
+        echo "=========================================="
+        echo ""
+        echo "Step 1 — Install Homebrew-managed shell tools:"
+        echo ""
+        echo "  ⚠️  MANUAL STEP — review before running"
+        echo "  brew bundle --file=packages/macos/Brewfile.shell"
+        echo ""
+        echo "Step 2 — Install zinit (one-time manual clone):"
+        echo ""
+        echo "  ⚠️  MANUAL STEP — review before running"
+        echo "  git clone https://github.com/zdharma-continuum/zinit.git \\"
+        echo "    \"\${XDG_DATA_HOME:-\$HOME/.local/share}/zinit/zinit.git\""
+        echo ""
+        echo "Step 3 — Verify:"
+        echo ""
+        echo "  task deps:check:zsh"
+        echo ""

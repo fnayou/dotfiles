@@ -254,6 +254,9 @@ Never put any of the following into `.gitconfig.common`:
 
 ## Zsh package adoption
 
+Before stowing the zsh package, ensure all shell-tier dependencies are installed.
+See [docs/shell-dependencies.md](shell-dependencies.md) for the check and install steps.
+
 The `stow/common/zsh/` package provides three example files — one shared layer and one per platform. None are stowed directly — copy each locally, review, then stow. The real files (`shared.zsh`, `macos.zsh`, `arch.zsh`) are git-ignored and will not be committed.
 
 `~/.zshrc` is **never managed by Stow**. After stowing, the user manually appends a source block to their existing `~/.zshrc` — see Step 5.
