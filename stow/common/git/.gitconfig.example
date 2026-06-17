@@ -1,13 +1,30 @@
-# Example only. Do not stow directly.
-# Use this as a reference when creating a future managed Git config.
-# Keep real identity, email, signing keys, and work settings out of this repository.
+# Example only — do not stow directly.
+# Copy to .gitconfig.common, verify placeholders, then stow.
 
 [user]
-	name = Your Name
-	email = your-email@example.com
+    name = Your Name
+    email = your-email@example.com
 
 [core]
-	editor = vim
-	autocrlf = input
-	# Create ~/.gitignore_global before enabling this line.
-	excludesfile = ~/.gitignore_global
+    editor = vim
+    autocrlf = input
+    whitespace = trailing-space,space-before-tab
+    excludesfile = ~/.gitignore_global
+
+[pull]
+    rebase = false
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[color]
+    ui = auto
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    lg = log --oneline --graph --decorate --all

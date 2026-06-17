@@ -1,0 +1,35 @@
+# Global gitignore — example only. Do not stow directly.
+# Copy to .gitignore_global, add personal patterns, then stow.
+
+# macOS artifacts
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux desktop artifacts
+.Trash-*
+lost+found
+
+# Editor artifacts
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.orig
+
+# Compiled / build artifacts
+*.pyc
+__pycache__/
+*.class
+*.o
+*.out
+
+# Thumbnail caches
+Thumbs.db
+ehthumbs.db
+
+# Environment files (generic)
+.env.local
+.env.*.local
