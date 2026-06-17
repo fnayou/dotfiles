@@ -1,7 +1,7 @@
 # Plan: Implement Dotfiles Foundation
 
 **Number:** 0005
-**Status:** Draft
+**Status:** Complete
 **Date:** 2026-06-15
 **PRD:** [0002-dotfiles-foundation](../prd/0002-dotfiles-foundation.md)
 **Architecture:** [0002-dotfiles-foundation-architecture](../architecture/0002-dotfiles-foundation-architecture.md)
