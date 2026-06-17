@@ -1,0 +1,4 @@
+# Ignore real (filled-in) zsh files; keep .example templates tracked.
+shared.zsh
+macos.zsh
+arch.zsh

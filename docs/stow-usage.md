@@ -9,7 +9,8 @@ This repository uses GNU Stow with a package-based layout to manage dotfile syml
 ```
 stow/
 ├── common/     # Config that works on both macOS and Arch without modification
-│   └── git/    # Example: git config template
+│   ├── git/    # Git config templates
+│   └── zsh/    # Zsh config (shared + macOS + Arch, runtime OS detection)
 ├── macos/      # macOS-specific config only
 └── arch/       # EndeavourOS / Arch-specific config only
 ```
@@ -212,3 +213,93 @@ Never put any of the following into `.gitconfig.common`:
 - Credential helpers (platform-specific — not in the common package)
 - Work-specific `[includeIf]` blocks
 - Machine-specific paths
+
+---
+
+## Zsh package adoption
+
+The `stow/common/zsh/` package provides three example files — one shared layer and one per platform. None are stowed directly — copy each locally, review, then stow. The real files (`shared.zsh`, `macos.zsh`, `arch.zsh`) are git-ignored and will not be committed.
+
+`~/.zshrc` is **never managed by Stow**. After stowing, the user manually appends a source block to their existing `~/.zshrc` — see Step 5.
+
+### Files in this package
+
+| Repository file | Copy target | Purpose |
+|---|---|---|
+| `stow/common/zsh/.config/zsh/shared.zsh.example` | `shared.zsh` | Portable cross-platform zsh config (sourced on all platforms) |
+| `stow/common/zsh/.config/zsh/macos.zsh.example` | `macos.zsh` | macOS-specific zsh config (sourced on macOS only) |
+| `stow/common/zsh/.config/zsh/arch.zsh.example` | `arch.zsh` | Arch/EndeavourOS-specific zsh config (sourced on Arch only) |
+
+After copying and stowing, Stow creates symlinks in `~/.config/zsh/`:
+
+- `~/.config/zsh/shared.zsh` → `stow/common/zsh/.config/zsh/shared.zsh`
+- `~/.config/zsh/macos.zsh` → `stow/common/zsh/.config/zsh/macos.zsh`
+- `~/.config/zsh/arch.zsh` → `stow/common/zsh/.config/zsh/arch.zsh`
+
+All three are symlinked on every platform. Runtime OS detection in `~/.zshrc` determines which platform file is sourced — the unused platform file is harmless.
+
+### Step 1 — Copy the example files locally
+
+```bash
+cp stow/common/zsh/.config/zsh/shared.zsh.example stow/common/zsh/.config/zsh/shared.zsh
+cp stow/common/zsh/.config/zsh/macos.zsh.example  stow/common/zsh/.config/zsh/macos.zsh
+cp stow/common/zsh/.config/zsh/arch.zsh.example   stow/common/zsh/.config/zsh/arch.zsh
+```
+
+All three copied files are git-ignored and will not be committed.
+
+### Step 2 — Review the copies
+
+Open each file and:
+
+- Replace all `YOUR_*` placeholder tokens with your real values (or delete lines you do not need).
+- Confirm no real secrets, tokens, hostnames, or machine-specific paths are present.
+- Confirm the Homebrew prefix in `macos.zsh` is `/opt/homebrew` (Apple Silicon) or `/usr/local` (Intel).
+
+### Step 3 — Dry-run the package
+
+```bash
+task dry-run AREA=common PACKAGE=zsh
+```
+
+Or directly:
+
+```bash
+stow --dir=stow/common --target="$HOME" --simulate zsh
+```
+
+Review the output carefully. Expected output shows three symlinks that would be created under `~/.config/zsh/`. If you see a conflict, stop — do not use `--adopt`. See the "Conflict handling" section above.
+
+### Step 4 — Stow the package
+
+⚠️  MANUAL STEP — review dry-run output before running
+```bash
+stow --dir=stow/common --target="$HOME" zsh
+```
+
+### Step 5 — Add the source block to your real `~/.zshrc`
+
+Open your real `~/.zshrc` in an editor and append the following block. This file is **never managed by Stow** — this is a one-time manual step:
+
+```zsh
+# Managed zsh config — sourced from dotfiles
+source "$HOME/.config/zsh/shared.zsh"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  source "$HOME/.config/zsh/macos.zsh"
+elif [[ -f /etc/arch-release ]]; then
+  source "$HOME/.config/zsh/arch.zsh"
+fi
+```
+
+Your existing `~/.zshrc` content is unaffected — these lines are appended after it.
+
+### Step 6 — Verify adoption
+
+```bash
+# Confirm symlinks exist
+ls -l ~/.config/zsh/shared.zsh ~/.config/zsh/macos.zsh ~/.config/zsh/arch.zsh
+
+# Confirm zsh starts cleanly and sources the managed config
+zsh -ic 'echo zsh-ok'
+```

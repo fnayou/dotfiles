@@ -1,0 +1,15 @@
+# macos.zsh.example — macOS-specific zsh config
+# Copy to macos.zsh, review, then stow. Do NOT stow this .example directly.
+# Sourced only on macOS (see the ~/.zshrc source block in stow-usage.md).
+
+# --- Homebrew ---
+# YOUR_HOMEBREW_PREFIX is a LITERAL placeholder, NOT a shell variable.
+# Replace it with /opt/homebrew (Apple Silicon) or /usr/local (Intel).
+eval "$(YOUR_HOMEBREW_PREFIX/bin/brew shellenv)"
+
+# --- macOS-specific PATH additions ---
+# Replace YOUR_MACOS_TOOL_PATH or delete if unused.
+export PATH="YOUR_MACOS_TOOL_PATH:$PATH"
+
+# --- macOS tool aliases (examples; uncomment/edit as needed) ---
+# alias o='open'
