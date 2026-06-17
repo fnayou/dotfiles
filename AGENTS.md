@@ -239,7 +239,7 @@ A PRD must define:
 Workflow:
 
 ```
-PRD → Architecture → Plan → Build → Review → Commit
+PRD → Architecture → Review → Plan → Review → Build → Review → Commit
 ```
 
 Use the `create-prd` skill to produce PRDs. Store them under `docs/prd/`.

@@ -40,7 +40,7 @@ Do not implement dotfiles, run Stow, create symlinks, or modify `$HOME` without 
 - No files in `$HOME` have been modified or replaced.
 - No secrets, credentials, or private hostnames are committed.
 - All sensitive configuration uses `.example` files with placeholder values.
-- Every significant change requires: PRD → Architecture → Plan → Build → Review → Commit.
+- Every significant change requires: PRD → Architecture → Review → Plan → Review → Build → Review → Commit.
 
 ## Repository structure
 
