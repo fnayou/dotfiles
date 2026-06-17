@@ -2,6 +2,14 @@
 
 This document describes the standard workflow for all significant work in this repository.
 
+## Canonical delivery sequence
+
+```
+PRD → Architecture → Review → Plan → Review → Build → Review → Commit
+```
+
+Every significant change follows this sequence. No phase is skipped.
+
 ## Overview
 
 ```
@@ -11,15 +19,19 @@ This document describes the standard workflow for all significant work in this r
       ↓
 3. Create or update architecture
       ↓
-4. Create plan
+4. Review (PRD + architecture)
       ↓
-5. Implement
+5. Create plan
       ↓
-6. Review
+6. Review (plan)
       ↓
-7. Commit
+7. Implement
       ↓
-8. Iterate
+8. Review (implementation)
+      ↓
+9. Commit
+      ↓
+10. Iterate
 ```
 
 ## Steps
@@ -50,7 +62,15 @@ The architecture defines structure, decisions, tradeoffs, and risks.
 
 **No plan is created without an approved architecture when the change is structural.**
 
-### 4. Create plan
+### 4. Review (PRD + architecture)
+
+Use the Reviewer agent or `review-change` skill to validate the PRD and architecture before planning begins.
+
+The Reviewer checks safety, privacy, scope, and cross-platform correctness.
+
+**No plan is created until the PRD and architecture pass review.**
+
+### 5. Create plan
 
 Use the Planner agent or `create-plan` skill to produce an implementation plan under `docs/plans/`.
 
@@ -58,13 +78,21 @@ The plan defines ordered tasks, affected files, safety checks, validation comman
 
 **Builder must not start without an approved plan.**
 
-### 5. Implement
+### 6. Review (plan)
+
+Use the Reviewer agent to validate the plan before implementation begins.
+
+The Reviewer checks that tasks are safe, ordered correctly, and include validation and rollback steps.
+
+**Builder must not start until the plan passes review.**
+
+### 7. Implement
 
 Use the Builder agent to implement the approved plan items only.
 
 The Builder makes minimal, focused changes and reports what was done, what was skipped, and what is next.
 
-### 6. Review
+### 8. Review (implementation)
 
 Use the Reviewer agent or `review-change` skill to validate all changes.
 
@@ -72,7 +100,7 @@ The Reviewer checks safety, privacy, cross-platform correctness, and documentati
 
 **Commit only after the Reviewer issues PASS on all three verdicts.**
 
-### 7. Commit
+### 9. Commit
 
 After Reviewer approval:
 
@@ -81,7 +109,7 @@ After Reviewer approval:
 - Write a commit message that explains intent, not just what changed.
 - Commit.
 
-### 8. Iterate
+### 10. Iterate
 
 After a commit, return to step 1 for the next item.
 
