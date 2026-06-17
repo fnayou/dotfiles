@@ -117,3 +117,98 @@ The following are forbidden in this repository:
 - `stow --adopt` — silently overwrites existing files. Never use this.
 - Running stow without a prior dry-run.
 - Stow tasks in scripts, hooks, or CI — all stow operations are manual only.
+
+---
+
+## Git package adoption
+
+The `stow/common/git/` package provides two example files. Neither is stowed directly — copy each locally, fill in any personal additions, then stow.
+
+### Files in this package
+
+| Repository file | Purpose |
+|---|---|
+| `stow/common/git/.gitconfig.example` | Portable common Git settings (copy to `.gitconfig.common` before stowing) |
+| `stow/common/git/.gitignore_global.example` | Common global ignore patterns (copy to `.gitignore_global` before stowing) |
+
+After copying and stowing:
+
+| Local file (user-created, git-ignored) | Symlink created at |
+|---|---|
+| `stow/common/git/.gitconfig.common` | `~/.gitconfig.common` |
+| `stow/common/git/.gitignore_global` | `~/.gitignore_global` |
+
+### Step 1 — Copy the example files locally
+
+```bash
+cp stow/common/git/.gitconfig.example stow/common/git/.gitconfig.common
+cp stow/common/git/.gitignore_global.example stow/common/git/.gitignore_global
+```
+
+Both copied files are git-ignored and will not be committed.
+
+### Step 2 — Review the copies
+
+Open each file and confirm:
+
+- `.gitconfig.common` contains only placeholder values (`Your Name`, `your-email@example.com`) — do not replace placeholders with real values.
+- `.gitignore_global` — add any personal ignore patterns you need.
+
+### Step 3 — Dry-run the package
+
+```bash
+task dry-run AREA=common PACKAGE=git
+```
+
+Or directly:
+
+```bash
+stow --dir=stow/common --target="$HOME" --simulate git
+```
+
+Expected output shows two symlinks that would be created. If you see a conflict, stop — do not use `--adopt`. See the "Conflict handling" section above.
+
+### Step 4 — Stow the package
+
+⚠️  MANUAL STEP — review dry-run output before running
+```bash
+stow --dir=stow/common --target="$HOME" git
+```
+
+### Step 5 — Add the include directive to your real `~/.gitconfig`
+
+Open your real `~/.gitconfig` in an editor and add:
+
+```ini
+[include]
+    path = ~/.gitconfig.common
+```
+
+Your existing identity, signing setup, and machine-specific settings are unaffected.
+
+### Step 6 — Verify adoption
+
+```bash
+# Confirm symlinks exist
+ls -la ~/.gitconfig.common ~/.gitignore_global
+
+# Confirm Git resolves the include
+git config --list --show-origin | grep -i 'gitconfig.common'
+
+# Confirm excludesfile is active
+git config --global core.excludesfile
+
+# Confirm identity is NOT coming from .gitconfig.common (must point to ~/.gitconfig)
+git config --show-origin user.name
+git config --show-origin user.email
+```
+
+### What stays in your local `~/.gitconfig`
+
+Never put any of the following into `.gitconfig.common`:
+
+- `user.name` and `user.email` (identity)
+- Any signing configuration
+- Credential helpers (platform-specific — not in the common package)
+- Work-specific `[includeIf]` blocks
+- Machine-specific paths

@@ -35,3 +35,7 @@ temp/
 # Local machine files
 *.local
 *.local.*
+
+# Stow local copies — populated by user; must never be committed
+stow/common/git/.gitconfig.common
+stow/common/git/.gitignore_global
