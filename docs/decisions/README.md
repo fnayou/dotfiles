@@ -85,3 +85,10 @@ Use numbered filenames in sequence:
 | [0014](0014-gitconfig-common-filename.md) | `.gitconfig.common` filename | Accepted |
 | [0015](0015-git-credential-helpers-deferred.md) | Git credential helpers deferred | Accepted |
 | [0016](0016-zsh-common-package-runtime-os-detection.md) | Zsh files in `stow/common/zsh/` with runtime OS detection | Accepted |
+| [0017](0017-use-fake-home-for-stow-validation.md) | Use fake home for Stow validation | Accepted |
+| [0018](0018-brewfile-categories-evolving-per-prd.md) | Brewfile categories evolving per PRD | Accepted |
+| [0019](0019-deps-taskfile-tasks-non-mutating.md) | `deps:` Taskfile tasks are non-mutating | Accepted |
+| [0020](0020-zinit-manual-clone-never-auto-cloned.md) | Zinit manual clone, never auto-cloned | Accepted |
+| [0021](0021-zsh-activation-include-block-and-index-entrypoint.md) | Zsh activation include block + `index.zsh` entry point | Accepted |
+| [0022](0022-zsh-migration-model-4-start-model-3-target.md) | Zsh migration: Model 4 start, Model 3 target | Accepted |
+| [0023](0023-zsh-local-override-slot.md) | `local.zsh` git-ignored last-sourced override slot | Accepted |

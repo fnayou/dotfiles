@@ -1,0 +1,23 @@
+# zshrc.example — reference template for your real ~/.zshrc.
+#
+# This file is NEVER applied automatically and is NEVER stowed to ~/.zshrc.
+# (It lives under .config/zsh/, so Stow can only ever link it to
+#  ~/.config/zsh/zshrc.example — never to ~/.zshrc.)
+#
+#   • If you ALREADY have a ~/.zshrc:
+#       copy ONLY the managed block below into it, placing it LAST so the managed
+#       defaults and local.zsh take effect after your own lines.
+#
+#   • If this is a FRESH machine with no ~/.zshrc:
+#       you may use this whole file as a starter ~/.zshrc.
+#
+# The managed block is guarded: if index.zsh is not present (not yet copied/stowed),
+# the line is a no-op and your shell still starts normally.
+
+# --- (optional) fresh-machine starter lines — keep minimal and portable ---
+# Add only what you want before the managed layer loads. Machine-specific or
+# sensitive values belong in ~/.config/zsh/local.zsh (git-ignored), not here.
+
+# >>> dotfiles managed (zsh) — added manually; delete this block to disable >>>
+[[ -r "$HOME/.config/zsh/index.zsh" ]] && source "$HOME/.config/zsh/index.zsh"
+# <<< dotfiles managed (zsh) <<<
