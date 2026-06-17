@@ -89,6 +89,42 @@ Resolve manually:
 
 `--adopt` is forbidden in this repository — it silently overwrites existing files with the repository version and cannot be undone without the original file.
 
+### Directory-ownership conflicts
+
+Stow may also report a directory-level conflict:
+
+```
+WARNING! stowing <package> would cause conflicts:
+  * existing target is not owned by stow: .config/<name>
+All operations aborted.
+```
+
+This means the target directory (`~/.config/<name>`) already exists and was not
+created by Stow. Stow refuses to claim it. This is correct behaviour — **do not use
+`--adopt`**.
+
+Resolution options:
+1. **Back up and remove the directory**, then re-run the dry-run. Stow will create the
+   directory and its symlinks cleanly.
+2. **Compare manually**: inspect the existing directory and the package template side
+   by side. Migrate intentionally, file by file.
+3. **Defer stowing**: keep the real directory as-is and use the `.example` template
+   for reference only until you are ready to migrate.
+
+### Fake-home validation
+
+When the real `$HOME` contains a conflicting directory, use a temporary fake home to
+verify the package layout without touching real files:
+
+```bash
+TEST_HOME="$(mktemp -d)"
+stow --dir=stow/common --target="$TEST_HOME" --simulate omp
+rm -rf "$TEST_HOME"
+```
+
+This confirms Stow would create the correct symlinks on a clean machine, without
+risking any real home directory change. Always remove `$TEST_HOME` after validation.
+
 ---
 
 ## Adding a new package
@@ -331,3 +367,196 @@ rm -rf "$TEST_HOME"
 
 Both commands must return no output (no conflicts). Always remove `$TEST_HOME` after
 validation.
+
+---
+
+## Oh My Posh package adoption
+
+The `stow/common/omp/` package provides one example file. Do not stow it directly —
+copy it locally, customize, then stow. The real file (`omp.toml`) is git-ignored and
+will not be committed.
+
+The activation snippet (`omp.zsh`) lives in the zsh package
+(`stow/common/zsh/.config/zsh/`), not in the omp package. Both packages must be stowed
+for full OMP adoption.
+
+### Prerequisites
+
+Before stowing the omp package, install Oh My Posh and a Nerd Font manually.
+
+**macOS:**
+
+```bash
+# Oh My Posh — Option A: Homebrew (recommended)
+brew install jandedobbeleer/oh-my-posh/oh-my-posh
+
+# Oh My Posh — Option B: direct binary
+curl -s https://ohmyposh.dev/install.sh | bash -s
+
+# Nerd Font — Option A: Homebrew Cask
+brew install --cask font-meslo-lg-nerd-font
+
+# Nerd Font — Option B: Oh My Posh font installer (requires OMP installed first)
+oh-my-posh font install meslo
+```
+
+**Arch / EndeavourOS:**
+
+```bash
+# Oh My Posh — AUR
+yay -S oh-my-posh-bin
+
+# Oh My Posh — direct binary
+curl -s https://ohmyposh.dev/install.sh | bash -s
+
+# Nerd Font — AUR
+yay -S ttf-meslo-nerd
+
+# Nerd Font — Oh My Posh font installer (requires OMP installed first)
+oh-my-posh font install meslo
+```
+
+After installing a Nerd Font, configure your terminal emulator to use it before
+activating Oh My Posh.
+
+Verify Oh My Posh installation:
+
+```bash
+oh-my-posh --version
+```
+
+### Files in the omp package
+
+| Repository file | Copy target | Purpose |
+|---|---|---|
+| `stow/common/omp/.config/omp/omp.toml.example` | `omp.toml` | Minimal starter theme — customize before stowing |
+
+After copying and stowing, Stow creates:
+
+- `~/.config/omp/omp.toml` → `stow/common/omp/.config/omp/omp.toml`
+- `~/.config/omp/omp.toml.example` → `stow/common/omp/.config/omp/omp.toml.example`
+
+The `omp.toml.example` symlink is expected and harmless — Oh My Posh reads only
+`omp.toml` and ignores all other files in the directory.
+
+### Step 1 — Copy the example file locally
+
+```bash
+cp stow/common/omp/.config/omp/omp.toml.example \
+   stow/common/omp/.config/omp/omp.toml
+```
+
+The copied file is git-ignored and will not be committed.
+
+### Step 2 — Customize your theme
+
+Open `stow/common/omp/.config/omp/omp.toml` and replace the starter theme with your
+preferred configuration. Confirm:
+
+- No real hostnames, usernames, or machine-specific paths.
+- No API keys or sensitive values.
+
+### Step 3 — Dry-run the omp package
+
+```bash
+task dry-run AREA=common PACKAGE=omp
+```
+
+Or directly:
+
+```bash
+stow --dir=stow/common --target="$HOME" --simulate omp
+```
+
+#### If `~/.config/omp` already exists
+
+Stow will report:
+
+```
+WARNING! stowing omp would cause conflicts:
+  * existing target is not owned by stow: .config/omp
+All operations aborted.
+```
+
+This is expected and correct — Stow refuses to claim a directory it does not own.
+**Do not use `--adopt`.**
+
+Options:
+- **Defer**: the `omp.toml.example` template is available for reference. Do not stow
+  yet. Compare your real `~/.config/omp/omp.toml` with the template manually and
+  migrate when ready.
+- **Migrate**: back up your real `~/.config/omp/` contents, remove the directory,
+  copy the example to `omp.toml`, customize, then re-run the dry-run.
+
+To verify the package layout without touching real files, use fake-home validation:
+
+```bash
+TEST_HOME="$(mktemp -d)"
+stow --dir=stow/common --target="$TEST_HOME" --simulate omp
+rm -rf "$TEST_HOME"
+```
+
+See "Directory-ownership conflicts" and "Fake-home validation" under "Conflict
+handling" above for full detail.
+
+### Step 4 — Stow the omp package
+
+⚠️  MANUAL STEP — review dry-run output before running
+```bash
+stow --dir=stow/common --target="$HOME" omp
+```
+
+### Step 5 — Set up the zsh activation snippet
+
+Copy the activation snippet template from the zsh package:
+
+```bash
+cp stow/common/zsh/.config/zsh/omp.zsh.example \
+   stow/common/zsh/.config/zsh/omp.zsh
+```
+
+Open `omp.zsh` and uncomment the guarded activation block:
+
+```zsh
+[[ -x "$(command -v oh-my-posh)" ]] && \
+  [[ -f "${HOME}/.config/omp/omp.toml" ]] && \
+  eval "$(oh-my-posh init zsh --config "${HOME}/.config/omp/omp.toml")"
+```
+
+### Step 6 — Stow (or re-stow) the zsh package
+
+Stow does not pick up newly added files automatically. Re-run stow for the zsh package
+to create the `omp.zsh` symlink at `~/.config/zsh/omp.zsh`:
+
+```bash
+task dry-run AREA=common PACKAGE=zsh
+```
+
+⚠️  MANUAL STEP — review dry-run output before running
+```bash
+stow --dir=stow/common --target="$HOME" zsh
+```
+
+### Step 7 — Add the source guard to your zsh config
+
+In your local `~/.config/zsh/shared.zsh` (or directly in `~/.zshrc`), add:
+
+```zsh
+[[ -f "$HOME/.config/zsh/omp.zsh" ]] && source "$HOME/.config/zsh/omp.zsh"
+```
+
+This guard is a no-op on machines where `omp.zsh` is absent — shell startup is
+unaffected on machines without OMP.
+
+### Step 8 — Verify
+
+```bash
+# Confirm omp.toml symlink exists
+ls -la ~/.config/omp/omp.toml
+
+# Confirm omp.zsh symlink exists
+ls -la ~/.config/zsh/omp.zsh
+
+# Open a new shell and confirm Oh My Posh is active
+zsh -ic 'oh-my-posh --version && echo omp-ok'
+```

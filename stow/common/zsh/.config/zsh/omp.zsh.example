@@ -1,0 +1,22 @@
+# Oh My Posh — prompt engine activation snippet
+#
+# This file is a template. To activate Oh My Posh:
+#   1. Copy this file to omp.zsh (git-ignored, never committed):
+#        cp stow/common/zsh/.config/zsh/omp.zsh.example \
+#           stow/common/zsh/.config/zsh/omp.zsh
+#   2. Uncomment the eval block below.
+#   3. Add the guard source call to ~/.config/zsh/shared.zsh or ~/.zshrc:
+#        [[ -f "$HOME/.config/zsh/omp.zsh" ]] && source "$HOME/.config/zsh/omp.zsh"
+#   4. Stow (or re-stow) the zsh package to create the symlink:
+#        stow --dir=stow/common --target="$HOME" zsh
+#   5. Open a new shell to verify.
+#
+# Prerequisites before uncommenting:
+#   - Oh My Posh installed (see docs/stow-usage.md for macOS/Arch steps)
+#   - stow/common/omp/ stowed — ~/.config/omp/omp.toml must exist
+#   - A Nerd Font installed and selected in your terminal emulator
+#
+# Recommended activation (guarded — safe on machines where OMP is absent):
+# [[ -x "$(command -v oh-my-posh)" ]] && \
+#   [[ -f "${HOME}/.config/omp/omp.toml" ]] && \
+#   eval "$(oh-my-posh init zsh --config "${HOME}/.config/omp/omp.toml")"

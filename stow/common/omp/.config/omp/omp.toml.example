@@ -1,0 +1,25 @@
+# Oh My Posh configuration template
+# Copy this file to omp.toml, customize, then stow the omp package.
+# See docs/stow-usage.md for adoption steps.
+#
+# Full schema reference: https://ohmyposh.dev/docs/configuration/overview
+
+"$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json"
+version = 2
+final_space = true
+
+[[blocks]]
+  type = "prompt"
+  alignment = "left"
+
+  [[blocks.segments]]
+    type = "path"
+    style = "plain"
+    foreground = "cyan"
+    template = "{{ .Path }} "
+
+  [[blocks.segments]]
+    type = "text"
+    style = "plain"
+    foreground = "white"
+    template = "❯ "
