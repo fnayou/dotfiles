@@ -257,7 +257,9 @@ Never put any of the following into `.gitconfig.common`:
 Before stowing the zsh package, ensure all shell-tier dependencies are installed.
 See [docs/shell-dependencies.md](shell-dependencies.md) for the check and install steps.
 
-The `stow/common/zsh/` package provides example files — a shared layer, one per platform, a managed entry point (`index.zsh`), and a reference `~/.zshrc` template. None are stowed directly — copy each locally, review, then stow. The real files (`shared.zsh`, `macos.zsh`, `arch.zsh`, `index.zsh`, and the optional `local.zsh`) are git-ignored and will not be committed.
+The `stow/common/zsh/` package uses **`--no-folding`** (ADR-0024): Stow creates `~/.config/zsh/` as a **real directory** and places **per-file symlinks** for each managed file inside it — it does not collapse the directory into a single symlink pointing at the repo. This ensures a clear boundary between managed (symlinked, repo-based) files and local/private files such as `local.zsh` that live outside the repo.
+
+The package provides example files — a shared layer, one per platform, a managed entry point (`index.zsh`), and a reference `~/.zshrc` template. None are stowed directly — copy each locally, review, then stow. The real files (`shared.zsh`, `macos.zsh`, `arch.zsh`, `index.zsh`, and the optional `local.zsh`) are git-ignored and will not be committed.
 
 `~/.zshrc` is **never managed by Stow**. After stowing, the user manually adds **one guarded include block** to their existing `~/.zshrc` that sources the managed entry point `~/.config/zsh/index.zsh` — see Step 5. For the full safe migration path (Model 4 → Model 3, backup, incremental cutover, rollback), see [docs/zsh-migration.md](zsh-migration.md).
 
@@ -270,26 +272,35 @@ The `stow/common/zsh/` package provides example files — a shared layer, one pe
 | `stow/common/zsh/.config/zsh/arch.zsh.example` | `arch.zsh` | Arch/EndeavourOS-specific zsh config (sourced on Arch only) |
 | `stow/common/zsh/.config/zsh/index.zsh.example` | `index.zsh` | Managed entry point — sources the layers in order (sourced by the `~/.zshrc` include block) |
 | `stow/common/zsh/.config/zsh/zshrc.example` | *(reference only — never stowed to `~/.zshrc`)* | Template for your real `~/.zshrc`; contains the guarded managed include block |
-| *(no `.example`)* | `local.zsh` | Optional machine-specific/sensitive overrides — git-ignored, never committed, sourced last (ADR-0023) |
+| *(no `.example`)* | `local.zsh` | Machine-specific/sensitive overrides — real file created directly in `~/.config/zsh/` by the user (not from the repo), git-ignored, never symlinked, sourced last (ADR-0023, ADR-0026) |
 
-After copying and stowing, Stow creates symlinks in `~/.config/zsh/`:
+After copying and stowing with `--no-folding`, Stow creates `~/.config/zsh/` as a **real directory** and places per-file symlinks inside it:
 
 - `~/.config/zsh/shared.zsh` → `stow/common/zsh/.config/zsh/shared.zsh`
 - `~/.config/zsh/macos.zsh` → `stow/common/zsh/.config/zsh/macos.zsh`
 - `~/.config/zsh/arch.zsh` → `stow/common/zsh/.config/zsh/arch.zsh`
 - `~/.config/zsh/index.zsh` → `stow/common/zsh/.config/zsh/index.zsh`
 
+`local.zsh` is **not** a symlink — the user creates it directly in `~/.config/zsh/` with their editor. Because `~/.config/zsh/` is a real directory (not a symlink into the repo), `local.zsh` lives physically outside the repo working tree and cannot be committed by accident (ADR-0026).
+
 All platform files are symlinked on every platform. Runtime OS detection inside `index.zsh` determines which platform file is sourced — the unused platform file is harmless. `zshrc.example` stows to `~/.config/zsh/zshrc.example` (a reference copy); it is **never** linked to `~/.zshrc`.
 
 ### Step 1 — Copy the example files locally
 
+At minimum, copy `index.zsh.example` to activate the managed layer. Copy the other files as needed:
+
 ```bash
+cp stow/common/zsh/.config/zsh/index.zsh.example  stow/common/zsh/.config/zsh/index.zsh
 cp stow/common/zsh/.config/zsh/shared.zsh.example stow/common/zsh/.config/zsh/shared.zsh
+# macOS only:
 cp stow/common/zsh/.config/zsh/macos.zsh.example  stow/common/zsh/.config/zsh/macos.zsh
+# Arch only:
 cp stow/common/zsh/.config/zsh/arch.zsh.example   stow/common/zsh/.config/zsh/arch.zsh
+# Optional OMP:
+cp stow/common/zsh/.config/zsh/omp.zsh.example    stow/common/zsh/.config/zsh/omp.zsh
 ```
 
-All three copied files are git-ignored and will not be committed.
+All copied files are git-ignored and will not be committed.
 
 ### Step 2 — Review the copies
 
@@ -305,19 +316,32 @@ Open each file and:
 task dry-run AREA=common PACKAGE=zsh
 ```
 
-Or directly:
+Or directly (use `--no-folding` — required for the zsh package; ADR-0024):
 
 ```bash
-stow --dir=stow/common --target="$HOME" --simulate zsh
+stow --dir=stow/common --target="$HOME" --no-folding --simulate zsh
 ```
 
-Review the output carefully. Expected output shows three symlinks that would be created under `~/.config/zsh/`. If you see a conflict, stop — do not use `--adopt`. See the "Conflict handling" section above.
+Review the output carefully. Expected output shows per-file symlinks that would be created under `~/.config/zsh/` (a real directory, not a symlink). If you see a conflict, stop — do not use `--adopt`. See the "Conflict handling" section above.
+
+**If `~/.config/zsh` currently exists as a directory-fold symlink** (from an earlier stow without `--no-folding`), remove it first:
+
+⚠️  MANUAL STEP — dry-run first; confirm only `~/.config/zsh` symlink would be removed:
+```bash
+stow --dir=stow/common --target="$HOME" --simulate --delete zsh
+```
+⚠️  MANUAL STEP — run only after dry-run is confirmed clean:
+```bash
+stow --dir=stow/common --target="$HOME" --delete zsh
+```
+
+Then proceed with the `--no-folding` dry-run and stow below.
 
 ### Step 4 — Stow the package
 
 ⚠️  MANUAL STEP — review dry-run output before running
 ```bash
-stow --dir=stow/common --target="$HOME" zsh
+stow --dir=stow/common --target="$HOME" --no-folding zsh
 ```
 
 ### Step 5 — Add the guarded include block to your real `~/.zshrc`
@@ -335,12 +359,28 @@ Open your real `~/.zshrc` in an editor and add the following **single guarded bl
 ### Step 6 — Verify adoption
 
 ```bash
-# Confirm symlinks exist
-ls -l ~/.config/zsh/shared.zsh ~/.config/zsh/macos.zsh ~/.config/zsh/arch.zsh
+# Confirm ~/.config/zsh is a real directory (not a symlink)
+[[ -d "$HOME/.config/zsh" && ! -L "$HOME/.config/zsh" ]] && echo "real-dir-ok" || echo "NOT-real-dir"
+
+# Confirm per-file symlinks exist
+ls -l ~/.config/zsh/index.zsh ~/.config/zsh/shared.zsh
 
 # Confirm zsh starts cleanly and sources the managed config
 zsh -ic 'echo zsh-ok'
 ```
+
+The `real-dir-ok` check is the key indicator that `--no-folding` produced the expected layout. If it prints `NOT-real-dir`, stop and re-run Step 3–4.
+
+### Optional — Create `local.zsh` for machine-specific / sensitive overrides
+
+Create `local.zsh` **directly** in `~/.config/zsh/` — not by copying from the repo. Because `~/.config/zsh/` is a real directory under `--no-folding`, this file lives physically outside the repo and cannot be committed by accident (ADR-0026):
+
+⚠️  MANUAL STEP — create a REAL private file; put secrets and machine-specific values only here
+```bash
+$EDITOR "$HOME/.config/zsh/local.zsh"
+```
+
+`index.zsh` sources it last, so it wins over all managed layers.
 
 ### Optional — Oh My Posh integration
 
@@ -531,12 +571,12 @@ Stow does not pick up newly added files automatically. Re-run stow for the zsh p
 to create the `omp.zsh` symlink at `~/.config/zsh/omp.zsh`:
 
 ```bash
-task dry-run AREA=common PACKAGE=zsh
+stow --dir=stow/common --target="$HOME" --no-folding --simulate zsh
 ```
 
 ⚠️  MANUAL STEP — review dry-run output before running
 ```bash
-stow --dir=stow/common --target="$HOME" zsh
+stow --dir=stow/common --target="$HOME" --no-folding --restow zsh
 ```
 
 ### Step 7 — Add the source guard to your zsh config

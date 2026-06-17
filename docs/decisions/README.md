@@ -92,3 +92,7 @@ Use numbered filenames in sequence:
 | [0021](0021-zsh-activation-include-block-and-index-entrypoint.md) | Zsh activation include block + `index.zsh` entry point | Accepted |
 | [0022](0022-zsh-migration-model-4-start-model-3-target.md) | Zsh migration: Model 4 start, Model 3 target | Accepted |
 | [0023](0023-zsh-local-override-slot.md) | `local.zsh` git-ignored last-sourced override slot | Accepted |
+| [0024](0024-use-no-folding-for-zsh-package.md) | Use GNU Stow `--no-folding` for the zsh package | Accepted |
+| [0025](0025-managed-zsh-files-git-ignored-linked-by-presence.md) | Managed zsh real files are linked by Stow from physical presence while staying git-ignored | Accepted |
+| [0026](0026-local-zsh-real-file-outside-repo-never-symlinked.md) | `local.zsh` is a real, unversioned file outside the repo, never symlinked | Accepted |
+| [0027](0027-zshrc-stays-unmanaged-no-folding-migration-does-not-touch-it.md) | `~/.zshrc` stays unmanaged; `--no-folding` migration does not touch it | Accepted |
