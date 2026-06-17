@@ -504,3 +504,9 @@ Not applicable to this plan — adoption (copy, stow, `~/.zshrc` edit) is a late
 - Defining real aliases, functions, or environment values beyond placeholders.
 - `chsh` or any default-shell change.
 - Terminal emulator config.
+
+---
+
+## Post-Completion Notes
+
+- **Plan 0010:** `shared.zsh.example` now references optional OMP integration (added by Plan 0010).
