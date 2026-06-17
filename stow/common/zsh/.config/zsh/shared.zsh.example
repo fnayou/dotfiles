@@ -1,0 +1,33 @@
+# shared.zsh.example — portable zsh config (macOS + Arch)
+# Copy to shared.zsh, review, then stow. Do NOT stow this .example directly.
+# All YOUR_* tokens are literal placeholders, not shell variables.
+
+# --- XDG base directories ---
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+# --- Portable environment ---
+# Replace YOUR_EDITOR / YOUR_PAGER with your preferred tools (e.g. vim, less).
+export EDITOR="YOUR_EDITOR"
+export PAGER="YOUR_PAGER"
+
+# --- History ---
+# HISTFILE uses $HOME/.zsh_history — safe default that avoids XDG_STATE_HOME complexity.
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=10000
+export SAVEHIST=10000
+setopt HIST_IGNORE_DUPS
+setopt SHARE_HISTORY
+
+# --- Shell options (portable) ---
+setopt AUTO_CD
+
+# --- Completion ---
+autoload -Uz compinit && compinit
+
+# --- Portable aliases (flags valid on both BSD and GNU) ---
+alias grep='grep --color=auto'
+
+# NOTE: No Homebrew, pacman/yay, pbcopy/open, systemctl, plugin manager,
+# or prompt theme here. Those belong in macos.zsh / arch.zsh or a later phase.
