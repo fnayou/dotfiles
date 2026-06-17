@@ -29,5 +29,15 @@ autoload -Uz compinit && compinit
 # --- Portable aliases (flags valid on both BSD and GNU) ---
 alias grep='grep --color=auto'
 
+# --- Optional: Oh My Posh prompt integration ---
+# Oh My Posh is a prompt engine (NOT Oh My Zsh — it has no plugin manager).
+# Requires: oh-my-posh installed, a Nerd Font in your terminal, ~/.config/omp/omp.toml
+# See stow/common/omp/ for the config template and docs/stow-usage.md for setup steps.
+#
+# To activate, copy this block to your real shared.zsh and uncomment:
+# if command -v oh-my-posh >/dev/null 2>&1 && [[ -f "$HOME/.config/omp/omp.toml" ]]; then
+#   eval "$(oh-my-posh init zsh --config "$HOME/.config/omp/omp.toml")"
+# fi
+
 # NOTE: No Homebrew, pacman/yay, pbcopy/open, systemctl, plugin manager,
 # or prompt theme here. Those belong in macos.zsh / arch.zsh or a later phase.

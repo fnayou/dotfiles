@@ -303,3 +303,31 @@ ls -l ~/.config/zsh/shared.zsh ~/.config/zsh/macos.zsh ~/.config/zsh/arch.zsh
 # Confirm zsh starts cleanly and sources the managed config
 zsh -ic 'echo zsh-ok'
 ```
+
+### Optional — Oh My Posh integration
+
+Oh My Posh is a prompt engine — it is **not** Oh My Zsh and has no plugin manager.
+It requires a separate installation step and is never activated automatically.
+
+The `stow/common/omp/` package provides the config template (`omp.toml.example`).
+Full adoption steps — including installing Oh My Posh, stowing the omp package, and
+wiring up the activation snippet — are documented in the
+[Oh My Posh package adoption](#oh-my-posh-package-adoption) section below.
+
+`shared.zsh.example` contains a commented-out OMP block for reference. To activate it:
+
+1. Copy `shared.zsh.example` to `shared.zsh` (git-ignored) and uncomment the OMP block.
+2. Follow the full Oh My Posh adoption steps in the section below.
+
+To verify the zsh and omp packages are conflict-free on a clean machine, use
+fake-home validation before stowing against real `$HOME`:
+
+```bash
+TEST_HOME="$(mktemp -d)"
+stow --dir=stow/common --target="$TEST_HOME" --simulate zsh
+stow --dir=stow/common --target="$TEST_HOME" --simulate omp
+rm -rf "$TEST_HOME"
+```
+
+Both commands must return no output (no conflicts). Always remove `$TEST_HOME` after
+validation.
