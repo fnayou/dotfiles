@@ -1,0 +1,9 @@
+# macOS — core repository prerequisites
+# Install: brew bundle --file=packages/macos/Brewfile.core
+#
+# These tools are required to manage this dotfiles repository.
+# Also checked by: scripts/check.sh
+
+brew "git"
+brew "stow"
+brew "go-task", tap: "go-task/tap"
