@@ -46,3 +46,17 @@ Use numbered filenames in sequence:
 - **Approved** — approved by the user, ready for Builder.
 - **In Progress** — Builder is currently implementing.
 - **Done** — all tasks completed and reviewed.
+
+---
+
+## Index
+
+| Number | Title | Status |
+|---|---|---|
+| [0001](0001-initial-repository-scaffold.md) | Initial repository scaffold | Done |
+| [0002](0002-root-project-hygiene-files.md) | Root project hygiene files | Done |
+| [0003](0003-add-initial-prd.md) | Add initial PRD | Done |
+| [0004](0004-add-github-actions-ci.md) | Add GitHub Actions CI | Done |
+| [0005](0005-implement-dotfiles-foundation.md) | Implement dotfiles foundation | Done |
+| [0006](0006-implement-git-package.md) | Implement Git package | Done |
+| [0007](0007-implement-zsh-configuration-foundation.md) | Implement Zsh configuration foundation | Approved |
