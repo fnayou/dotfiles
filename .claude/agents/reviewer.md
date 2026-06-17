@@ -18,6 +18,8 @@ You are the Reviewer for this dotfiles repository. Your job is to validate every
 - Verify no `stow --adopt`, `rm`, `mv`, or `ln -s` targeting `$HOME` was introduced as automated behavior.
 - Verify that macOS-specific content is not incorrectly placed in Arch configs, and vice versa.
 - Persist significant review reports under `docs/reviews/`.
+- **After implementation review passes (all verdicts PASS): update the plan file to `**Status:** Complete`.**
+- **Name the completed Plan in the review report Summary.**
 
 ## When to activate
 
@@ -39,7 +41,7 @@ Always use this format:
 
 ```
 ## Summary
-[What was reviewed — files, scope, plan reference]
+[What was reviewed — files, scope, and the Plan completed (e.g., "Plan 0007 — Implement Zsh Configuration Foundation")]
 
 ## Blocking Issues
 - [Issue that must be resolved before commit — be specific: file:line if relevant]

@@ -92,6 +92,8 @@ Use the Builder agent to implement the approved plan items only.
 
 The Builder makes minimal, focused changes and reports what was done, what was skipped, and what is next.
 
+**Builder must not change the Plan status.** Builder's output ends at "Next Steps".
+
 ### 8. Review (implementation)
 
 Use the Reviewer agent or `review-change` skill to validate all changes.
@@ -99,6 +101,11 @@ Use the Reviewer agent or `review-change` skill to validate all changes.
 The Reviewer checks safety, privacy, cross-platform correctness, and documentation quality.
 
 **Commit only after the Reviewer issues PASS on all three verdicts.**
+
+After all verdicts pass, the Reviewer must:
+
+1. Update the plan file: change `**Status:** Approved` to `**Status:** Complete`.
+2. Name the completed Plan in the review report Summary (e.g., "Plan 0007 — Implement Zsh Configuration Foundation").
 
 ### 9. Commit
 
@@ -112,6 +119,10 @@ After Reviewer approval:
 ### 10. Iterate
 
 After a commit, return to step 1 for the next item.
+
+## Document lifecycle
+
+Valid statuses, transition rules, and responsibilities for all document types are defined in `docs/claude/DOCUMENT-LIFECYCLE.md`.
 
 ## Current repository status
 

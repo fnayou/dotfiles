@@ -79,6 +79,18 @@ Issue explicit verdicts:
 
 All three must be PASS before recommending commit.
 
+### Step 7a — Mark the Plan Complete (implementation reviews only)
+
+If this is an **implementation review** (reviewing Builder output) and all three verdicts are PASS:
+
+1. Open the plan file referenced in the review (under `docs/plans/`).
+2. Change `**Status:** Approved` to `**Status:** Complete`.
+3. Record the plan number and title in the Summary of the review report.
+
+If any verdict is FAIL, leave the plan status as Approved.
+
+See `docs/claude/DOCUMENT-LIFECYCLE.md` for the full lifecycle rules.
+
 ### Step 8 — Produce the review report
 
 Write the report to a numbered file:
@@ -96,13 +108,14 @@ Use the next available number in the sequence.
 # Review: [Title]
 
 **Number:** 0001
+**Status:** Complete
 **Date:** YYYY-MM-DD
-**Plan reviewed:** [number]
+**Plan reviewed:** [number] — [title]
 **Files reviewed:** [list]
 
 ## Summary
 
-[What was reviewed]
+[What was reviewed — name the Plan completed, e.g. "Plan 0007 — Implement Zsh Configuration Foundation"]
 
 ## Blocking Issues
 

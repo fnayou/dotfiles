@@ -62,9 +62,11 @@ git checkout -- <file>    # Undo a specific file change
 git reset HEAD~1          # Undo the last commit (before push)
 ```
 
-### Step 8 — Do not implement
+### Step 8 — Do not implement or mark Complete
 
 This skill produces a **plan only**. The Builder implements. Do not create or modify dotfile packages or home directory files.
+
+Set the initial status to `Draft`. The Planner does not approve plans — that is the user's role after plan review passes. See `docs/claude/DOCUMENT-LIFECYCLE.md` for all valid statuses and transitions.
 
 ### Step 9 — Produce the plan document
 
@@ -83,7 +85,7 @@ Use the next available number in the sequence.
 # Plan: [Title]
 
 **Number:** 0001
-**Status:** Draft | Approved | In Progress | Done
+**Status:** Draft | Approved | Complete | Superseded
 **Date:** YYYY-MM-DD
 **PRD:** [number]
 **Architecture:** [number]
