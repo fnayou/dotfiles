@@ -6,7 +6,19 @@ managed zsh layer. Nothing here runs automatically — every system-changing ste
 
 - **PRD:** [docs/prd/0007-zsh-activation-migration.md](prd/0007-zsh-activation-migration.md)
 - **Architecture:** [docs/architecture/0007-zsh-activation-migration-architecture.md](architecture/0007-zsh-activation-migration-architecture.md)
-- **Decisions:** ADR-0021 (include block + `index.zsh`), ADR-0022 (Model 4 → 3), ADR-0023 (`local.zsh`).
+- **Decisions:** ADR-0021 (include block + `index.zsh`), ADR-0022 (Model 4 → 3), ADR-0023 (`local.zsh`), ADR-0024 (`--no-folding`), ADR-0026 (`local.zsh` outside repo), ADR-0027 (`~/.zshrc` stays unmanaged).
+
+---
+
+## Migration context: `--no-folding` (ADR-0024)
+
+The zsh package uses **`--no-folding`** for all stow operations. This means:
+
+- `~/.config/zsh/` is a **real directory** — not a directory-fold symlink into the repo.
+- Each managed file is an **explicit per-file symlink** (e.g. `~/.config/zsh/index.zsh → …/stow/common/zsh/.config/zsh/index.zsh`).
+- `local.zsh` lives as a **real file** directly under `~/.config/zsh/`, physically outside the repo working tree — it cannot be committed by accident (ADR-0026).
+
+If you previously stowed the zsh package without `--no-folding` (producing a single directory-fold symlink `~/.config/zsh → …/stow/…`), see Step 3a — Migrate from folded state below.
 
 ---
 
@@ -66,11 +78,15 @@ Keep this backup until migration is complete and verified. It is your full-abort
 
 ## Step 2 — Copy the example files locally
 
+At minimum, copy `index.zsh.example` to activate the managed layer. Copy other files as needed:
+
 ```bash
-cp stow/common/zsh/.config/zsh/shared.zsh.example stow/common/zsh/.config/zsh/shared.zsh
-cp stow/common/zsh/.config/zsh/macos.zsh.example  stow/common/zsh/.config/zsh/macos.zsh   # macOS
-cp stow/common/zsh/.config/zsh/arch.zsh.example   stow/common/zsh/.config/zsh/arch.zsh    # Arch
 cp stow/common/zsh/.config/zsh/index.zsh.example  stow/common/zsh/.config/zsh/index.zsh
+cp stow/common/zsh/.config/zsh/shared.zsh.example stow/common/zsh/.config/zsh/shared.zsh
+# macOS only:
+cp stow/common/zsh/.config/zsh/macos.zsh.example  stow/common/zsh/.config/zsh/macos.zsh
+# Arch only:
+cp stow/common/zsh/.config/zsh/arch.zsh.example   stow/common/zsh/.config/zsh/arch.zsh
 ```
 
 All copied files are git-ignored and will not be committed. Review each, replacing any
@@ -79,45 +95,79 @@ not in the tracked layers.
 
 ### Optional — create `local.zsh` for machine-specific / sensitive overrides
 
-`local.zsh` has no `.example` and is never committed (ADR-0023). Create it only if you
-have local overrides to move out of your `~/.zshrc`:
+`local.zsh` has no `.example` and is never committed (ADR-0023, ADR-0026). Under
+`--no-folding`, `~/.config/zsh/` is a real directory — create `local.zsh` **directly
+there** (not in the repo), so it lives physically outside the repo working tree:
 
+⚠️  MANUAL STEP — create a REAL private file; put machine-specific and sensitive values only here
 ```bash
-: > stow/common/zsh/.config/zsh/local.zsh   # create empty; then edit in your overrides
+$EDITOR "$HOME/.config/zsh/local.zsh"
 ```
 
+Do **not** create `local.zsh` inside the repo at `stow/common/zsh/.config/zsh/local.zsh`
+— it belongs only in `~/.config/zsh/local.zsh` as a real, uncommitted file.
 ---
 
 ## Step 3 — Validate the package layout (no real `$HOME` change)
 
-```bash
-task dry-run AREA=common PACKAGE=zsh
-```
-
-If your `~/.config/zsh/` already exists, the real-home dry-run may report an ownership
-conflict — that is expected, not a layout error. Confirm the package itself is well-formed
-with fake-home validation:
+Confirm the package produces the expected per-file symlink layout using a fake home
+(ADR-0017; does not touch real `$HOME`):
 
 ```bash
 TEST_HOME="$(mktemp -d)"
-stow --dir=stow/common --target="$TEST_HOME" --simulate zsh
+stow --dir=stow/common --target="$TEST_HOME" --no-folding --simulate zsh
 rm -rf "$TEST_HOME"
 ```
 
-If you see a conflict on real `$HOME`, **stop** — do not use `--adopt`. Resolve it
-manually (back up/move the conflicting file) before stowing.
+Expected output: `MKDIR: .config/zsh`, then `LINK:` lines for each physical file in the
+package (`index.zsh`, `shared.zsh`, `.example` templates). No errors.
+
+### Step 3a — Migrate from folded state (if `~/.config/zsh` is currently a directory-fold symlink)
+
+If `ls -ld "$HOME/.config/zsh"` shows a symlink (`lrwxr-xr-x`), you have a directory-fold
+from an earlier stow. Remove the fold before restowing with `--no-folding`:
+
+⚠️  MANUAL STEP — dry-run first; confirm only `~/.config/zsh` symlink is listed; review before running:
+```bash
+stow --dir=stow/common --target="$HOME" --simulate --delete zsh
+```
+
+⚠️  MANUAL STEP — run only after dry-run is confirmed clean:
+```bash
+stow --dir=stow/common --target="$HOME" --delete zsh
+```
+
+If the dry-run reports a conflict, **STOP** — do not use `--adopt`. Resolve manually.
 
 ---
 
-## Step 4 — Stow the package
+## Step 4 — Stow the package with `--no-folding`
 
-⚠️  MANUAL STEP — review dry-run output before running
+⚠️  MANUAL STEP — dry-run first:
 ```bash
-stow --dir=stow/common --target="$HOME" zsh
+stow --dir=stow/common --target="$HOME" --no-folding --simulate zsh
 ```
 
-This creates symlinks under `~/.config/zsh/` (including `index.zsh`). It does **not** touch
-`~/.zshrc`.
+⚠️  MANUAL STEP — run only after dry-run is confirmed clean:
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding zsh
+```
+
+This creates a **real directory** `~/.config/zsh/` with **per-file symlinks** for each
+managed file. It does **not** touch `~/.zshrc`.
+
+### Verify post-stow layout
+
+```bash
+# Confirm real directory (not a symlink)
+[[ -d "$HOME/.config/zsh" && ! -L "$HOME/.config/zsh" ]] && echo "real-dir-ok" || echo "NOT-real-dir"
+
+# Confirm per-file symlinks
+for f in index.zsh shared.zsh; do
+  [[ -L "$HOME/.config/zsh/$f" ]] && echo "$f -> $(readlink "$HOME/.config/zsh/$f")" \
+                                  || echo "$f MISSING or not a symlink"
+done
+```
 
 ---
 
@@ -165,8 +215,8 @@ never add them to any startup file.
 
 Staged and low-risk — your `~/.zshrc` was never stowed.
 
-1. **Instant disable:** delete (or comment) the delimited managed block in `~/.zshrc`,
-   open a new shell. The managed layer goes inert. No data loss.
+1. **Instant disable:** delete (or comment) the three delimited lines of the managed block
+   in `~/.zshrc`, open a new shell. The managed layer goes inert immediately. No data loss.
 
 2. **Per-capability revert:** restore the relevant line in `~/.zshrc` from your backup, or
    remove the one guarded line from the managed layer file.
@@ -176,22 +226,41 @@ Staged and low-risk — your `~/.zshrc` was never stowed.
 
 4. **Full abort:** restore your backup, then optionally unstow and remove the copied files.
 
-   ⚠️  MANUAL STEP — review before running
+   ⚠️  MANUAL STEP — dry-run first; review before running:
+   ```bash
+   stow --dir=stow/common --target="$HOME" --simulate --delete zsh
+   ```
+   ⚠️  MANUAL STEP — run after reviewing dry-run:
    ```bash
    cp "$HOME/.zshrc.bak.$(date +%Y%m%d)" "$HOME/.zshrc"   # restore your backup (adjust date)
-   stow --dir=stow/common --target="$HOME" --delete zsh    # remove managed symlinks
+   stow --dir=stow/common --target="$HOME" --delete zsh    # remove per-file symlinks
    ```
 
-   To remove the copied real files, delete them by name — **never** run a broad
+   To remove the copied real files, delete them **by name only** — **never** run a broad
    `rm -rf ~/.config/zsh`:
 
-   ⚠️  MANUAL STEP — review before running; remove only these named files
+   ⚠️  MANUAL STEP — review before running; removes ONLY these named files
    ```bash
-   rm -f ~/.config/zsh/shared.zsh ~/.config/zsh/macos.zsh ~/.config/zsh/arch.zsh \
-         ~/.config/zsh/index.zsh ~/.config/zsh/omp.zsh ~/.config/zsh/local.zsh
+   rm -f ~/.config/zsh/index.zsh ~/.config/zsh/shared.zsh \
+         ~/.config/zsh/macos.zsh ~/.config/zsh/arch.zsh \
+         ~/.config/zsh/omp.zsh
+   # Optional — only if you want to remove your private local.zsh:
+   rm -f ~/.config/zsh/local.zsh
    ```
 
-5. **Verify:**
+5. **Re-fold fallback (optional):** to restore the prior folded state, re-stow without
+   `--no-folding` (dry-run first):
+
+   ⚠️  MANUAL STEP — dry-run first:
+   ```bash
+   stow --dir=stow/common --target="$HOME" --simulate zsh
+   ```
+   ⚠️  MANUAL STEP — run after reviewing dry-run:
+   ```bash
+   stow --dir=stow/common --target="$HOME" zsh
+   ```
+
+6. **Verify:**
 
    ```bash
    zsh --no-rcs -c 'echo ok'   # zsh starts cleanly with no rc files

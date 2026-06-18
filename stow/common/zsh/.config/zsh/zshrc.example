@@ -21,3 +21,5 @@
 # >>> dotfiles managed (zsh) — added manually; delete this block to disable >>>
 [[ -r "$HOME/.config/zsh/index.zsh" ]] && source "$HOME/.config/zsh/index.zsh"
 # <<< dotfiles managed (zsh) <<<
+
+alias meteo='curl -4 http://wttr.in/Paris'
