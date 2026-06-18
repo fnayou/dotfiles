@@ -106,7 +106,6 @@ $EDITOR "$HOME/.config/zsh/local.zsh"
 
 Do **not** create `local.zsh` inside the repo at `stow/common/zsh/.config/zsh/local.zsh`
 — it belongs only in `~/.config/zsh/local.zsh` as a real, uncommitted file.
-
 ---
 
 ## Step 3 — Validate the package layout (no real `$HOME` change)

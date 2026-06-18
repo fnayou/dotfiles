@@ -260,7 +260,6 @@ See [docs/shell-dependencies.md](shell-dependencies.md) for the check and instal
 The `stow/common/zsh/` package uses **`--no-folding`** (ADR-0024): Stow creates `~/.config/zsh/` as a **real directory** and places **per-file symlinks** for each managed file inside it — it does not collapse the directory into a single symlink pointing at the repo. This ensures a clear boundary between managed (symlinked, repo-based) files and local/private files such as `local.zsh` that live outside the repo.
 
 The package provides example files — a shared layer, one per platform, a managed entry point (`index.zsh`), and a reference `~/.zshrc` template. None are stowed directly — copy each locally, review, then stow. The real files (`shared.zsh`, `macos.zsh`, `arch.zsh`, `index.zsh`, and the optional `local.zsh`) are git-ignored and will not be committed.
-
 `~/.zshrc` is **never managed by Stow**. After stowing, the user manually adds **one guarded include block** to their existing `~/.zshrc` that sources the managed entry point `~/.config/zsh/index.zsh` — see Step 5. For the full safe migration path (Model 4 → Model 3, backup, incremental cutover, rollback), see [docs/zsh-migration.md](zsh-migration.md).
 
 ### Files in this package
@@ -282,6 +281,7 @@ After copying and stowing with `--no-folding`, Stow creates `~/.config/zsh/` as 
 - `~/.config/zsh/index.zsh` → `stow/common/zsh/.config/zsh/index.zsh`
 
 `local.zsh` is **not** a symlink — the user creates it directly in `~/.config/zsh/` with their editor. Because `~/.config/zsh/` is a real directory (not a symlink into the repo), `local.zsh` lives physically outside the repo working tree and cannot be committed by accident (ADR-0026).
+
 
 All platform files are symlinked on every platform. Runtime OS detection inside `index.zsh` determines which platform file is sourced — the unused platform file is harmless. `zshrc.example` stows to `~/.config/zsh/zshrc.example` (a reference copy); it is **never** linked to `~/.zshrc`.
 
