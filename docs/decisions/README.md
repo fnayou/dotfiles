@@ -96,3 +96,8 @@ Use numbered filenames in sequence:
 | [0025](0025-managed-zsh-files-git-ignored-linked-by-presence.md) | Managed zsh real files are linked by Stow from physical presence while staying git-ignored | Accepted |
 | [0026](0026-local-zsh-real-file-outside-repo-never-symlinked.md) | `local.zsh` is a real, unversioned file outside the repo, never symlinked | Accepted |
 | [0027](0027-zshrc-stays-unmanaged-no-folding-migration-does-not-touch-it.md) | `~/.zshrc` stays unmanaged; `--no-folding` migration does not touch it | Accepted |
+| [0028](0028-require-human-setup-guides-for-manually-activated-packages.md) | Require human setup guides for manually-activated packages | Accepted |
+| [0029](0029-shared-index-zsh-tracked-with-real-content.md) | `shared.zsh` and `index.zsh` tracked with real safe content | Accepted |
+| [0030](0030-xdg-style-git-config-layout.md) | XDG-style Git config layout (`~/.config/git/`) | Accepted |
+| [0031](0031-git-aliases-separate-file.md) | Git aliases extracted to a separate `aliases` file | Accepted |
+| [0032](0032-git-bootstrap-taskfile-tasks.md) | `git:bootstrap` and `git:bootstrap:dry-run` as first mutating Taskfile tasks | Accepted |
