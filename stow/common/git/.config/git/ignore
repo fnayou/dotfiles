@@ -1,0 +1,32 @@
+# Archives and packaged artifacts
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and local databases
+*.log
+*.sql
+*.sqlite
+
+# macOS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows generated files
+ehthumbs.db
+Thumbs.db
+
+# IDE/editor metadata
+.idea/
+.vscode/
+
+# Claude local settings
+**/.claude/settings.local.json

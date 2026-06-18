@@ -54,3 +54,62 @@ tasks:
         echo ""
         echo "  task deps:check:zsh"
         echo ""
+
+  git:bootstrap:dry-run:
+    desc: "Show include.path entries that would be added to ~/.gitconfig — no changes made. MANUAL USE ONLY: never run automatically"
+    cmds:
+      - |
+        echo ""
+        echo "git:bootstrap dry-run — no changes will be made"
+        echo "================================================="
+        echo ""
+        if [[ -f "$HOME/.gitconfig" ]]; then
+          echo "~/.gitconfig exists: yes"
+        else
+          echo "~/.gitconfig exists: no (will be created by git on first --add)"
+        fi
+        echo ""
+        echo "Current include.path values:"
+        git config --global --get-all include.path 2>/dev/null || echo "  (none)"
+        echo ""
+        echo "Required entries:"
+        for inc in "~/.config/git/config-common" "~/.config/git/aliases"; do
+          if git config --global --get-all include.path 2>/dev/null | grep -qxF "$inc"; then
+            echo "  already present: include.path = $inc"
+          else
+            echo "  would add:       include.path = $inc"
+          fi
+        done
+        echo ""
+        if [[ -f "$HOME/.gitconfig" ]]; then
+          echo "Backup: yes — a timestamped backup would be created before any change"
+        else
+          echo "Backup: not needed — ~/.gitconfig does not exist yet"
+        fi
+        echo ""
+
+  git:bootstrap:
+    desc: "Wire ~/.gitconfig to managed Git config — idempotent, creates timestamped backup. MANUAL USE ONLY: never run automatically"
+    cmds:
+      - |
+        GITCONFIG="$HOME/.gitconfig"
+        if [[ -f "$GITCONFIG" ]]; then
+          BACKUP="${GITCONFIG}.bak.$(date +%Y%m%d%H%M%S)"
+          cp "$GITCONFIG" "$BACKUP"
+          echo "Backup created: $BACKUP"
+        else
+          echo "~/.gitconfig does not exist — git will create it on first --add"
+        fi
+        echo ""
+        for inc in "~/.config/git/config-common" "~/.config/git/aliases"; do
+          if git config --global --get-all include.path 2>/dev/null | grep -qxF "$inc"; then
+            echo "skip (already present): $inc"
+          else
+            git config --global --add include.path "$inc"
+            echo "added: $inc"
+          fi
+        done
+        echo ""
+        echo "Final include.path values:"
+        git config --global --get-all include.path 2>/dev/null || echo "  (none)"
+        echo ""

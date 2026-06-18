@@ -92,3 +92,8 @@ Use numbered filenames in sequence:
 | [0021](0021-zsh-activation-include-block-and-index-entrypoint.md) | Zsh activation include block + `index.zsh` entry point | Accepted |
 | [0022](0022-zsh-migration-model-4-start-model-3-target.md) | Zsh migration: Model 4 start, Model 3 target | Accepted |
 | [0023](0023-zsh-local-override-slot.md) | `local.zsh` git-ignored last-sourced override slot | Accepted |
+| [0028](0028-require-human-setup-guides-for-manually-activated-packages.md) | Require human setup guides for manually-activated packages | Accepted |
+| [0029](0029-shared-index-zsh-tracked-with-real-content.md) | `shared.zsh` and `index.zsh` tracked with real safe content | Accepted |
+| [0030](0030-xdg-style-git-config-layout.md) | XDG-style Git config layout (`~/.config/git/`) | Accepted |
+| [0031](0031-git-aliases-separate-file.md) | Git aliases extracted to a separate `aliases` file | Accepted |
+| [0032](0032-git-bootstrap-taskfile-tasks.md) | `git:bootstrap` and `git:bootstrap:dry-run` as first mutating Taskfile tasks | Accepted |
