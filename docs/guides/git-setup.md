@@ -54,7 +54,7 @@ task dry-run AREA=common PACKAGE=git
 Or directly:
 
 ```bash
-stow --dir=stow/common --target="$HOME" --simulate git
+stow --dir=stow/common --target="$HOME" --no-folding --simulate git
 ```
 
 **What to look for:** Three `LINK:` lines, one for each managed file:
@@ -77,8 +77,10 @@ After reviewing the dry-run output and confirming no conflicts, apply the Stow p
 
 ⚠️  MANUAL STEP — review dry-run output before running
 ```bash
-stow --dir=stow/common --target="$HOME" git
+stow --dir=stow/common --target="$HOME" --no-folding git
 ```
+
+**`--no-folding` is required.** Without it, Stow collapses `~/.config/git` into a single symlink pointing at the package directory (directory folding) instead of creating `~/.config/git` as a real directory with one symlink per managed file. The managed layout (ADR-0030) requires `~/.config/git` to be a real directory. Always stow this package with `--no-folding`.
 
 **`stow --adopt` is forbidden.** The `--adopt` flag silently overwrites files in `$HOME` with the repository version, destroying your existing content without a backup. It must never be used. If a conflict exists, resolve it manually — see the Troubleshooting section.
 
@@ -150,6 +152,11 @@ This writes to `~/.gitconfig` directly, which is correct. Identity values (name,
 ## 7. Validation steps
 
 After completing all setup steps, verify the installation:
+
+```bash
+# Confirm ~/.config/git is a real directory, NOT a folded symlink
+test ! -L "$HOME/.config/git" && echo "OK: ~/.config/git is a real directory"
+```
 
 ```bash
 # Confirm three symlinks exist in ~/.config/git/
@@ -287,6 +294,39 @@ Resolution:
 Symptom: `git config --show-origin user.name` produces no output.
 
 Resolution: Run the identity configuration step from Section 6c above, replacing placeholders with your real values.
+
+### `~/.config/git` became a symlink (directory folding)
+
+Symptom: `~/.config/git` is a symlink pointing at the package directory instead of a real directory. Caused by stowing without `--no-folding`.
+
+Verify:
+
+```bash
+ls -ld ~/.config/git    # a leading "l" (lrwxr-xr-x) means it is a folded symlink
+```
+
+Resolution:
+1. Roll back the fold:
+
+   ⚠️  MANUAL STEP — review before running
+   ```bash
+   stow --dir=stow/common --target="$HOME" --delete git
+   ```
+
+2. Recreate `~/.config/git` as a real directory:
+
+   ```bash
+   mkdir -p ~/.config/git
+   ```
+
+3. Re-run the apply step WITH `--no-folding`:
+
+   ⚠️  MANUAL STEP — review before running
+   ```bash
+   stow --dir=stow/common --target="$HOME" --no-folding git
+   ```
+
+4. Confirm it is now a real directory: `test ! -L "$HOME/.config/git" && echo "OK: real directory"`
 
 ---
 
