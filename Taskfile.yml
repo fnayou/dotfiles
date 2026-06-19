@@ -3,21 +3,25 @@ version: "3"
 tasks:
   detect:
     desc: "Print detected OS (macos or arch)"
+    silent: true
     cmds:
       - bash scripts/detect-os.sh
 
   check:
     desc: "Verify prerequisites (stow, git, task) are installed"
+    silent: true
     cmds:
       - bash scripts/check.sh
 
   list:
     desc: "List Stow packages — output is <area>/<package>, use as: task dry-run AREA=<area> PACKAGE=<package>"
+    silent: true
     cmds:
       - find stow -mindepth 2 -maxdepth 2 -type d -print | sed 's|^stow/||'
 
   dry-run:
     desc: "Dry-run a Stow package — usage: task dry-run AREA=<common|macos|arch> PACKAGE=<name>"
+    silent: true
     preconditions:
       - sh: '[ -n "{{.AREA}}" ]'
         msg: "AREA is required: common, macos, or arch"
@@ -28,11 +32,13 @@ tasks:
 
   deps:check:zsh:
     desc: "Check zsh shell-tier dependencies (fzf, zoxide, eza, oh-my-posh, zinit) — read-only, never installs"
+    silent: true
     cmds:
       - bash scripts/check-zsh-deps.sh
 
   deps:macos:shell:
     desc: "Print manual install commands for macOS zsh shell dependencies — prints only, does not install"
+    silent: true
     cmds:
       - |
         echo ""
@@ -57,6 +63,7 @@ tasks:
 
   git:bootstrap:dry-run:
     desc: "Show include.path entries that would be added to ~/.gitconfig — no changes made. MANUAL USE ONLY: never run automatically"
+    silent: true
     cmds:
       - |
         echo ""
@@ -90,6 +97,7 @@ tasks:
 
   git:bootstrap:
     desc: "Wire ~/.gitconfig to managed Git config — idempotent, creates timestamped backup. MANUAL USE ONLY: never run automatically"
+    silent: true
     cmds:
       - |
         GITCONFIG="$HOME/.gitconfig"
@@ -112,4 +120,76 @@ tasks:
         echo ""
         echo "Final include.path values:"
         git config --global --get-all include.path 2>/dev/null || echo "  (none)"
+        echo ""
+
+  zsh:bootstrap:dry-run:
+    desc: "Show what zsh:bootstrap would do to ~/.zshrc — no changes made. MANUAL USE ONLY: never run automatically"
+    silent: true
+    cmds:
+      - |
+        echo ""
+        echo "zsh:bootstrap dry-run — no changes will be made"
+        echo "================================================="
+        echo ""
+        ZSHRC="$HOME/.zshrc"
+        BLOCK_MARKER="# >>> dotfiles managed zsh layer >>>"
+        if [[ -L "$ZSHRC" ]]; then
+          echo "~/.zshrc is a symlink — would REFUSE (symlink)"
+          echo ""
+          exit 0
+        fi
+        if [[ -f "$ZSHRC" ]]; then
+          echo "~/.zshrc exists: yes"
+          echo ""
+          if grep -qF "$BLOCK_MARKER" "$ZSHRC"; then
+            echo "managed block already present — no changes needed"
+            echo "Backup: not needed"
+          else
+            echo "managed block would be appended"
+            echo "Backup: yes — a timestamped backup would be created before any change"
+          fi
+        else
+          echo "~/.zshrc exists: no"
+          echo "file does not exist — would be created"
+          echo "Backup: not needed"
+        fi
+        echo ""
+        echo "Block that would be appended:"
+        echo "------------------------------"
+        echo ""
+        echo "# >>> dotfiles managed zsh layer >>>"
+        echo "if [[ -r \"\$HOME/.config/zsh/index.zsh\" ]]; then"
+        echo "  source \"\$HOME/.config/zsh/index.zsh\""
+        echo "fi"
+        echo "# <<< dotfiles managed zsh layer <<<"
+        echo ""
+
+  zsh:bootstrap:
+    desc: "Wire ~/.zshrc to managed zsh layer — idempotent, creates timestamped backup. MANUAL USE ONLY: never run automatically"
+    silent: true
+    cmds:
+      - |
+        ZSHRC="$HOME/.zshrc"
+        BLOCK_MARKER="# >>> dotfiles managed zsh layer >>>"
+        if [[ -L "$ZSHRC" ]]; then
+          echo "REFUSED: ~/.zshrc is a symlink — will not write into a managed symlink target"
+          exit 1
+        fi
+        if [[ -f "$ZSHRC" ]]; then
+          if grep -qF "$BLOCK_MARKER" "$ZSHRC"; then
+            echo "Managed block already present — nothing to do"
+            exit 0
+          fi
+          BACKUP="${ZSHRC}.bak.$(date +%Y%m%d%H%M%S)"
+          cp "$ZSHRC" "$BACKUP"
+          echo "Backup created: $BACKUP"
+        else
+          echo "~/.zshrc does not exist — creating"
+        fi
+        printf '\n# >>> dotfiles managed zsh layer >>>\nif [[ -r "$HOME/.config/zsh/index.zsh" ]]; then\n  source "$HOME/.config/zsh/index.zsh"\nfi\n# <<< dotfiles managed zsh layer <<<\n' >> "$ZSHRC"
+        echo "Managed block appended to ~/.zshrc"
+        echo ""
+        echo "Verify with:"
+        echo "  exec zsh         # reload current shell"
+        echo "  zsh -n ~/.zshrc  # syntax check"
         echo ""

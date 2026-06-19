@@ -1,0 +1,21 @@
+# local.zsh.example — template for machine-specific overrides.
+# Copy this file to ~/.config/zsh/local.zsh (never commit that copy).
+# local.zsh is git-ignored; it is sourced last by index.zsh.
+#
+# Add machine-specific PATH, tokens, aliases, editor overrides here.
+# Examples:
+
+# Private PATH (work tools, internal binaries):
+# export PATH="$HOME/work/bin:$PATH"
+
+# Machine-specific editor override:
+# export EDITOR="code --wait"
+
+# Private tokens (never committed):
+# export GITHUB_TOKEN="your-token-here"
+
+# Extended eza aliases (personal preference):
+# command -v eza >/dev/null 2>&1 && alias ll='eza -lh' && alias la='eza -lha'
+
+# zoxide with --cmd cd override:
+# command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
