@@ -105,10 +105,11 @@ Use numbered filenames in sequence:
 | [0034](0034-platform-layers-runtime-selected.md) | `macos.zsh` and `arch.zsh` as runtime-selected platform layers | Accepted |
 | [0035](0035-omp-zsh-double-guarded-prompt-file.md) | `omp.zsh` as standalone double-guarded prompt file | Accepted |
 | [0036](0036-local-zsh-created-by-editor-not-example.md) | `local.zsh` created directly by user, not copied from `.example` | Accepted |
-| [0037](0037-extended-aliases-excluded-from-examples.md) | Extended aliases excluded from committed `.example` files | Accepted |
+| [0037](0037-extended-aliases-excluded-from-examples.md) | Extended aliases excluded from committed `.example` files | Superseded by 0044 |
 | [0038](0038-histfile-at-home-not-xdg.md) | `HISTFILE` at `$HOME/.zsh_history`, not XDG | Accepted |
 | [0039](0039-completion-guard-avoid-double-compinit.md) | Completion guard — avoid double `compinit` when Zinit is present | Accepted |
 | [0040](0040-fzf-zsh-integration-method.md) | `fzf --zsh` as the fzf integration method | Accepted |
 | [0041](0041-zoxide-init-without-cmd-override.md) | `zoxide init zsh` without `--cmd` override | Accepted |
-| [0042](0042-eza-minimal-alias-only.md) | Minimal `ls='eza'` alias only in committed template | Accepted |
+| [0042](0042-eza-minimal-alias-only.md) | Minimal `ls='eza'` alias only in committed template | Superseded by 0044 |
 | [0043](0043-zsh-bootstrap-taskfile-tasks.md) | `zsh:bootstrap` and `zsh:bootstrap:dry-run` as mutating Taskfile tasks for zsh | Accepted |
+| [0044](0044-personal-preferences-in-committed-zsh-files.md) | Personal preferences permitted in committed managed zsh files | Accepted |
