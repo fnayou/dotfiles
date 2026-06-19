@@ -75,7 +75,7 @@ Use numbered filenames in sequence:
 | [0004](0004-xdg-mixed-mode-adoption.md) | XDG mixed-mode adoption | Accepted |
 | [0005](0005-ssh-config-out-of-scope.md) | SSH config out of scope | Accepted |
 | [0006](0006-git-config-templates-only.md) | Git config templates only | Accepted |
-| [0007](0007-homebrew-split-brewfiles.md) | Homebrew split Brewfiles | Accepted |
+| [0007](0007-homebrew-split-brewfiles.md) | Homebrew split Brewfiles | Superseded by 0045 |
 | [0008](0008-minimal-github-actions-ci.md) | Minimal GitHub Actions CI | Accepted |
 | [0009](0009-foundation-taskfile-no-install-tasks.md) | Foundation Taskfile — no install tasks | Accepted |
 | [0010](0010-packages-dir-deferred.md) | Packages directory deferred | Accepted |
@@ -86,7 +86,7 @@ Use numbered filenames in sequence:
 | [0015](0015-git-credential-helpers-deferred.md) | Git credential helpers deferred | Accepted |
 | [0016](0016-zsh-common-package-runtime-os-detection.md) | Zsh files in `stow/common/zsh/` with runtime OS detection | Accepted |
 | [0017](0017-use-fake-home-for-stow-validation.md) | Use fake home for Stow validation | Accepted |
-| [0018](0018-brewfile-categories-evolving-per-prd.md) | Brewfile categories evolving per PRD | Accepted |
+| [0018](0018-brewfile-categories-evolving-per-prd.md) | Brewfile categories evolving per PRD | Superseded by 0045 |
 | [0019](0019-deps-taskfile-tasks-non-mutating.md) | `deps:` Taskfile tasks are non-mutating | Accepted |
 | [0020](0020-zinit-manual-clone-never-auto-cloned.md) | Zinit manual clone, never auto-cloned | Accepted |
 | [0021](0021-zsh-activation-include-block-and-index-entrypoint.md) | Zsh activation include block + `index.zsh` entry point | Accepted |
@@ -107,9 +107,12 @@ Use numbered filenames in sequence:
 | [0036](0036-local-zsh-created-by-editor-not-example.md) | `local.zsh` created directly by user, not copied from `.example` | Accepted |
 | [0037](0037-extended-aliases-excluded-from-examples.md) | Extended aliases excluded from committed `.example` files | Superseded by 0044 |
 | [0038](0038-histfile-at-home-not-xdg.md) | `HISTFILE` at `$HOME/.zsh_history`, not XDG | Accepted |
-| [0039](0039-completion-guard-avoid-double-compinit.md) | Completion guard — avoid double `compinit` when Zinit is present | Accepted |
+| [0039](0039-completion-guard-avoid-double-compinit.md) | Completion guard — avoid double `compinit` when Zinit is present | Superseded by 0046 |
 | [0040](0040-fzf-zsh-integration-method.md) | `fzf --zsh` as the fzf integration method | Accepted |
-| [0041](0041-zoxide-init-without-cmd-override.md) | `zoxide init zsh` without `--cmd` override | Accepted |
+| [0041](0041-zoxide-init-without-cmd-override.md) | `zoxide init zsh` without `--cmd` override | Superseded by 0047 |
 | [0042](0042-eza-minimal-alias-only.md) | Minimal `ls='eza'` alias only in committed template | Superseded by 0044 |
 | [0043](0043-zsh-bootstrap-taskfile-tasks.md) | `zsh:bootstrap` and `zsh:bootstrap:dry-run` as mutating Taskfile tasks for zsh | Accepted |
 | [0044](0044-personal-preferences-in-committed-zsh-files.md) | Personal preferences permitted in committed managed zsh files | Accepted |
+| [0045](0045-cross-platform-packages-flat-brewfile.md) | Cross-platform packages — single Brewfile and Arch package list | Accepted |
+| [0046](0046-compinit-unconditional-zinit-light-mode.md) | `compinit` runs unconditionally — Zinit guard removed (light mode) | Accepted |
+| [0047](0047-zoxide-init-with-cmd-cd.md) | `zoxide init zsh` with `--cmd cd` override | Accepted |

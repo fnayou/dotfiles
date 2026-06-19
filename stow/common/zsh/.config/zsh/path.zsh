@@ -1,6 +1,7 @@
 # path.zsh — portable PATH helpers and common PATH entries
 # Add machine-specific paths in ~/.config/zsh/local.zsh (git-ignored).
 
+# --- PATH helpers ---
 path_prepend() {
   [[ -d "$1" ]] || return 0
 
@@ -19,5 +20,6 @@ path_append() {
   esac
 }
 
+# --- Default PATH entries ---
 path_prepend "$HOME/.local/bin"
 path_prepend "$HOME/bin"

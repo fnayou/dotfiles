@@ -68,13 +68,14 @@ The following tools must be installed before stowing:
 
 Optional tools (not required to start; all integrations are guarded and are no-ops when absent):
 
-| Tool | Integration in |
-|---|---|
-| Zinit | `plugins.zsh` — guarded source; no-op if absent |
-| fzf (>= 0.48) | `tools.zsh` — `fzf --zsh` guard; no-op if absent |
-| zoxide | `tools.zsh` — `zoxide init zsh` guard; no-op if absent |
-| eza | `tools.zsh` — `alias ls='eza'` guard; no-op if absent |
-| oh-my-posh | `prompt.zsh` — double-guarded; no-op if absent or if omp.toml missing |
+| Tool | Integration in | Required by |
+|---|---|---|
+| Zinit | `plugins.zsh` — guarded source; no-op if absent | `zsh-syntax-highlighting`, `zsh-autosuggestions`, `fzf-tab` |
+| fzf (>= 0.48) | `tools.zsh`, `completions.zsh` — `fzf --zsh` guard; no-op if absent | fzf-tab previews |
+| zoxide | `tools.zsh` — `zoxide init --cmd cd zsh`; no-op if absent | `cd` smart jump (aliased to zoxide) |
+| eza | `tools.zsh`, `aliases.zsh`, `completions.zsh` — guarded; no-op if absent | `ls`/`ll`/`tree` aliases, fzf-tab previews |
+| bat | `aliases.zsh` — suffix aliases (`.md`, `.txt`, `.log`) guarded by `command -v bat` | file preview in terminal |
+| oh-my-posh | `prompt.zsh` — double-guarded; no-op if absent or if omp.toml missing | shell prompt theme |
 
 Verify required tools:
 
@@ -82,6 +83,47 @@ Verify required tools:
 zsh --version
 stow --version
 git --version
+```
+
+### Installing optional tools
+
+Install all optional tools via Homebrew (macOS) or pacman/AUR (Arch) before stowing if you want full functionality.
+
+**macOS (Homebrew):**
+
+```bash
+brew install eza
+brew install fzf
+brew install zoxide
+brew install bat
+brew install jandedobbeleer/oh-my-posh/oh-my-posh
+```
+
+**Arch / EndeavourOS:**
+
+```bash
+sudo pacman -S eza fzf zoxide bat
+yay -S oh-my-posh-bin
+```
+
+**Zinit (all platforms — manual clone only, no brew formula):**
+
+```bash
+git clone https://github.com/zdharma-continuum/zinit.git \
+  "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+```
+
+Zinit is loaded by `plugins.zsh` at shell startup. If it is absent, the shell prints an error and the plugin block is skipped.
+
+Verify optional tools after installing:
+
+```bash
+eza --version
+fzf --version   # must be >= 0.48
+zoxide --version
+bat --version
+oh-my-posh --version
+ls "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git/zinit.zsh" && echo "zinit ok"
 ```
 
 ---

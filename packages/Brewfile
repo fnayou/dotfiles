@@ -1,0 +1,18 @@
+# Cross-platform tools — install with: brew bundle --file=packages/Brewfile
+# Works on macOS and on Linux (Homebrew on Linux).
+# For Arch / EndeavourOS see: packages/arch/packages.txt
+#
+# Note: zinit is NOT listed here. Install via one-time manual git clone.
+# See: docs/guides/packages-setup.md
+
+# --- Repository prerequisites ---
+brew "git"
+brew "stow"
+brew "go-task", tap: "go-task/tap"
+
+# --- Shell runtime (zsh) ---
+brew "fzf"
+brew "zoxide"
+brew "eza"
+brew "bat"
+brew "oh-my-posh", tap: "jandedobbeleer/oh-my-posh"

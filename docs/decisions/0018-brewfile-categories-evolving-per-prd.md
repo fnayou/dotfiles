@@ -2,7 +2,7 @@
 
 **Number:** 0018
 **Date:** 2026-06-17
-**Status:** Accepted
+**Status:** Superseded by 0045
 **PRD:** 0006-shell-dependencies
 **Architecture:** 0006-shell-dependencies-architecture
 

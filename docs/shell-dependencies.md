@@ -18,20 +18,23 @@ Three concerns are kept strictly separate:
 
 Nothing in this repository installs tools automatically. Shell startup never runs `brew`, `pacman`, or `git clone`.
 
+For a step-by-step installation guide see: `docs/guides/packages-setup.md`
+
 ---
 
 ## Dependency tiers
 
 | Tool | Tier | macOS source | Arch source |
 |---|---|---|---|
-| `git` | core | `Brewfile.core` | `pacman` |
-| `stow` | core | `Brewfile.core` | `pacman` |
-| `go-task` | core | `Brewfile.core` (tap) | AUR (`go-task` or `task-bin`) |
-| `fzf` | shell | `Brewfile.shell` | `pacman` |
-| `zoxide` | shell | `Brewfile.shell` | `pacman` |
-| `eza` | shell | `Brewfile.shell` | `pacman` |
-| `oh-my-posh` | shell | `Brewfile.shell` (tap) | AUR (`oh-my-posh-bin`) |
-| `zinit` | shell | manual git clone (see below) | manual git clone / AUR |
+| `git` | core | `packages/Brewfile` | `pacman` |
+| `stow` | core | `packages/Brewfile` | `pacman` |
+| `go-task` | core | `packages/Brewfile` (tap) | `pacman` |
+| `fzf` | shell | `packages/Brewfile` | `pacman` |
+| `zoxide` | shell | `packages/Brewfile` | `pacman` |
+| `eza` | shell | `packages/Brewfile` | `pacman` |
+| `bat` | shell | `packages/Brewfile` | `pacman` |
+| `oh-my-posh` | shell | `packages/Brewfile` (tap) | AUR (`oh-my-posh-bin`) |
+| `zinit` | shell | manual git clone (see below) | manual git clone |
 
 Core tooling (`git`, `stow`, `go-task`) is checked by `scripts/check.sh`. Shell tooling is checked by `scripts/check-zsh-deps.sh`.
 
@@ -55,47 +58,65 @@ Output is `PASS: <tool>` or `FAIL: <tool> (not installed)` per tool, with an ins
 
 ## Step 2 — Install (macOS)
 
-### Homebrew-managed shell tools
-
-Install `fzf`, `zoxide`, `eza`, and `oh-my-posh` via Homebrew:
+### All tools via Brewfile
 
 ⚠️  MANUAL STEP — review before running
+
 ```bash
-brew bundle --file=packages/macos/Brewfile.shell
+brew bundle --file=packages/Brewfile
 ```
 
-To see what would be installed first (read-only):
+To preview what would be installed (read-only):
 
 ```bash
-brew bundle list --file=packages/macos/Brewfile.shell
-```
-
-### Core prerequisites (if not already installed)
-
-⚠️  MANUAL STEP — review before running
-```bash
-brew bundle --file=packages/macos/Brewfile.core
+brew bundle list --file=packages/Brewfile
 ```
 
 ### zinit (manual one-time clone)
 
-`zinit` is not in any Brewfile. Install it once per machine with a manual `git clone`:
+`zinit` is not in the Brewfile. Install it once per machine:
 
 ⚠️  MANUAL STEP — review before running
+
 ```bash
 git clone https://github.com/zdharma-continuum/zinit.git \
   "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
 ```
 
-The zsh config sources zinit via a directory-existence guard — it never auto-clones. If zinit is absent, the shell starts cleanly without it.
+The zsh config sources zinit via a directory-existence guard — it never auto-clones. If zinit is absent, the shell shows an error and skips the plugin block.
 
 ---
 
 ## Step 2 — Install (Arch / EndeavourOS)
 
-Arch support is **planned but not yet implemented**. A future PRD will define the package list and install steps using `pacman` and `paru`/`yay` (for AUR tools such as `oh-my-posh-bin`).
+### Pacman packages
 
-Until then, install tools manually using the Arch package manager appropriate for each tool. Run `task deps:check:zsh` to confirm what is missing.
+⚠️  MANUAL STEP — review before running
+
+```bash
+sudo pacman -S git stow go-task fzf zoxide eza bat
+```
+
+### AUR packages (requires yay or paru)
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+yay -S oh-my-posh-bin
+```
+
+### zinit (manual one-time clone)
+
+Same as macOS:
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+git clone https://github.com/zdharma-continuum/zinit.git \
+  "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+```
+
+See `packages/arch/packages.txt` for a full annotated package list.
 
 ---
 
@@ -113,24 +134,13 @@ All lines should show `PASS`. Exit code 0 means all required shell-tier tools ar
 
 ## Cleanup (macOS)
 
-To preview which installed packages are not listed in a Brewfile (dry-run only — removes nothing):
+To preview which installed packages are not listed in the Brewfile (dry-run only — removes nothing):
 
 ```bash
-brew bundle cleanup --dry-run --file=packages/macos/Brewfile.shell
+brew bundle cleanup --dry-run --file=packages/Brewfile
 ```
 
 Do not run `brew bundle cleanup` without `--dry-run` — it removes packages immediately.
-
----
-
-## Optional extras
-
-`packages/macos/Brewfile.optional` is a placeholder for tools that are useful but not required for a working shell. It is currently empty. Add entries as needed and install with:
-
-⚠️  MANUAL STEP — review before running
-```bash
-brew bundle --file=packages/macos/Brewfile.optional
-```
 
 ---
 
@@ -139,7 +149,8 @@ brew bundle --file=packages/macos/Brewfile.optional
 | Task | What it does |
 |---|---|
 | `task check` | Check core prerequisites (`git`, `stow`, `task`) |
-| `task deps:check:zsh` | Check shell-tier tools (`fzf`, `zoxide`, `eza`, `oh-my-posh`, `zinit`) |
-| `task deps:macos:shell` | Print the manual install commands for macOS shell tools |
+| `task deps:check:zsh` | Check shell-tier tools (`fzf`, `zoxide`, `eza`, `bat`, `oh-my-posh`, `zinit`) |
+| `task deps:brew` | Print manual install commands for macOS / Homebrew |
+| `task deps:arch` | Print manual install commands for Arch / EndeavourOS |
 
 None of these tasks install anything. They check and report, or print instructions.

@@ -2,7 +2,7 @@
 
 **Number:** 0041
 **Date:** 2026-06-19
-**Status:** Accepted
+**Status:** Superseded by 0047
 **Related:** PRD-0010, Architecture-0010 §7
 
 ## Context
