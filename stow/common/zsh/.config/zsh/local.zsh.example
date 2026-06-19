@@ -12,7 +12,7 @@
 # export EDITOR="code --wait"
 
 # Private tokens (never committed):
-# export GITHUB_TOKEN="your-token-here"
+# export MY_SERVICE_TOKEN="your-token-here"
 
 # Extended eza aliases (personal preference):
 # command -v eza >/dev/null 2>&1 && alias ll='eza -lh' && alias la='eza -lha'
