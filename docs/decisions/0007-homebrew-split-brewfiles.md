@@ -2,7 +2,7 @@
 
 **Number:** 0007
 **Date:** 2026-06-15
-**Status:** Accepted
+**Status:** Superseded by 0045
 
 ## Context
 

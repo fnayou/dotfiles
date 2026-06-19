@@ -1,69 +1,89 @@
 version = 2
 final_space = true
+console_title_template = '{{ .Shell }} in {{ .Folder }}'
+
+[[blocks]]
+  type = "prompt"
+  alignment = "left"
+  newline = true
+
+  [[blocks.segments]]
+    type = "path"
+    style = "plain"
+    background = 'transparent'
+    foreground = "#8aadf4"
+    template = " {{ .Path }}"
+
+  [blocks.segments.properties]
+    style = "full" # can be "folder", "flat", "flat_full", "flat_half" or "mixed"
+    max_depth = 3
+    home_icon = "~"
+
+  [[blocks.segments]]
+    type = "git"
+    style = "plain"
+    background = 'transparent'
+    foreground = "#a6da95"
+    template = " on {{ .HEAD }}{{ if .Working.Changed }} ●{{ end }}{{ if .Staging.Changed }} ✚{{ end }}{{ if gt .Ahead 0 }} ↑{{ end }}{{ if gt .Behind 0 }} ↓{{ end }}"
+
+  [blocks.segments.properties]
+    fetch_status = true
+    fetch_upstream_icon = false
+    branch_max_length = 25
+    truncate_symbol = "…"
+
+[[blocks]]
+  type = "rprompt"
+  alignment = "right"
+  overflow = "hidden"
+
+  [[blocks.segments]]
+    type = "executiontime"
+    style = "plain"
+    background = 'transparent'
+    foreground = "#eed49f"
+    template = "{{ .FormattedMs }} "
+
+  [blocks.segments.properties]
+    threshold = 5000 # show only for commands slower than 5 s — reduces prompt noise
+    style = "austin"
+
+  [[blocks.segments]]
+    type = "status"
+    style = "plain"
+    foreground = "#ed8796"
+    background = 'transparent'
+    template = "✘ {{ .Code }} "
+
+  [blocks.segments.properties]
+    always_enabled = false
+
+[[blocks]]
+  type = "prompt"
+  alignment = "left"
+  newline = true
+
+  [[blocks.segments]]
+    type = "text"
+    style = "plain"
+    foreground = "#c6a0f6"
+    foreground_templates = [
+      "{{if gt .Code 0}}red{{end}}",
+      "{{if eq .Code 0}}magenta{{end}}",
+    ]
+    background = 'transparent'
+    template = "❯ "
 
 [transient_prompt]
-foreground = "#c6a0f6"
-background = "transparent"
-template = "❯ "
-
-[[blocks]]
-type = "prompt"
-alignment = "left"
-
-  [[blocks.segments]]
-  type = "path"
-  style = "plain"
-  foreground = "#8aadf4"
-  template = " {{ .Path }}"
-
-  [blocks.segments.properties]
-  style = "full" # can be "folder", "flat", "flat_full", "flat_half" or "mixed"
-  max_depth = 3
-  home_icon = "~"
-
-  [[blocks.segments]]
-  type = "git"
-  style = "plain"
-  foreground = "#a6da95"
-  template = " on {{ .HEAD }}{{ if .Working.Changed }} ●{{ end }}{{ if .Staging.Changed }} ✚{{ end }}{{ if gt .Ahead 0 }} ↑{{ end }}{{ if gt .Behind 0 }} ↓{{ end }}"
-
-  [blocks.segments.properties]
-  fetch_status = true
-  fetch_upstream_icon = false
-  branch_max_length = 25
-  truncate_symbol = "…"
-
-[[blocks]]
-type = "rprompt"
-alignment = "right"
-overflow = "hidden"
-
-  [[blocks.segments]]
-  type = "executiontime"
-  style = "plain"
-  foreground = "#eed49f"
-  template = "{{ .FormattedMs }} "
-
-  [blocks.segments.properties]
-  threshold = 500
-  style = "austin"
-
-  [[blocks.segments]]
-  type = "status"
-  style = "plain"
-  foreground = "#ed8796"
-  template = "✘ {{ .Code }} "
-
-  [blocks.segments.properties]
-  always_enabled = false
-
-[[blocks]]
-type = "prompt"
-alignment = "left"
-newline = true
-
-  [[blocks.segments]]
-  type = "text"
-  style = "plain"
   foreground = "#c6a0f6"
+  foreground_templates = [
+    "{{if gt .Code 0}}red{{end}}",
+    "{{if eq .Code 0}}magenta{{end}}",
+  ]
+  background = "transparent"
   template = "❯ "
+
+[secondary_prompt]
+  foreground = 'magenta'
+  background = 'transparent'
+  template = '❯❯ '

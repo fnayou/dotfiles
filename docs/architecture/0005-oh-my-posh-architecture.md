@@ -1,9 +1,19 @@
 # Architecture: Oh My Posh Configuration Management
 
 **Number:** 0005
-**Status:** Approved
+**Status:** Approved — superseded in part by ADR-0044 and implementation
 **Date:** 2026-06-17
 **PRD:** [0005-oh-my-posh.md](../prd/0005-oh-my-posh.md)
+
+> **Amendment (ADR-0044 — 2026-06-19):** The implementation diverged from this architecture in three ways:
+>
+> 1. **`omp.toml` is committed directly** (not as `.example`). ADR-0044 permits personal preferences in committed files when they contain no secrets. `omp.toml` contains only visual styling — no credentials, hostnames, or machine-specific values. The `.gitignore` in the omp package reflects this: it tracks `omp.toml` directly.
+>
+> 2. **OMP activation uses `prompt.zsh`**, not `omp.zsh`/`omp.zsh.example`. A committed `prompt.zsh` file with a double guard (`command -v oh-my-posh` + config file existence) handles activation. The `omp.zsh.example` template described in this architecture was never created; `prompt.zsh` made it unnecessary.
+>
+> 3. **`omp.zsh` is not tracked and not git-ignored.** Since `omp.zsh` was never created as a pattern, the `.gitignore` addition for `omp.zsh` described in this architecture was not applied. The zsh `.gitignore` only ignores `local.zsh`.
+>
+> The Proposed Structure, File Responsibilities (omp.zsh.example), Adoption Phases (Phases 2–4), and the guard-wrapped source call pattern (Decision 3) in this document describe the original design — replaced by the above.
 
 ---
 

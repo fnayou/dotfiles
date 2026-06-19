@@ -1,0 +1,14 @@
+# Arch / EndeavourOS — package list
+# For macOS see: packages/Brewfile
+#
+# Note: zinit is NOT listed here. Install via one-time manual git clone.
+# See: docs/guides/packages-setup.md
+
+# --- Repository prerequisites (pacman) ---
+# sudo pacman -S git stow go-task
+
+# --- Shell runtime / zsh (pacman) ---
+# sudo pacman -S fzf zoxide eza bat
+
+# --- AUR packages (requires yay or paru) ---
+# yay -S oh-my-posh-bin

@@ -1,12 +1,14 @@
 # arch.zsh — Arch / EndeavourOS-specific zsh config (sourced only on Arch via index.zsh)
 
-# AUR helper alias (guarded — no-op when neither is installed).
+# --- AUR helper ---
 command -v yay  >/dev/null 2>&1 && alias aur='yay'
 command -v paru >/dev/null 2>&1 && alias aur='paru'
 
-# systemd aliases.
+# --- systemd aliases ---
 alias sc='systemctl'
 alias scu='systemctl --user'
+
+# --- pacman aliases ---
 if command -v pacman >/dev/null 2>&1; then
   alias pacs='pacman -Ss'
   alias paci='sudo pacman -S'

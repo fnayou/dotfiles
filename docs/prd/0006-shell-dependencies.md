@@ -1,8 +1,10 @@
 # PRD: Shell Dependency Management
 
 **Number:** 0006
-**Status:** Approved
+**Status:** Approved — partially superseded by ADR-0045
 **Date:** 2026-06-17
+
+> **Amendment (ADR-0045 — 2026-06-19):** The tiered Brewfile strategy (`packages/macos/Brewfile.core/.shell/.optional`) described in this PRD was superseded. Implementation consolidated to a single `packages/Brewfile` covering all tools (including `bat`, which was missing from the original scope). Arch/EndeavourOS support was implemented (not deferred) via `packages/arch/packages.txt`. The `task deps:macos:shell` target was implemented as `task deps:brew`; `task deps:arch` was added. All other constraints, check strategy, and safety rules remain in force.
 
 ---
 
@@ -126,52 +128,51 @@ Notes on `zinit`: it is a zsh **plugin manager**, not a Homebrew formula in the 
 
 ## macOS Package Strategy
 
+> **Superseded by ADR-0045.** See amendment note above.
+
+~~Tiered Brewfiles under `packages/macos/`.~~ Replaced by a single `packages/Brewfile` covering all tiers.
+
 - Use **Homebrew Brewfiles** as the declarative source of truth.
-- Tiered Brewfiles, one per dependency tier:
+- Single Brewfile covering all tools (repo prerequisites + shell runtime):
 
   ```
-  packages/macos/Brewfile.core      # git, stow, go-task
-  packages/macos/Brewfile.shell     # fzf, zoxide, eza, oh-my-posh (+ zinit if formula-managed)
-  packages/macos/Brewfile.optional  # optional extras
+  packages/Brewfile      # git, stow, go-task, fzf, zoxide, eza, bat, oh-my-posh
   ```
 
-- Installation is performed by the user via `brew bundle --file=...`, shown as a manual step — never executed automatically.
-- `oh-my-posh` is installed via its Homebrew tap/formula; the Brewfile records the tap if required.
-- The exact mapping of `zinit` (formula vs. manual) is deferred to Architecture.
+- Installation is performed by the user via `brew bundle --file=packages/Brewfile`, shown as a manual step — never executed automatically.
+- `oh-my-posh` is installed via its Homebrew tap/formula; the Brewfile records the tap.
+- `zinit` is not in the Brewfile — it is installed via manual `git clone` (Decision 6 in Architecture 0006).
 
-Example manual install (documentation only — not executed here):
+Example manual install:
 
 ```
 ⚠️  MANUAL STEP — review before running
-brew bundle --file=packages/macos/Brewfile.shell
+brew bundle --file=packages/Brewfile
 ```
 
 ---
 
 ## Arch Package Strategy
 
-- **Planned, not implemented.** No Arch files are created in this PRD or its first implementation phase.
-- Future approach: a declarative package list installed via `pacman` for repo packages and `paru`/`yay` for AUR packages (e.g. `oh-my-posh`, which is typically AUR on Arch).
-- Likely future layout (illustrative only):
+> **Implemented (ADR-0045).** No longer deferred.
 
-  ```
-  packages/arch/pkglist.core
-  packages/arch/pkglist.shell
-  packages/arch/pkglist.optional
-  ```
-
-- Tool name and availability differences between macOS and Arch must be resolved per-tool when implemented (e.g. `oh-my-posh` AUR vs. Homebrew formula; `eza` availability).
+- Declarative package list at `packages/arch/packages.txt` covering all tools.
+- Pacman packages: `git stow go-task fzf zoxide eza bat`
+- AUR packages (yay/paru): `oh-my-posh-bin`
+- `zinit` installed via manual `git clone` (same as macOS).
 - No pacman/paru/yay commands may be added to shell startup.
 
 ---
 
 ## Brewfile Strategy
 
-- One Brewfile per tier (`core`, `shell`, `optional`) under `packages/macos/`.
+> **Updated by ADR-0045.** Single file replaces tiered layout.
+
+- One `packages/Brewfile` covering all tools.
 - Brewfiles contain only public formula/cask/tap entries — no secrets, no private taps.
 - Brewfiles are **declarative records**, not auto-applied. The user chooses when to run `brew bundle`.
-- A combined install is achieved by running `brew bundle` against the tiers the user wants — there is no single all-in-one auto-run.
-- Version pinning is out of scope for now; Brewfiles list package names without versions unless a later decision requires pinning.
+- One command installs everything: `brew bundle --file=packages/Brewfile`.
+- Version pinning is out of scope; Brewfiles list package names without versions.
 
 ---
 
@@ -199,15 +200,16 @@ brew bundle --file=packages/macos/Brewfile.shell
 - Recommended flow:
   1. Run `scripts/check-zsh-deps.sh` to see what is missing.
   2. Review the printed Brewfile / install commands.
-  3. Manually run `brew bundle --file=...` for the desired tier(s).
+  3. Manually run `brew bundle --file=packages/Brewfile` (macOS) or the pacman/AUR commands (Arch).
   4. Re-run the checker to confirm `PASS` for all required tools.
-- An optional future convenience target may wrap the macOS install as a manual command:
+- Convenience print-only targets are implemented:
 
   ```
-  task deps:macos:shell
+  task deps:brew    # print macOS / Homebrew install commands
+  task deps:arch    # print Arch / EndeavourOS install commands
   ```
 
-  This target, if added later, must only run when the user invokes it explicitly — it must not be wired into shell init, login, or any auto-trigger. It is out of scope for this PRD.
+  These targets only print instructions — they do not install anything.
 
 ---
 
@@ -234,10 +236,10 @@ brew bundle --file=packages/macos/Brewfile.shell
 - [ ] Dependency strategy is documented (check, document, install paths defined).
 - [ ] PRD defines problem statement, goals, non-goals, and user stories.
 - [ ] PRD defines core / shell / optional dependency tiers covering `git`, `stow`, `go-task`, `fzf`, `zoxide`, `eza`, `oh-my-posh`, `zinit`.
-- [ ] PRD defines the macOS Brewfile strategy (`Brewfile.core`, `Brewfile.shell`, `Brewfile.optional`).
-- [ ] PRD defines the dependency check strategy (`scripts/check-zsh-deps.sh`, read-only, reports clearly).
-- [ ] PRD defines a manual bootstrap strategy with the optional future `task deps:macos:shell`.
-- [ ] PRD plans the Arch strategy separately without implementing it.
+- [x] PRD defines the macOS Brewfile strategy — updated to single `packages/Brewfile` (ADR-0045).
+- [x] PRD defines the dependency check strategy (`scripts/check-zsh-deps.sh`, read-only, reports clearly).
+- [x] PRD defines a manual bootstrap strategy — `task deps:brew` and `task deps:arch` implemented.
+- [x] PRD plans the Arch strategy — implemented via `packages/arch/packages.txt` (ADR-0045).
 - [ ] PRD states no automatic package installation happens.
 - [ ] PRD states no shell startup file installs tools or clones `zinit`.
 - [ ] PRD keeps macOS and Arch separated throughout.

@@ -21,11 +21,12 @@ fi
 
 hint_install() {
   if [[ "$OS" == "macos" ]]; then
-    echo "  → Install hint (macOS): brew bundle --file=packages/macos/Brewfile.shell"
+    echo "  → Install hint (macOS): brew bundle --file=packages/Brewfile"
   elif [[ "$OS" == "arch" ]]; then
-    echo "  → Install hint (Arch): install via pacman or AUR — see docs/shell-dependencies.md"
+    echo "  → Install hint (Arch): sudo pacman -S <tool>  (or yay -S oh-my-posh-bin for oh-my-posh)"
+    echo "  → Full list: packages/arch/packages.txt"
   else
-    echo "  → Install hint: see docs/shell-dependencies.md"
+    echo "  → Install hint: see docs/guides/packages-setup.md"
   fi
 }
 
@@ -37,7 +38,7 @@ hint_zinit() {
 
 # --- Check shell-tier tools ---
 
-for tool in fzf zoxide eza oh-my-posh; do
+for tool in fzf zoxide eza bat oh-my-posh; do
   if command -v "$tool" >/dev/null 2>&1; then
     echo "PASS: $tool"
   else

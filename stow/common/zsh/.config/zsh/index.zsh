@@ -24,13 +24,13 @@ fi
 # 5) Plugin manager (Zinit) — guarded; no-op when not installed.
 [[ -r "$HOME/.config/zsh/plugins.zsh" ]] && source "$HOME/.config/zsh/plugins.zsh"
 
-# 6) Completion system — guarded against double-init with Zinit.
+# 6) Completion system.
 [[ -r "$HOME/.config/zsh/completions.zsh" ]] && source "$HOME/.config/zsh/completions.zsh"
 
 # 7) Key bindings.
 [[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
 
-# 8) Optional tool integrations (fzf, zoxide, eza) — all guarded.
+# 8) Optional tool integrations (fzf, zoxide) — all guarded.
 [[ -r "$HOME/.config/zsh/tools.zsh" ]] && source "$HOME/.config/zsh/tools.zsh"
 
 # 9) Portable aliases.

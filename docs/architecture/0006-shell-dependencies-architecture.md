@@ -1,9 +1,11 @@
 # Architecture: Shell Dependency Management
 
 **Number:** 0006
-**Status:** Approved
+**Status:** Approved — partially superseded by ADR-0045
 **Date:** 2026-06-17
 **PRD:** [0006-shell-dependencies.md](../prd/0006-shell-dependencies.md)
+
+> **Amendment (ADR-0045 — 2026-06-19):** The proposed structure (`packages/macos/Brewfile.core/.shell/.optional`) was superseded. Implementation uses a single `packages/Brewfile` (all tools, adds `bat`) and `packages/arch/packages.txt` (Arch/EndeavourOS support, now implemented — not deferred). The tool-by-tool table Brewfile column references (`Brewfile.core`, `Brewfile.shell`) map to `packages/Brewfile`. `go-task` Arch source is `pacman` (in `extra` repo — AUR deferral resolved). All design decisions, check strategy, and three-verb model remain unchanged.
 
 ---
 
@@ -90,24 +92,23 @@ Therefore: shell startup files only **activate** tools that already exist, behin
 
 ## Proposed Structure
 
+> **Updated by ADR-0045.** Tiered macos/ layout replaced by flat single-file layout.
+
 ```
 packages/
-└── macos/                       # NEW — authorized by PRD 0006 (lifts ADR-0010 deferral)
-    ├── Brewfile.core            # git, stow, go-task        (repo prerequisites)
-    ├── Brewfile.shell           # fzf, zoxide, eza, oh-my-posh (zsh runtime tools)
-    └── Brewfile.optional        # optional extras (list deferred)
+├── Brewfile                     # All tools — brew (macOS + Linux Homebrew) [ADR-0045]
+└── arch/
+    └── packages.txt             # All tools — pacman + AUR (Arch / EndeavourOS) [ADR-0045]
 
 scripts/
 ├── detect-os.sh                 # existing — reused
 ├── check.sh                     # existing — core repo tooling (stow, git, task)
-└── check-zsh-deps.sh            # NEW — shell-tier tooling (fzf, zoxide, eza, oh-my-posh, zinit)
+└── check-zsh-deps.sh            # NEW — shell-tier tooling (fzf, zoxide, eza, bat, oh-my-posh, zinit)
 
 Taskfile.yml                     # extended with the deps: namespace
 ```
 
-Arch is **planned only** — no `packages/arch/` directory is created by this architecture (see Decision 3).
-
-Brewfiles live under `packages/macos/`, never under `stow/` — they are declarative package lists, not symlinked into `$HOME` (consistent with ADR-0007).
+Brewfiles live under `packages/`, never under `stow/` — they are declarative package lists, not symlinked into `$HOME`.
 
 ---
 
