@@ -101,3 +101,14 @@ Use numbered filenames in sequence:
 | [0030](0030-xdg-style-git-config-layout.md) | XDG-style Git config layout (`~/.config/git/`) | Accepted |
 | [0031](0031-git-aliases-separate-file.md) | Git aliases extracted to a separate `aliases` file | Accepted |
 | [0032](0032-git-bootstrap-taskfile-tasks.md) | `git:bootstrap` and `git:bootstrap:dry-run` as first mutating Taskfile tasks | Accepted |
+| [0033](0033-shared-zsh-content-scope.md) | `shared.zsh` content scope | Accepted |
+| [0034](0034-platform-layers-runtime-selected.md) | `macos.zsh` and `arch.zsh` as runtime-selected platform layers | Accepted |
+| [0035](0035-omp-zsh-double-guarded-prompt-file.md) | `omp.zsh` as standalone double-guarded prompt file | Accepted |
+| [0036](0036-local-zsh-created-by-editor-not-example.md) | `local.zsh` created directly by user, not copied from `.example` | Accepted |
+| [0037](0037-extended-aliases-excluded-from-examples.md) | Extended aliases excluded from committed `.example` files | Accepted |
+| [0038](0038-histfile-at-home-not-xdg.md) | `HISTFILE` at `$HOME/.zsh_history`, not XDG | Accepted |
+| [0039](0039-completion-guard-avoid-double-compinit.md) | Completion guard — avoid double `compinit` when Zinit is present | Accepted |
+| [0040](0040-fzf-zsh-integration-method.md) | `fzf --zsh` as the fzf integration method | Accepted |
+| [0041](0041-zoxide-init-without-cmd-override.md) | `zoxide init zsh` without `--cmd` override | Accepted |
+| [0042](0042-eza-minimal-alias-only.md) | Minimal `ls='eza'` alias only in committed template | Accepted |
+| [0043](0043-zsh-bootstrap-taskfile-tasks.md) | `zsh:bootstrap` and `zsh:bootstrap:dry-run` as mutating Taskfile tasks for zsh | Accepted |

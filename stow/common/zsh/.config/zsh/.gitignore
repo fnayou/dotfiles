@@ -1,8 +1,2 @@
-# Ignore real (filled-in) zsh files; keep .example templates tracked.
-shared.zsh
-macos.zsh
-arch.zsh
-omp.zsh
-index.zsh
-# local.zsh has no .example — machine-specific/sensitive overrides, never committed (ADR-0023).
+# Only local.zsh is private/untracked. All other .zsh files are real managed files.
 local.zsh
