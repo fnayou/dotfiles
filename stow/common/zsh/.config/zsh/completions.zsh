@@ -1,7 +1,8 @@
 # completions.zsh — zsh completion initialization and styles
 
-autoload -Uz compinit
-compinit
+if ! typeset -f zinit >/dev/null 2>&1; then
+  autoload -Uz compinit && compinit
+fi
 
 zstyle ':completion:*' menu no
 
