@@ -86,6 +86,27 @@ git --version
 
 ---
 
+## Configuration philosophy
+
+This repository commits personal daily-use configuration directly into managed zsh files.
+`local.zsh` is reserved for truly private or machine-specific content only.
+
+**Commit to versioned managed files** (e.g., `aliases.zsh`, `shared.zsh`, `macos.zsh`) when the content:
+- has no secrets, credentials, tokens, or API keys,
+- has no private hostnames or company-specific commands,
+- uses no machine-specific absolute paths,
+- guards optional tools with `command -v`,
+- works safely on macOS and Linux (or is OS-gated).
+
+**Keep in `~/.config/zsh/local.zsh`** (untracked, never committed) when the content:
+- contains private paths, work binaries, or internal tools,
+- is work-specific or employer-specific,
+- differs meaningfully between your machines,
+- contains credentials, tokens, or secrets,
+- is a temporary experiment not ready to version.
+
+---
+
 ## Step 1: Dry-run zsh package
 
 Always dry-run before stowing. This shows exactly what symlinks would be created without making any changes.
