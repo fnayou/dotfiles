@@ -8,11 +8,12 @@ This repository uses GNU Stow with a package-based layout to manage dotfile syml
 
 ```
 stow/
-├── common/     # Config that works on both macOS and Arch without modification
-│   ├── git/    # Git config templates
-│   └── zsh/    # Zsh config (shared + macOS + Arch, runtime OS detection)
-├── macos/      # macOS-specific config only
-└── arch/       # EndeavourOS / Arch-specific config only
+├── common/          # Config that works on both macOS and Arch without modification
+│   ├── alacritty/   # Alacritty terminal emulator config and Catppuccin theme
+│   ├── git/         # Git config templates
+│   └── zsh/         # Zsh config (shared + macOS + Arch, runtime OS detection)
+├── macos/           # macOS-specific config only
+└── arch/            # EndeavourOS / Arch-specific config only
 ```
 
 A package belongs in `common/` only if all three hold:
@@ -601,4 +602,64 @@ ls -la ~/.config/zsh/omp.zsh
 
 # Open a new shell and confirm Oh My Posh is active
 zsh -ic 'oh-my-posh --version && echo omp-ok'
+```
+
+---
+
+## Installing the alacritty package
+
+The `alacritty` package contains:
+
+- `~/.config/alacritty/alacritty.toml` — main Alacritty configuration
+- `~/.config/alacritty/catppuccin-macchiato.toml` — Catppuccin Macchiato color theme
+
+Both files are real managed dotfiles (not `.example` templates). No rename or copy
+step is needed before stowing.
+
+### Prerequisites
+
+- Alacritty installed (`brew install --cask alacritty` on macOS or
+  `sudo pacman -S alacritty` on Arch).
+- JetBrainsMono Nerd Font installed (optional — Alacritty falls back to system
+  monospace if absent).
+
+### Step 1 — Dry-run
+
+```bash
+stow --dir=stow/common --target="$HOME" --simulate --no-folding alacritty
+```
+
+Expected: no conflicts reported. If a conflict appears, resolve it manually before
+proceeding (do not use `--adopt`).
+
+### Step 2 — Install
+
+⚠️  MANUAL STEP — run only after reviewing dry-run output
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding alacritty
+```
+
+This creates two symlinks:
+
+```
+~/.config/alacritty/alacritty.toml
+~/.config/alacritty/catppuccin-macchiato.toml
+```
+
+### Step 3 — Verify
+
+```bash
+ls -la ~/.config/alacritty/
+```
+
+Expected: both `alacritty.toml` and `catppuccin-macchiato.toml` are symlinks pointing
+into the repository.
+
+### To unlink
+
+⚠️  MANUAL STEP
+
+```bash
+stow --dir=stow/common --target="$HOME" --delete alacritty
 ```

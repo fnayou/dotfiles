@@ -1,0 +1,70 @@
+[general]
+import = [
+  "~/.config/alacritty/catppuccin-macchiato.toml"
+]
+
+[env]
+TERM = "xterm-256color"
+
+[window]
+padding = { x = 8, y = 8 }
+dynamic_padding = true
+decorations = "Buttonless"
+opacity = 0.98
+startup_mode = "Windowed"
+option_as_alt = "Both" # Highly useful for macOS CLI navigation
+
+[scrolling]
+history = 10000 # Boosts scrollback history so you don't lose command outputs
+multiplier = 3  # Makes scrolling with a trackpad/mouse feel more responsive
+
+[font]
+size = 13.0
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style = "Bold Italic"
+
+# Optional: Gives text slightly more vertical breathing room
+[font.offset]
+y = 1
+
+[terminal.shell]
+program = "/bin/zsh"
+args = ["-l"]
+
+[keyboard]
+bindings = [
+  # Numpad mapping
+  { key = "Numpad0", chars = "0" },
+  { key = "Numpad1", chars = "1" },
+  { key = "Numpad2", chars = "2" },
+  { key = "Numpad3", chars = "3" },
+  { key = "Numpad4", chars = "4" },
+  { key = "Numpad5", chars = "5" },
+  { key = "Numpad6", chars = "6" },
+  { key = "Numpad7", chars = "7" },
+  { key = "Numpad8", chars = "8" },
+  { key = "Numpad9", chars = "9" },
+  { key = "NumpadAdd", chars = "+" },
+  { key = "NumpadSubtract", chars = "-" },
+  { key = "NumpadMultiply", chars = "*" },
+  { key = "NumpadDivide", chars = "/" },
+  { key = "NumpadDecimal", chars = "." },
+  { key = "NumpadEnter", chars = "\r" },
+
+  # Custom Alt bindings
+  { key = "N", mods = "Alt", chars = "~" }
+]
