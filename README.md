@@ -6,8 +6,8 @@ Private personal dotfiles repository for macOS and EndeavourOS / Arch Linux.
 
 ```
 Claude Code operating layer: complete
-GNU Stow scaffold:           created (placeholder/example files only)
-Real managed dotfile packages: not started
+GNU Stow scaffold:           created
+Real managed dotfile packages: alacritty, git, zsh
 Home directory:              unmodified
 ```
 
@@ -18,7 +18,9 @@ A safe, maintainable, cross-platform dotfiles repository being built incremental
 - **macOS** is the primary environment.
 - **EndeavourOS / Arch Linux** is the secondary environment, planned from the start.
 - **GNU Stow** will manage dotfile symlinks when implementation begins.
-- **No dotfiles have been stowed yet. No home directory has been modified.**
+- Real managed dotfiles are version-controlled in `stow/common/`. No dotfiles have
+  been stowed yet — Stow install is a deliberate manual step. No home directory has
+  been modified.
 
 ## For Claude Code
 
