@@ -7,7 +7,7 @@ Private personal dotfiles repository for macOS and EndeavourOS / Arch Linux.
 ```
 Claude Code operating layer: complete
 GNU Stow scaffold:           created
-Real managed dotfile packages: alacritty, git, zsh
+Real managed dotfile packages: alacritty, git, herdr, zsh
 Home directory:              unmodified
 ```
 

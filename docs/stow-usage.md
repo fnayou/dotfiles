@@ -11,6 +11,7 @@ stow/
 ├── common/          # Config that works on both macOS and Arch without modification
 │   ├── alacritty/   # Alacritty terminal emulator config and Catppuccin theme
 │   ├── git/         # Git config templates
+│   ├── herdr/       # Herdr terminal multiplexer config and Catppuccin theme overrides
 │   └── zsh/         # Zsh config (shared + macOS + Arch, runtime OS detection)
 ├── macos/           # macOS-specific config only
 └── arch/            # EndeavourOS / Arch-specific config only
@@ -662,4 +663,62 @@ into the repository.
 
 ```bash
 stow --dir=stow/common --target="$HOME" --delete alacritty
+```
+
+---
+
+## Installing the herdr package
+
+The `herdr` package contains:
+
+- `~/.config/herdr/config.toml` — Herdr terminal multiplexer configuration
+
+This is a real managed dotfile (not an `.example` template). No rename or copy step
+is needed before stowing.
+
+### Prerequisites
+
+- Herdr installed (`brew install herdr` on both macOS and Arch/Linux).
+
+### Step 1 — Dry-run
+
+```bash
+stow --dir=stow/common --target="$HOME" --simulate --no-folding herdr
+```
+
+Expected: no conflicts reported. If a conflict appears, resolve it manually before
+proceeding (do not use `--adopt`).
+
+If `~/.config/herdr/` already exists as a real directory, Stow will report a
+directory-ownership conflict. Back up and remove the directory, then re-run the
+dry-run. See "Conflict handling" above for full detail.
+
+### Step 2 — Install
+
+⚠️  MANUAL STEP — run only after reviewing dry-run output
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding herdr
+```
+
+This creates one symlink:
+
+```
+~/.config/herdr/config.toml
+```
+
+### Step 3 — Verify
+
+```bash
+ls -la ~/.config/herdr/
+```
+
+Expected: `config.toml` is a symlink pointing into the repository.
+
+### To unlink
+
+⚠️  MANUAL STEP
+
+```bash
+stow --dir=stow/common --target="$HOME" --delete herdr
 ```
