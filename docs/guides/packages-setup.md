@@ -13,6 +13,7 @@ All tools in this repository are cross-platform — they are available on both m
 | `git` | repository management | Yes |
 | `stow` | symlink manager | Yes |
 | `go-task` | task runner | Yes |
+| `herdr` | terminal multiplexer with AI agent integration | Optional |
 | `fzf` | fuzzy finder (shell integration, fzf-tab completion previews) | Optional |
 | `zoxide` | smarter `cd` | Optional |
 | `eza` | modern `ls` with icons (aliases, fzf-tab previews) | Optional |

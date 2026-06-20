@@ -1,0 +1,35 @@
+onboarding = false
+
+[update]
+channel = "stable"
+
+[theme]
+# Built-in base: catppuccin (closest to Macchiato palette)
+name = "tokyo-night"
+
+# Catppuccin Macchiato color overrides
+[theme.custom]
+panel_bg = "#24273a"   # Base
+accent    = "#8aadf4"  # Blue
+green     = "#a6da95"  # Green
+red       = "#ed8796"  # Red
+yellow    = "#eed49f"  # Yellow
+
+[terminal]
+default_shell = "zsh"  # Matches shell preference on both macOS and Arch
+new_cwd = "follow"     # New panes inherit the working directory of the active pane
+
+[ui]
+show_agent_labels_on_pane_borders = true
+
+[ui.sidebar]
+initial_split_width = 25
+
+[ui.toast]
+delivery = "herdr"     # Herdr-internal toast UI (not OS notification system)
+
+[ui.toast.herdr]
+position = "bottom-right"
+
+[ui.sound]
+enabled = true
