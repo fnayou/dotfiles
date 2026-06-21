@@ -27,6 +27,7 @@ reserved for platform-specific packages and are currently empty.
 | Package | What it manages | Details | Guide |
 |---|---|---|---|
 | **alacritty** | Alacritty terminal — window, font, keybinds, Catppuccin Macchiato theme | [README](stow/common/alacritty/README.md) | [guide](docs/guides/alacritty-setup.md) |
+| **bat** | bat pager — style, wrap, paging, Catppuccin Macchiato theme | [README](stow/common/bat/README.md) | [guide](docs/guides/bat-setup.md) |
 | **git** | Portable Git config — settings, aliases, global ignore (no secrets) | [README](stow/common/git/README.md) | [guide](docs/guides/git-setup.md) |
 | **herdr** | Herdr agent multiplexer — theme, terminal, UI, toast | [README](stow/common/herdr/README.md) | [guide](docs/guides/herdr-setup.md) |
 | **omp** | Oh My Posh prompt — segments + Catppuccin Macchiato palette | [README](stow/common/omp/README.md) | — |
@@ -38,7 +39,7 @@ Setup guides are written for a human operator, not for agents.
 
 - [Packages setup](docs/guides/packages-setup.md) — install the tools every package depends on (`git`, `stow`, `go-task`, …).
 - [GNU Stow usage](docs/stow-usage.md) — dry-run workflow, install steps, conflict handling, adding packages.
-- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [zsh](docs/guides/zsh-setup.md).
+- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [bat](docs/guides/bat-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [zsh](docs/guides/zsh-setup.md).
 - [Shell dependencies](docs/shell-dependencies.md) · [Zsh migration notes](docs/zsh-migration.md).
 
 ## Installing a package

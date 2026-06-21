@@ -1,0 +1,18 @@
+# bat configuration
+# https://github.com/sharkdp/bat
+#
+# Catppuccin Macchiato theme. The .tmTheme file lives in themes/ and must be
+# compiled into bat's cache once with `bat cache --build` (see setup guide).
+--theme="Catppuccin Macchiato"
+
+# Line numbers, git modification markers, and a file header.
+--style="numbers,changes,header"
+
+# Wrap long lines instead of truncating them.
+--wrap="auto"
+
+# Italic text where the terminal supports it.
+--italic-text="always"
+
+# Page output only when it does not fit on screen.
+--paging="auto"
