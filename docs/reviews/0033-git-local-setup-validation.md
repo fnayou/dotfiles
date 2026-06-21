@@ -53,10 +53,10 @@ $ git config --global --get-all include.path
 ### 1.6 Identity attribution
 ```bash
 $ git config --show-origin user.name
-file:/Users/fnayou/.gitconfig	Aymen Fnayou
+file:$HOME/.gitconfig	Your Name
 
 $ git config --show-origin user.email
-file:/Users/fnayou/.gitconfig	fnayou.aymen@gmail.com
+file:$HOME/.gitconfig	your-email@example.com
 ```
 
 ### 1.7 Guide command audit — stow calls
