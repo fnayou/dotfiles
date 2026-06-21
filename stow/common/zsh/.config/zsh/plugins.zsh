@@ -11,8 +11,8 @@ if [[ -r "$ZINIT_HOME/zinit.zsh" ]]; then
   source "$ZINIT_HOME/zinit.zsh"
 
   # --- Plugins ---
+  zinit blockf for zsh-users/zsh-completions
   zinit light zsh-users/zsh-syntax-highlighting
-  zinit light zsh-users/zsh-completions
   zinit light zsh-users/zsh-autosuggestions
   zinit light Aloxaf/fzf-tab
 else
