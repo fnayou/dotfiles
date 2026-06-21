@@ -1,54 +1,90 @@
 # dotfiles
 
-Private personal dotfiles repository for macOS and EndeavourOS / Arch Linux.
+Private, safe, cross-platform personal dotfiles for **macOS** and **EndeavourOS / Arch Linux**,
+managed with [GNU Stow](https://www.gnu.org/software/stow/).
+
+macOS is the primary environment; Arch is supported from the start. Configs are version-controlled
+in `stow/common/` and only ever symlinked into `$HOME` by a **deliberate, manual** Stow step —
+never automatically.
 
 ## Status
 
 ```
-Claude Code operating layer: complete
-GNU Stow scaffold:           created
-Real managed dotfile packages: alacritty, git, herdr, zsh
-Home directory:              unmodified
+Claude Code operating layer:    complete
+GNU Stow scaffold:              created
+Managed packages:               see stow/common/
+Home directory:                 unmodified (nothing stowed yet)
 ```
 
-## What this is
+`stow/common/` is the source of truth for which packages exist. Nothing has been stowed; no
+symlinks exist; no file in `$HOME` has been modified.
 
-A safe, maintainable, cross-platform dotfiles repository being built incrementally.
+## What's included
 
-- **macOS** is the primary environment.
-- **EndeavourOS / Arch Linux** is the secondary environment, planned from the start.
-- **GNU Stow** will manage dotfile symlinks when implementation begins.
-- Real managed dotfiles are version-controlled in `stow/common/`. No dotfiles have
-  been stowed yet — Stow install is a deliberate manual step. No home directory has
-  been modified.
+Each package is self-contained and carries its own README. `stow/macos/` and `stow/arch/` are
+reserved for platform-specific packages and are currently empty.
+
+| Package | What it manages | Details | Guide |
+|---|---|---|---|
+| **alacritty** | Alacritty terminal — window, font, keybinds, Catppuccin Macchiato theme | [README](stow/common/alacritty/README.md) | [guide](docs/guides/alacritty-setup.md) |
+| **git** | Portable Git config — settings, aliases, global ignore (no secrets) | [README](stow/common/git/README.md) | [guide](docs/guides/git-setup.md) |
+| **herdr** | Herdr agent multiplexer — theme, terminal, UI, toast | [README](stow/common/herdr/README.md) | [guide](docs/guides/herdr-setup.md) |
+| **omp** | Oh My Posh prompt — segments + Catppuccin Macchiato palette | [README](stow/common/omp/README.md) | — |
+| **zsh** | Layered Zsh config — path, history, plugins, tools, prompt, per-OS layers | [README](stow/common/zsh/README.md) | [guide](docs/guides/zsh-setup.md) |
+
+## Documentation
+
+Setup guides are written for a human operator, not for agents.
+
+- [Packages setup](docs/guides/packages-setup.md) — install the tools every package depends on (`git`, `stow`, `go-task`, …).
+- [GNU Stow usage](docs/stow-usage.md) — dry-run workflow, install steps, conflict handling, adding packages.
+- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [zsh](docs/guides/zsh-setup.md).
+- [Shell dependencies](docs/shell-dependencies.md) · [Zsh migration notes](docs/zsh-migration.md).
+
+## Installing a package
+
+Stow is always a manual, reviewed step. Dry-run first, install only after reviewing the output.
+
+```bash
+# Step 1 — dry run, review what would be linked
+stow --dir=stow/common --target="$HOME" --simulate <package>
+```
+
+⚠️  MANUAL STEP — run only after approving the dry-run output
+
+```bash
+stow --dir=stow/common --target="$HOME" <package>
+```
+
+If the dry run reports a conflict, **stop** and resolve it manually. Never use `--adopt` — it
+overwrites existing files. See the [Stow usage guide](docs/stow-usage.md) for full detail.
+
+## Safety
+
+- No Stow has been run; no symlinks exist; no `$HOME` file has been modified.
+- Stow and symlink operations happen only with explicit per-session approval and a reviewed plan.
+- No secrets, credentials, or private hostnames are committed.
+- Local-only and sensitive values live in unstowed `.example` templates that you copy and fill in.
+- Every significant change follows: PRD → Architecture → Review → Plan → Review → Build → Review → Commit.
 
 ## For Claude Code
 
-Read `AGENTS.md` first. It is the main operating contract for this repository.
+Read `AGENTS.md` first — it is the main operating contract. It defines agent roles, the PRD-first
+workflow, safety / privacy / cross-platform rules, the documentation workflow, and commit rules.
 
-`AGENTS.md` defines:
-- Agent roles (Architect, Planner, Builder, Reviewer).
-- The PRD-first workflow.
-- Safety rules, privacy rules, and cross-platform rules.
-- Persistent documentation workflow.
-- Commit rules.
-
-Do not implement dotfiles, run Stow, create symlinks, or modify `$HOME` without explicit user approval and an approved plan.
-
-## Safety rules
-
-- No Stow has been run. No symlinks exist.
-- Stow operations and symlinks will only happen with explicit per-session user approval and a reviewed, approved plan.
-- No files in `$HOME` have been modified or replaced.
-- No secrets, credentials, or private hostnames are committed.
-- All sensitive configuration uses `.example` files with placeholder values.
-- Every significant change requires: PRD → Architecture → Review → Plan → Review → Build → Review → Commit.
+Do not implement dotfiles, run Stow, create symlinks, or modify `$HOME` without explicit user
+approval and an approved plan.
 
 ## Repository structure
 
 ```
 .claude/          Claude Code agents, rules, and skills
-docs/             Project documentation
+stow/
+  common/         Packages that work on both platforms (source of truth)
+  macos/          macOS-specific packages (empty)
+  arch/           Arch / EndeavourOS-specific packages (empty)
+docs/
+  guides/         Human setup guides, one per package
   architecture/   Structure decisions and tradeoffs
   decisions/      ADR-style decision records
   plans/          Ordered implementation plans
@@ -59,43 +95,12 @@ AGENTS.md         Main operating contract — read this first
 CLAUDE.md         Claude Code entry point
 ```
 
-## Planned future direction
-
-- PRD-first workflow for every significant change.
-- Architecture documents before planning.
-- Implementation plans before building.
-- Reviews before committing.
-- GNU Stow with a package-based layout:
-  - `stow/common/` — config that works on both platforms unchanged.
-  - `stow/macos/` — macOS-specific config.
-  - `stow/arch/` — EndeavourOS / Arch-specific config.
-- Common, macOS, and Arch packages always treated separately.
-- Optional Docker test harness for safe Linux validation.
-
-## Documentation
-
-- [GNU Stow usage guide](docs/stow-usage.md) — dry-run workflow, install steps, conflict handling, adding packages.
-
-## Basic commands
-
-```bash
-git status
-git diff
-git log --oneline -10
-```
-
-Do not run commands that modify `$HOME` without an approved plan and explicit user confirmation.
-
 ## CI
 
-GitHub Actions runs on every push and pull request. The workflow performs non-destructive repository hygiene checks only:
-
-- Verifies expected files and directories exist.
-- Verifies Markdown files are present.
-- Runs `bash -n` syntax check on shell scripts (skips if none exist).
-- Scans for obvious secret patterns and fails if found.
-
-The CI workflow does not run Stow, create symlinks, modify `$HOME`, use secrets, deploy, or publish anything.
+GitHub Actions runs on every push and pull request, performing non-destructive hygiene checks only:
+verifies expected files/directories exist, checks Markdown is present, runs `bash -n` on shell
+scripts, and scans for obvious secret patterns. It never runs Stow, creates symlinks, modifies
+`$HOME`, uses secrets, or deploys anything.
 
 ## License
 
