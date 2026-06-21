@@ -2,9 +2,9 @@
 
 # --- File listing (eza / ls fallback) ---
 if command -v eza >/dev/null 2>&1; then
-  alias ls='eza --long --icons'
-  alias ll='eza --long --all --icons'
-  alias tree='eza --tree --icons'
+  alias ls='eza --icons --long'
+  alias ll='eza --icons --all --long'
+  alias tree='eza --icons --tree'
 else
   alias ll='ls -ahl'
 fi
