@@ -12,20 +12,23 @@ Key context:
 
 - **macOS** is frequently used (primary environment).
 - **EndeavourOS / Arch Linux** is also used.
-- **GNU Stow** will likely be used later as the symlink manager.
-- Dotfiles implementation has **not started yet**.
-- The current step is **only the Claude Code operating layer**: agents, rules, skills, and documentation workflow.
+- **GNU Stow** is the symlink manager (package-based layout under `stow/`).
+- Dotfiles implementation is **in progress** — packages exist, none stowed to `$HOME` yet.
+- The Claude Code operating layer (agents, rules, skills, documentation workflow) is complete and active.
 
 ---
 
 ## 2. Repository Status
 
 ```
-Current status:          Claude Code operating layer only.
-Dotfiles implementation: not started.
-GNU Stow packages:       not created yet.
+Current status:          Claude Code operating layer complete; dotfiles in progress.
+Dotfiles implementation: in progress.
+GNU Stow packages:       see stow/common/ (source of truth; macos/ and arch/ empty).
+Stowed to $HOME:         none yet — no symlinks created.
 Home directory:          modifications forbidden unless explicitly requested.
 ```
+
+> **Keep this block current.** Whenever a Stow package is added, removed, or first stowed to `$HOME`, update this status block and the matching block in `CLAUDE.md` in the **same commit**. See `docs/decisions/` for the rule.
 
 ---
 
