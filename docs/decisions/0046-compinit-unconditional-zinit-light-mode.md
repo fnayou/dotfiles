@@ -2,7 +2,7 @@
 
 **Number:** 0046
 **Date:** 2026-06-19
-**Status:** Accepted
+**Status:** Superseded by 0049
 **Supersedes:** 0039
 
 ## Context

@@ -38,6 +38,13 @@ For a step-by-step installation guide see: `docs/guides/packages-setup.md`
 
 Core tooling (`git`, `stow`, `go-task`) is checked by `scripts/check.sh`. Shell tooling is checked by `scripts/check-zsh-deps.sh`.
 
+[`go-task`](https://taskfile.dev/) ([github](https://github.com/go-task/task)) is a core
+prerequisite (the task runner for this repo's `Taskfile.yml`) and **also** serves the shell
+tier: the zsh package's `taskfile.zsh` enables `task <Tab>` completion. That completion relies
+on the native `_task` completion file shipped by the Homebrew (`go-task/tap`) and pacman
+(`go-task`) packages into the default zsh `fpath`. Installing `task` by other means
+(`go install`, raw `install.sh`) omits `_task`, so completion is unavailable on those installs.
+
 ---
 
 ## Step 1 — Check what is missing

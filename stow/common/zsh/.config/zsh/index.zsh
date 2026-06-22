@@ -24,8 +24,11 @@ fi
 # 5) Plugin manager (Zinit) — guarded; no-op when not installed.
 [[ -r "$HOME/.config/zsh/plugins.zsh" ]] && source "$HOME/.config/zsh/plugins.zsh"
 
-# 6) Completion system.
+# 6) Completion styles (styles-only; compinit runs in plugins.zsh — see ADR-0049).
 [[ -r "$HOME/.config/zsh/completions.zsh" ]] && source "$HOME/.config/zsh/completions.zsh"
+
+# 6b) Taskfile (go-task) completion tuning — guarded; no-op without `task`.
+[[ -r "$HOME/.config/zsh/taskfile.zsh" ]] && source "$HOME/.config/zsh/taskfile.zsh"
 
 # 7) Key bindings.
 [[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
