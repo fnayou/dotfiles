@@ -6,7 +6,7 @@ Main operating contract for this repository.
 
 ## 1. Project Purpose
 
-This repository is intended to become a private, maintainable, cross-platform dotfiles repository managed safely and incrementally.
+This repository is a public, maintainable, cross-platform dotfiles repository managed safely and incrementally. Although public, it is treated as private by default — no secrets, credentials, or sensitive data are ever committed (see §9).
 
 Key context:
 
@@ -302,7 +302,7 @@ docs/claude/       → agent guides and workflow documentation
 
 ## 9. Privacy Rules
 
-- Repository is **private by default**.
+- Repository is **public**, but treated as **private by default** — assume sensitive data must never be committed, even though the repo is publicly visible.
 - Never commit secrets.
 - Never include passwords, tokens, API keys, SSH private keys, private hostnames, work secrets, or sensitive personal information.
 - Use **placeholder values** in all examples (e.g., `your-token-here`, `YOUR_API_KEY`).
