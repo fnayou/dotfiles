@@ -7,7 +7,7 @@ import = [
 TERM = "xterm-256color"
 
 [window]
-padding = { x = 8, y = 8 }
+padding = { x = 12, y = 12 }
 dynamic_padding = true
 decorations = "Buttonless"
 opacity = 0.98
@@ -66,5 +66,8 @@ bindings = [
   { key = "NumpadEnter", chars = "\r" },
 
   # Custom Alt bindings
-  { key = "N", mods = "Alt", chars = "~" }
+  { key = "N", mods = "Alt", chars = "~" },
+  { key = "L", mods = "Alt|Shift", chars = "|" },
+  { key = "Left", mods = "Alt", chars = "\u001Bb" },
+  { key = "Right", mods = "Alt", chars = "\u001Bf" }
 ]
