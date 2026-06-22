@@ -7,12 +7,20 @@ console_title_template = '{{ .Shell }} in {{ .Folder }}'
   alignment = "left"
   newline = true
 
+  # --- Added OS Segment Here ---
+  [[blocks.segments]]
+    type = "os"
+    style = "plain"
+    background = "transparent"
+    foreground = "#c6a0f6"
+    template = "{{ .Icon }} "
+
   [[blocks.segments]]
     type = "path"
     style = "plain"
     background = 'transparent'
     foreground = "#8aadf4"
-    template = " {{ .Path }}"
+    template = "{{ .Path }}" # Removed the leading space since the OS segment handles it now
 
   [blocks.segments.properties]
     style = "full" # can be "folder", "flat", "flat_full", "flat_half" or "mixed"
