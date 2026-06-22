@@ -37,18 +37,25 @@ LSP servers are installed **inside** Neovim by [Mason](https://github.com/mason-
 # macOS — installed via the repo Brewfile
 brew bundle --file=packages/Brewfile     # neovim ripgrep fd node python pipx
 xcode-select --install                    # C compiler for treesitter parsers
+npm install -g tree-sitter-cli           # tree-sitter CLI (see note below)
 ```
 
 ```bash
 # Arch / EndeavourOS
 sudo pacman -S neovim ripgrep fd nodejs npm python python-pipx base-devel
+sudo pacman -S tree-sitter-cli           # (or: npm install -g tree-sitter-cli)
 ```
 
-- **ripgrep / fd** — Telescope live-grep and file finding.
+- **ripgrep / fd** — snacks picker live-grep and file finding.
 - **node** — powers most LSP servers (intelephense, bashls, yamlls, jsonls,
   pyright, ansiblels, dockerls, docker_compose_language_service).
-- **python + pipx** — ruff and ansible-lint.
+- **python + pipx** — ruff.
 - **C compiler** — treesitter compiles parsers on install.
+- **tree-sitter CLI** — nvim-treesitter's `main` branch builds parsers by
+  shelling out to the `tree-sitter` binary. On macOS, Homebrew's `tree-sitter`
+  formula ships the **library only** (no CLI), so install the CLI via
+  `npm install -g tree-sitter-cli`. Without it parser builds fail with
+  `ENOENT ... (cmd): 'tree-sitter'`.
 
 Print the commands any time (nothing is installed automatically):
 
@@ -117,7 +124,7 @@ vimtutor      # or, inside Neovim:  :Tutor
 
 `intelephense` (PHP), `lua_ls`, `bashls`, `yamlls`, `jsonls`, `pyright` + `ruff`
 (Python), `ansiblels` (Ansible), `dockerls` + `docker_compose_language_service`
-(Docker), plus linters `hadolint` (Dockerfile) and `ansible-lint`.
+(Docker), plus the `hadolint` Dockerfile linter.
 
 - **YAML scoping:** `compose.yml` / `docker-compose*.yml` get the
   `yaml.docker-compose` filetype (compose server); all other YAML uses `yamlls`.

@@ -678,7 +678,6 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         -- Linters installed via Mason (not LSP servers)
         'hadolint', -- Dockerfile linter
-        'ansible-lint', -- Ansible linter
         -- You can add other tools here that you want Mason to install
       })
 
