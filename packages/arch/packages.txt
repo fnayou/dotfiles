@@ -10,5 +10,10 @@
 # --- Shell runtime / zsh (pacman) ---
 # sudo pacman -S fzf zoxide eza bat
 
+# --- Neovim (pacman) ---
+# node (nodejs/npm) + python power the LSP servers Mason installs inside Neovim.
+# base-devel provides the C compiler required for treesitter parsers.
+# sudo pacman -S neovim ripgrep fd nodejs npm python python-pipx base-devel
+
 # --- AUR packages (requires yay or paru) ---
 # yay -S oh-my-posh-bin

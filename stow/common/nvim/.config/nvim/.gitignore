@@ -1,0 +1,7 @@
+# Neovim local artifacts — do not commit.
+*.bak
+*.swp
+*~
+
+# NOTE: lazy-lock.json IS tracked on purpose (pinned plugin versions).
+# Do not add it here.
