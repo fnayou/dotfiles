@@ -16,3 +16,14 @@ brew "zoxide"
 brew "eza"
 brew "bat"
 brew "oh-my-posh", tap: "jandedobbeleer/oh-my-posh"
+
+# --- Neovim ---
+# node + python power the LSP servers Mason installs inside Neovim.
+# A C compiler (Xcode Command Line Tools) is also required for treesitter
+# parsers — install separately with: xcode-select --install
+brew "neovim"
+brew "ripgrep"
+brew "fd"
+brew "node"
+brew "python"
+brew "pipx"

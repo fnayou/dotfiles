@@ -9,7 +9,7 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 # --- Portable environment ---
 export EDITOR="${EDITOR:-nvim}"
-export VISUAL="${VISUAL:-zed}"
+export VISUAL="${VISUAL:-nvim}"
 export PAGER="${PAGER:-less}"
 
 # --- Shell options (portable) ---

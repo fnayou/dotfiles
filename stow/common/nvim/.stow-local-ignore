@@ -1,0 +1,7 @@
+^/README\.md$
+^/\.git$
+^/\.gitignore$
+^/\.stow-local-ignore$
+^.*\.bak$
+^.*\.orig$
+^.*\.DS_Store$
