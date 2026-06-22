@@ -16,11 +16,12 @@ The `stow/common/zsh/` package manages files under `~/.config/zsh/`. After Stow,
 | `stow/common/zsh/.config/zsh/shared.zsh` | `~/.config/zsh/shared.zsh` | XDG vars + portable env (EDITOR, PAGER) only |
 | `stow/common/zsh/.config/zsh/path.zsh` | `~/.config/zsh/path.zsh` | PATH additions (safe, `$HOME`-relative) |
 | `stow/common/zsh/.config/zsh/history.zsh` | `~/.config/zsh/history.zsh` | HISTFILE, HISTSIZE, SAVEHIST, history setopts |
-| `stow/common/zsh/.config/zsh/completions.zsh` | `~/.config/zsh/completions.zsh` | compinit (guarded against double-init with Zinit) |
+| `stow/common/zsh/.config/zsh/completions.zsh` | `~/.config/zsh/completions.zsh` | Completion styles only (compinit runs in `plugins.zsh` — ADR-0049) |
+| `stow/common/zsh/.config/zsh/taskfile.zsh` | `~/.config/zsh/taskfile.zsh` | go-task completion tuning — guarded, no-op without `task` |
 | `stow/common/zsh/.config/zsh/keybindings.zsh` | `~/.config/zsh/keybindings.zsh` | Key bindings (autosuggest binding guarded by widget check) |
 | `stow/common/zsh/.config/zsh/aliases.zsh` | `~/.config/zsh/aliases.zsh` | Portable aliases (grep) |
 | `stow/common/zsh/.config/zsh/tools.zsh` | `~/.config/zsh/tools.zsh` | fzf, zoxide, eza guards |
-| `stow/common/zsh/.config/zsh/plugins.zsh` | `~/.config/zsh/plugins.zsh` | Zinit guarded source (no auto-clone) |
+| `stow/common/zsh/.config/zsh/plugins.zsh` | `~/.config/zsh/plugins.zsh` | Zinit guarded source (no auto-clone); owns plugin order + compinit (ADR-0049) |
 | `stow/common/zsh/.config/zsh/prompt.zsh` | `~/.config/zsh/prompt.zsh` | Oh My Posh double-guarded (no-op if missing) |
 | `stow/common/zsh/.config/zsh/macos.zsh` | `~/.config/zsh/macos.zsh` | macOS-specific (brew guard, `alias o='open'`) |
 | `stow/common/zsh/.config/zsh/arch.zsh` | `~/.config/zsh/arch.zsh` | Arch-specific (AUR helper guard, systemctl aliases) |
@@ -76,6 +77,7 @@ Optional tools (not required to start; all integrations are guarded and are no-o
 | eza | `tools.zsh`, `aliases.zsh`, `completions.zsh` — guarded; no-op if absent | `ls`/`ll`/`tree` aliases, fzf-tab previews |
 | bat | `aliases.zsh` — suffix aliases (`.md`, `.txt`, `.log`) guarded by `command -v bat` | file preview in terminal |
 | oh-my-posh | `prompt.zsh` — double-guarded; no-op if absent or if omp.toml missing | shell prompt theme |
+| go-task | `taskfile.zsh` — `command -v task` guard; no-op if absent | `task <Tab>` completion (needs brew/pacman install for the `_task` file) |
 
 Verify required tools:
 
@@ -453,11 +455,12 @@ Open a new shell after saving changes — `local.zsh` is sourced at shell startu
 | `shared.zsh` | Yes | No | XDG + env — committed directly |
 | `path.zsh` | Yes | No | PATH additions — committed directly |
 | `history.zsh` | Yes | No | History config — committed directly |
-| `completions.zsh` | Yes | No | compinit guard — committed directly |
+| `completions.zsh` | Yes | No | Completion styles — committed directly |
+| `taskfile.zsh` | Yes | No | go-task completion tuning — committed directly |
 | `keybindings.zsh` | Yes | No | Key bindings — committed directly |
 | `aliases.zsh` | Yes | No | Portable aliases — committed directly |
 | `tools.zsh` | Yes | No | Tool guards — committed directly |
-| `plugins.zsh` | Yes | No | Zinit guard — committed directly |
+| `plugins.zsh` | Yes | No | Zinit guard + compinit — committed directly |
 | `prompt.zsh` | Yes | No | OMP double-guard — committed directly |
 | `macos.zsh` | Yes | No | macOS layer — committed directly |
 | `arch.zsh` | Yes | No | Arch layer — committed directly |
@@ -479,6 +482,7 @@ After all steps are complete, `~/.config/zsh/` should look like this:
 ├── path.zsh           -> …/stow/common/zsh/.config/zsh/path.zsh
 ├── history.zsh        -> …/stow/common/zsh/.config/zsh/history.zsh
 ├── completions.zsh    -> …/stow/common/zsh/.config/zsh/completions.zsh
+├── taskfile.zsh       -> …/stow/common/zsh/.config/zsh/taskfile.zsh
 ├── keybindings.zsh    -> …/stow/common/zsh/.config/zsh/keybindings.zsh
 ├── aliases.zsh        -> …/stow/common/zsh/.config/zsh/aliases.zsh
 ├── tools.zsh          -> …/stow/common/zsh/.config/zsh/tools.zsh

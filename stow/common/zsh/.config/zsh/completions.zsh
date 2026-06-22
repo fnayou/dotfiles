@@ -1,7 +1,6 @@
-# completions.zsh — zsh completion initialization and styles
-
-# --- Completion init ---
-autoload -Uz compinit && compinit
+# completions.zsh — zsh completion styles
+# compinit runs in plugins.zsh (ADR-0049) so fzf-tab loads after compinit but before
+# widget-wrapping plugins. This file is styles-only and must source after plugins.zsh.
 
 # --- Completion styles ---
 zstyle ':completion:*' menu select

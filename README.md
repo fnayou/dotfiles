@@ -32,7 +32,7 @@ reserved for platform-specific packages and are currently empty.
 | **git** | Portable Git config — settings, aliases, global ignore (no secrets) | [README](stow/common/git/README.md) | [guide](docs/guides/git-setup.md) |
 | **herdr** | Herdr agent multiplexer — theme, terminal, UI, toast | [README](stow/common/herdr/README.md) | [guide](docs/guides/herdr-setup.md) |
 | **omp** | Oh My Posh prompt — segments + Catppuccin Macchiato palette | [README](stow/common/omp/README.md) | — |
-| **zsh** | Layered Zsh config — path, history, plugins, tools, prompt, per-OS layers | [README](stow/common/zsh/README.md) | [guide](docs/guides/zsh-setup.md) |
+| **zsh** | Layered Zsh config — path, history, plugins, tools, prompt, per-OS layers, go-task completion | [README](stow/common/zsh/README.md) | [guide](docs/guides/zsh-setup.md) |
 
 ## Documentation
 

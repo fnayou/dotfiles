@@ -14,11 +14,5 @@
 # Private tokens (never committed):
 # export MY_SERVICE_TOKEN="your-token-here"
 
-# Extended eza aliases (personal preference):
-# command -v eza >/dev/null 2>&1 && alias ll='eza -lh' && alias la='eza -lha'
-
 # Weather alias (location-specific — keep here, not in committed aliases.zsh):
 # alias meteo='curl -4 http://wttr.in/YOUR_CITY'
-
-# zoxide with --cmd cd override:
-# command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"

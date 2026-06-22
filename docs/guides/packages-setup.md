@@ -12,7 +12,7 @@ All tools in this repository are cross-platform — they are available on both m
 |---|---|---|
 | `git` | repository management | Yes |
 | `stow` | symlink manager | Yes |
-| `go-task` | task runner | Yes |
+| [`go-task`](https://taskfile.dev/) | task runner; also powers `task <Tab>` zsh completion | Yes |
 | `herdr` | terminal multiplexer with AI agent integration | Optional |
 | `fzf` | fuzzy finder (shell integration, fzf-tab completion previews) | Optional |
 | `zoxide` | smarter `cd` | Optional |
