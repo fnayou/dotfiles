@@ -21,6 +21,9 @@ brew "oh-my-posh", tap: "jandedobbeleer/oh-my-posh"
 # node + python power the LSP servers Mason installs inside Neovim.
 # A C compiler (Xcode Command Line Tools) is also required for treesitter
 # parsers — install separately with: xcode-select --install
+# nvim-treesitter (main branch) needs the tree-sitter CLI, which Homebrew's
+# `tree-sitter` formula does NOT provide (library only). Install the CLI with:
+#   npm install -g tree-sitter-cli
 brew "neovim"
 brew "ripgrep"
 brew "fd"

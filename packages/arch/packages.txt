@@ -14,6 +14,8 @@
 # node (nodejs/npm) + python power the LSP servers Mason installs inside Neovim.
 # base-devel provides the C compiler required for treesitter parsers.
 # sudo pacman -S neovim ripgrep fd nodejs npm python python-pipx base-devel
+# nvim-treesitter (main branch) also needs the tree-sitter CLI:
+#   sudo pacman -S tree-sitter-cli      # (or: npm install -g tree-sitter-cli)
 
 # --- AUR packages (requires yay or paru) ---
 # yay -S oh-my-posh-bin
