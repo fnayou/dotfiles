@@ -42,6 +42,12 @@ tasks:
     cmds:
       - bash scripts/check-zsh-deps.sh
 
+  deps:check:nvim:
+    desc: "Check Neovim-tier dependencies (nvim, tree-sitter, rg, fd, node) — read-only, never installs"
+    silent: true
+    cmds:
+      - bash scripts/check-nvim-deps.sh
+
   deps:brew:
     desc: "Print manual install commands for macOS / Homebrew — prints only, does not install"
     silent: true

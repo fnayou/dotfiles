@@ -104,6 +104,19 @@ yay -S oh-my-posh-bin
 
 Skip this step if you do not want the Oh My Posh shell prompt — `prompt.zsh` is a no-op when `oh-my-posh` is absent.
 
+### Step 2b: Install the Neovim tier (optional)
+
+Only needed if you stow the `nvim` package. `base-devel` provides the C compiler and
+`tree-sitter-cli` the parser builder — without the latter, nvim-treesitter parser
+builds fail with `ENOENT ... (cmd): 'tree-sitter'`. See `stow/common/nvim/README.md`
+for the full dependency rationale.
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+sudo pacman -S neovim ripgrep fd nodejs npm python python-pipx base-devel tree-sitter-cli
+```
+
 ### Step 3: Install zinit
 
 ⚠️  MANUAL STEP — review before running
@@ -119,7 +132,11 @@ git clone https://github.com/zdharma-continuum/zinit.git \
 task deps:check:zsh
 ```
 
-All lines should show `PASS`.
+All lines should show `PASS`. If you installed the Neovim tier, also run:
+
+```bash
+task deps:check:nvim
+```
 
 ---
 
@@ -154,6 +171,7 @@ All optional tools are guarded in the zsh config — uninstalled tools are silen
 | `task deps:brew` | Print the macOS install commands (does not run them) |
 | `task deps:arch` | Print the Arch install commands (does not run them) |
 | `task deps:check:zsh` | Check which shell tools are installed vs missing |
+| `task deps:check:nvim` | Check which Neovim-tier tools are installed vs missing |
 
 ---
 

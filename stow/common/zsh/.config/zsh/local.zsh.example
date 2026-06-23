@@ -8,6 +8,14 @@
 # Private PATH (work tools, internal binaries):
 # export PATH="$HOME/work/bin:$PATH"
 
+# Homebrew on Linux (linuxbrew) — machine-specific; arch.zsh intentionally omits
+# brew (no Homebrew assumptions on Arch), so wire it here if you use it. brew is
+# not yet on PATH at this point, so call the binary by absolute path. tools.zsh
+# runs before local.zsh, so re-init PATH-dependent tools after brew is loaded:
+# [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init --cmd cd zsh)"
+# command -v fzf    >/dev/null 2>&1 && eval "$(fzf --zsh)"
+
 # Machine-specific editor override:
 # export EDITOR="code --wait"
 
