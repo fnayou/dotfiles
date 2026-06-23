@@ -179,6 +179,30 @@ This creates `~/.config/zsh/` as a real directory and places per-file symlinks i
 
 ---
 
+## Step 2b: Set zsh as your login shell
+
+This repository never changes your login shell (ADR-0027 / PRD-0007 — `chsh` is a
+forbidden repo action). You must do it yourself, once, as a manual step.
+
+Check your current default shell:
+
+```bash
+getent passwd "$USER" | cut -d: -f7
+```
+
+If it is not `zsh`, set it:
+
+⚠️  MANUAL STEP — changes your login shell; review before running
+
+```bash
+chsh -s "$(command -v zsh)"
+```
+
+Log out and back in for it to take effect. Without this, your login shell stays
+(for example) bash, and the managed `~/.zshrc` layer never loads on a fresh login.
+
+---
+
 ## Step 3: Wire `~/.zshrc` to the managed layer
 
 `~/.zshrc` is never managed by Stow (ADR-0027). After stowing, use `zsh:bootstrap` to append the managed include block to your real `~/.zshrc`. The block is guarded: if `index.zsh` is absent, it is a no-op and your shell starts normally.
@@ -444,6 +468,32 @@ ls -la "$HOME/.config/zsh/local.zsh"
 ```
 
 Open a new shell after saving changes — `local.zsh` is sourced at shell startup, not dynamically.
+
+**A tool is installed but `command not found` in zsh (e.g. `zoxide`, `fzf`, `task`):**
+
+The tool is on PATH in your old shell (often bash) but not in zsh. The most common
+cause on Arch / EndeavourOS is a tool installed via **Homebrew on Linux** (linuxbrew):
+`arch.zsh` intentionally does **not** run `brew shellenv` (no Homebrew assumptions on
+Arch — see the cross-platform rules), so brew's bin directory never reaches zsh's PATH.
+The macOS layer (`macos.zsh`) wires brew; the Arch layer deliberately does not.
+
+Fix it in your untracked `~/.config/zsh/local.zsh` (machine-specific, sourced last).
+Because `tools.zsh` runs **before** `local.zsh`, the PATH-dependent tool integrations
+(`zoxide init`, `fzf --zsh`) already ran and were skipped — so re-run them here after
+putting brew on PATH:
+
+```zsh
+# Homebrew on Linux (machine-specific — keep in local.zsh, never in committed arch.zsh)
+[[ -x /home/linuxbrew/.linuxbrew/bin/brew ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# Re-init tools that tools.zsh skipped before brew was on PATH
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init --cmd cd zsh)"
+command -v fzf    >/dev/null 2>&1 && eval "$(fzf --zsh)"
+```
+
+Open a new shell to confirm: `command -v zoxide` should now resolve. Alternatively,
+install the tools from pacman instead of brew (`sudo pacman -S zoxide fzf`) so they
+land in `/usr/bin`, which is already on PATH — then no `local.zsh` wiring is needed.
 
 ---
 
