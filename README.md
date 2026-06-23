@@ -13,11 +13,11 @@ never automatically.
 Claude Code operating layer:    complete
 GNU Stow scaffold:              created
 Managed packages:               see stow/common/
-Home directory:                 unmodified (nothing stowed yet)
+Home directory:                 stowed — all stow/common/ packages symlinked into $HOME
 ```
 
-`stow/common/` is the source of truth for which packages exist. Nothing has been stowed; no
-symlinks exist; no file in `$HOME` has been modified.
+`stow/common/` is the source of truth for which packages exist. All of its packages are stowed:
+live symlinks point from `$HOME` into the repo. Stow is still always a deliberate, manual step.
 
 ## What's included
 
@@ -63,7 +63,7 @@ overwrites existing files. See the [Stow usage guide](docs/stow-usage.md) for fu
 
 ## Safety
 
-- No Stow has been run; no symlinks exist; no `$HOME` file has been modified.
+- All `stow/common/` packages are stowed; symlinks point from `$HOME` into the repo. Each was installed via a deliberate, reviewed Stow step.
 - Stow and symlink operations happen only with explicit per-session approval and a reviewed plan.
 - No secrets, credentials, or private hostnames are committed.
 - Local-only and sensitive values live in unstowed `.example` templates that you copy and fill in.
