@@ -148,6 +148,34 @@ risking any real home directory change. Always remove `$TEST_HOME` after validat
 
 ---
 
+## Adding a file to an already-stowed package
+
+Stow does **not** pick up newly added files automatically. When you add a file to a
+package that is already stowed into `$HOME` (for example a new `*.zsh` layer in the zsh
+package, or a new tool config), the symlink is **not** created until you **re-stow** the
+package.
+
+Dry-run first:
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding --simulate <package>
+```
+
+⚠️  MANUAL STEP — review dry-run output before running
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding --restow <package>
+```
+
+Notes:
+
+- `--restow` re-links the package, picking up new files while leaving existing links intact.
+- Drop `--no-folding` for packages that do not require it — only `zsh`, `alacritty`, and
+  `herdr` use it (the zsh requirement is ADR-0024). `git` and `omp` do not.
+- Until you re-stow, the new file lives in the repo but is **not** linked into `$HOME`. To
+  test it before re-stowing, source it by its full repository path.
+
+---
+
 ## Forbidden
 
 The following are forbidden in this repository:
