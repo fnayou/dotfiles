@@ -19,6 +19,26 @@ tasks:
     cmds:
       - bash scripts/check.sh
 
+  # OS maintenance tasks (update, clean:apply) are mutating — the ADR-0009 ban is
+  # explicitly lifted for them by ADR-0052; both are MANUAL USE ONLY. `clean` stays dry-run.
+  update:
+    desc: "OS maintenance: sync + upgrade installed packages (Arch: yay/pacman, macOS: brew) — interactive. MANUAL USE ONLY"
+    silent: true
+    cmds:
+      - bash scripts/os-maintenance.sh update
+
+  clean:
+    desc: "OS maintenance: report what cleanup would remove (orphans, package cache, journal) — DRY RUN, deletes nothing"
+    silent: true
+    cmds:
+      - bash scripts/os-maintenance.sh clean
+
+  clean:apply:
+    desc: "OS maintenance: perform cleanup — DESTRUCTIVE (removes orphans, prunes cache, vacuums journal). Re-prints the report first. MANUAL USE ONLY"
+    silent: true
+    cmds:
+      - bash scripts/os-maintenance.sh clean --apply
+
   list:
     desc: "List Stow packages — output is <area>/<package>, use as: task dry-run AREA=<area> PACKAGE=<package>"
     silent: true
