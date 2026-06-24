@@ -33,14 +33,17 @@ fi
 # 7) Key bindings.
 [[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
 
-# 8) Optional tool integrations (fzf, zoxide) — all guarded.
-[[ -r "$HOME/.config/zsh/tools.zsh" ]] && source "$HOME/.config/zsh/tools.zsh"
-
-# 9) Portable aliases.
+# 8) Portable aliases.
 [[ -r "$HOME/.config/zsh/aliases.zsh" ]] && source "$HOME/.config/zsh/aliases.zsh"
 
-# 10) Prompt: Oh My Posh — double-guarded inside prompt.zsh; no-op if missing.
+# 9) Prompt: Oh My Posh — double-guarded inside prompt.zsh; no-op if missing.
 [[ -r "$HOME/.config/zsh/prompt.zsh" ]] && source "$HOME/.config/zsh/prompt.zsh"
+
+# 10) Optional tool integrations (fzf, zoxide) — all guarded. Sourced AFTER the
+#     prompt: Oh My Posh rewrites the zsh hook array on init, which would displace
+#     zoxide's precmd/chpwd hook. Initialising zoxide last keeps its hook intact
+#     (satisfies `zoxide doctor`; see ajeetdsouza/zoxide init-at-end guidance).
+[[ -r "$HOME/.config/zsh/tools.zsh" ]] && source "$HOME/.config/zsh/tools.zsh"
 
 # 11) Local overrides — machine-specific/sensitive, git-ignored, sourced LAST so it wins.
 [[ -r "$HOME/.config/zsh/local.zsh" ]] && source "$HOME/.config/zsh/local.zsh"
