@@ -35,6 +35,9 @@ fi
 # 6b) Taskfile (go-task) completion tuning — guarded; no-op without `task`.
 [[ -r "$HOME/.config/zsh/taskfile.zsh" ]] && source "$HOME/.config/zsh/taskfile.zsh"
 
+# 6c) Herdr completion — guarded; no-op without `herdr`.
+[[ -r "$HOME/.config/zsh/herdr.zsh" ]] && source "$HOME/.config/zsh/herdr.zsh"
+
 # 7) Key bindings.
 [[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
 
