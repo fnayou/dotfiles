@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Claude Code statusLine — mirrors Oh My Posh theme (Catppuccin Macchiato).
 # Managed by the dotfiles `claude` package; theme source is the `omp` package.
-# Segments: OS icon | model | path (depth-limited) | git branch+status | ctx % | caveman badge
+# Segments: OS icon | model | path (depth-limited) | git branch+status | PR # | ctx % | caveman badge
 # Colors match omp.toml: mauve #c6a0f6, teal #8bd5ca, blue #8aadf4, green #a6da95, yellow #eed49f
 
 input=$(cat)
@@ -32,7 +32,7 @@ model=$(echo "$input" | jq -r '.model.display_name // empty')
 # --- Path segment (blue #8aadf4) ---
 # Replicate OMP "full" style with max_depth=3, home_icon="~"
 display_path="$cwd"
-display_path="${display_path/#$HOME/\~}"
+display_path="${display_path/#$HOME/~}"
 # Truncate to last 3 components if deeper
 IFS='/' read -ra parts <<< "$display_path"
 if (( ${#parts[@]} > 3 )); then
@@ -67,6 +67,36 @@ if git -C "$cwd" rev-parse --is-inside-work-tree &>/dev/null 2>&1; then
     (( behind > 0 )) && git_str+=" ↓"
   fi
   printf '\033[38;2;166;218;149m%s\033[0m' "$git_str"
+
+  # --- GitHub PR for current branch (mauve #c6a0f6; cached, non-blocking) ---
+  # `gh pr view` is a ~0.5s network call — too slow to run on every render. Cache the
+  # open-PR number per repo+branch and refresh in the background so the statusLine never
+  # blocks; the number appears one render after the branch first gains a PR. Nerd Font
+  # glyph stored as an octal escape (pure ASCII) and rendered with printf, like the OS icon.
+  if command -v gh >/dev/null 2>&1 && [[ -n "$branch" ]]; then
+    cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline"
+    mkdir -p "$cache_dir" 2>/dev/null
+    toplevel=$(git -c core.fsmonitor= --no-optional-locks -C "$cwd" rev-parse --show-toplevel 2>/dev/null)
+    cache_key="${toplevel//\//_}__${branch//\//_}"
+    cache_file="$cache_dir/pr_${cache_key}"
+    ttl=120
+    now=$(date +%s)
+    mtime=$(stat -f %m "$cache_file" 2>/dev/null || stat -c %Y "$cache_file" 2>/dev/null || echo 0)
+    if (( now - mtime > ttl )); then
+      # Record every attempt (even "no PR" → empty file) so the TTL throttles re-runs.
+      ( pr=$(gh pr view "$branch" --json number,state \
+               -q 'select(.state=="OPEN") | .number' 2>/dev/null)
+        printf '%s' "$pr" >"$cache_file.tmp" 2>/dev/null \
+          && mv -f "$cache_file.tmp" "$cache_file" 2>/dev/null ) >/dev/null 2>&1 &
+      disown 2>/dev/null
+    fi
+    pr_num=""
+    [[ -f "$cache_file" ]] && pr_num=$(<"$cache_file")
+    if [[ "$pr_num" =~ ^[0-9]+$ ]]; then
+      gh_icon=$(printf '\357\202\233')   # GitHub (nf-fa-github, U+F09B)
+      printf ' \033[38;2;198;160;246m%s #%s\033[0m' "$gh_icon" "$pr_num"
+    fi
+  fi
 fi
 
 # --- Context window usage (yellow #eed49f; null before first API call / after compact) ---
