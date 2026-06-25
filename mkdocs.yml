@@ -8,6 +8,8 @@ docs_dir: website
 
 theme:
   name: material
+  logo: assets/images/dotfiles-logo.png
+  favicon: assets/images/favicon.png
   palette:
     scheme: slate
     primary: blue
