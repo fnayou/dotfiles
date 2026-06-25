@@ -1,9 +1,56 @@
 # Supported Systems
 
-This page will document the supported platforms (macOS and EndeavourOS / Arch Linux) and any
-platform-specific notes.
+This is a personal setup, kept tidy enough to share. Two systems are actively used and tested; anything
+else should be treated as a reference to read and adapt, not a drop-in install.
 
-## TODO
+## Tested platforms
 
-- [ ] State supported platforms and primary environment.
-- [ ] Note any known platform differences.
+| Platform | Status |
+|---|---|
+| **macOS** | Primary environment, frequently used |
+| **EndeavourOS / Arch Linux** | Also used and supported from the start |
+
+!!! warning "No broad-Linux claim"
+    The repository targets macOS and Arch / EndeavourOS specifically. Other Linux distributions are not
+    claimed to work — the package manager steps assume Homebrew (macOS) or `pacman` / AUR (Arch). On
+    another distro, the shell config and themes may still be useful, but you'll need to install
+    dependencies your own way.
+
+## What's portable vs system-specific
+
+| Layer | Portability |
+|---|---|
+| Zsh config, aliases, prompt, tool integrations | Portable across macOS and Arch; optional tools are guarded and no-op when absent |
+| Git config, aliases, ignore | Portable (no OS-specific assumptions) |
+| Alacritty, bat, eza, Neovim themes | Portable config paths (XDG); some Alacritty lines are macOS-only but harmless on Linux |
+| Package installation | System-specific — Homebrew on macOS, `pacman`/AUR on Arch |
+| OS maintenance (`task update` / `clean`) | Branches by OS inside the helper script |
+
+The zsh package separates per-OS concerns into `macos.zsh` and `arch.zsh`, selected at runtime, so the
+shared layers stay identical on both. See [Shell](../features/shell.md).
+
+## Check your machine
+
+The repository ships read-only dependency checks (they never install anything):
+
+```bash
+task check            # core prerequisites: stow, git, task
+task deps:check:zsh   # shell-tier tools: fzf, zoxide, eza, bat, oh-my-posh, zinit
+task deps:check:nvim  # Neovim-tier tools: nvim, tree-sitter, rg, fd, node
+```
+
+Detect which OS the helper scripts will assume:
+
+```bash
+task detect           # prints "macos" or "arch"
+```
+
+## Expect to adapt
+
+This configuration encodes personal preferences. Treat it as a starting point: read the parts that
+interest you, copy what fits, and change what doesn't. See [Philosophy](../philosophy.md) and
+[Getting Started](../getting-started.md).
+
+## Related
+
+- [Installation](../installation.md) · [Shell Dependencies](shell-dependencies.md) · [Troubleshooting](troubleshooting.md)
