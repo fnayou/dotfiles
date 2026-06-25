@@ -32,6 +32,9 @@ temp/
 # Logs
 *.log
 
+# MkDocs build output
+site/
+
 # Local machine files
 *.local
 *.local.*

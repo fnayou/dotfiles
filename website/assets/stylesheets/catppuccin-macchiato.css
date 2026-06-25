@@ -1,0 +1,52 @@
+/*
+ * Catppuccin Macchiato (Blue accent) — Material for MkDocs override.
+ * First-pass palette. Applies on the dark (slate) scheme.
+ * Palette reference: https://github.com/catppuccin/catppuccin
+ */
+
+[data-md-color-scheme="slate"] {
+  /* Base surfaces */
+  --md-default-bg-color:            #24273a; /* Base */
+  --md-default-fg-color:            #cad3f5; /* Text */
+  --md-default-fg-color--light:     #b8c0e0; /* Subtext1 */
+  --md-default-fg-color--lighter:   #a5adcb; /* Subtext0 */
+  --md-default-fg-color--lightest:  #6e738d; /* Overlay0 */
+
+  /* Primary / accent — Blue */
+  --md-primary-fg-color:            #8aadf4; /* Blue */
+  --md-primary-fg-color--light:     #91d7e3; /* Sky */
+  --md-primary-fg-color--dark:      #7dc4e4; /* Sapphire */
+  --md-primary-bg-color:            #1e2030; /* Mantle (text on primary) */
+  --md-primary-bg-color--light:     #cad3f5;
+
+  --md-accent-fg-color:             #8aadf4; /* Blue */
+  --md-accent-fg-color--transparent: rgba(138, 173, 244, 0.1);
+  --md-accent-bg-color:             #1e2030;
+
+  /* Code surfaces */
+  --md-code-bg-color:               #1e2030; /* Mantle */
+  --md-code-fg-color:               #cad3f5; /* Text */
+
+  /* Links */
+  --md-typeset-a-color:             #8aadf4; /* Blue */
+
+  /* Footer / header use Mantle for contrast against Base */
+  --md-footer-bg-color:             #1e2030;
+  --md-footer-bg-color--dark:       #181926; /* Crust */
+}
+
+/* Header bar — Mantle instead of full Blue for a calmer look */
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #1e2030;
+  color: #cad3f5;
+}
+
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #181926; /* Crust */
+}
+
+/* Inline code chips */
+[data-md-color-scheme="slate"] .md-typeset code {
+  background-color: #363a4f; /* Surface0 */
+  color: #cad3f5;
+}

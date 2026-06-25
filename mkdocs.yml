@@ -1,0 +1,61 @@
+site_name: fnayou/dotfiles
+site_description: Personal dotfiles, terminal workflow, shell configuration and development environment.
+site_url: https://fnayou.github.io/dotfiles/
+repo_url: https://github.com/fnayou/dotfiles
+repo_name: fnayou/dotfiles
+
+docs_dir: website
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: blue
+    accent: blue
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+
+extra_css:
+  - assets/stylesheets/catppuccin-macchiato.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Overview: getting-started.md
+      - Installation: installation.md
+      - Philosophy: philosophy.md
+  - Features:
+      - Overview: features/index.md
+      - Shell (Zsh): features/shell.md
+      - Git: features/git.md
+      - Terminal: features/terminal.md
+      - Editor (Neovim): features/editor.md
+      - Packages: features/packages.md
+      - Scripts: features/scripts.md
+  - Usage:
+      - Overview: usage/index.md
+      - Daily Workflow: usage/daily-workflow.md
+      - Aliases: usage/aliases.md
+      - Functions: usage/functions.md
+      - Taskfile: usage/taskfile.md
+  - Reference:
+      - Overview: reference/index.md
+      - Repository Structure: reference/repository-structure.md
+      - GNU Stow Workflow: reference/stow.md
+      - Shell Dependencies: reference/shell-dependencies.md
+      - Supported Systems: reference/supported-systems.md
+      - Troubleshooting: reference/troubleshooting.md
+  - Screenshots: screenshots.md
