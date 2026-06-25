@@ -1,13 +1,19 @@
 # dotfiles
 
+<p align="center">
+  <img src="website/assets/images/dotfiles-readme-banner.png" alt="fnayou/dotfiles banner" />
+</p>
+
+<p align="center">
+  <a href="https://fnayou.github.io/dotfiles/">Documentation</a>
+</p>
+
 Private, safe, cross-platform personal dotfiles for **macOS** and **EndeavourOS / Arch Linux**,
 managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
 macOS is the primary environment; Arch is supported from the start. Configs are version-controlled
 in `stow/common/` and only ever symlinked into `$HOME` by a **deliberate, manual** Stow step —
 never automatically.
-
-📖 **Documentation site:** <https://fnayou.github.io/dotfiles/>
 
 ## Status
 
