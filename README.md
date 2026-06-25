@@ -7,6 +7,8 @@ macOS is the primary environment; Arch is supported from the start. Configs are 
 in `stow/common/` and only ever symlinked into `$HOME` by a **deliberate, manual** Stow step —
 never automatically.
 
+📖 **Documentation site:** <https://fnayou.github.io/dotfiles/>
+
 ## Status
 
 ```
@@ -37,6 +39,9 @@ reserved for platform-specific packages and are currently empty.
 | **zsh** | Layered Zsh config — path, history, plugins, tools, prompt, per-OS layers, go-task completion | [README](stow/common/zsh/README.md) | [guide](docs/guides/zsh-setup.md) |
 
 ## Documentation
+
+The public documentation site — overview, installation, features, usage, and reference — lives at
+<https://fnayou.github.io/dotfiles/> (built with MkDocs Material from `website/`).
 
 Setup guides are written for a human operator, not for agents.
 
