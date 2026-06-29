@@ -9,8 +9,8 @@ maintenance/debug, while being a full, learnable setup. Plugins are managed by
 [lazy.nvim](https://github.com/folke/lazy.nvim); the stock kickstart `init.lua`
 is kept close to upstream and feature files live under `lua/custom/plugins/`.
 
-> Target: `~/.config/nvim` (XDG). Identical on macOS and Arch — only the system
-> dependencies differ per platform.
+> Target: `~/.config/nvim` (XDG). Identical on macOS, Arch, and Debian — only the
+> system dependencies differ per platform.
 
 ## Layout
 
@@ -46,6 +46,18 @@ sudo pacman -S neovim ripgrep fd nodejs npm python python-pipx base-devel
 sudo pacman -S tree-sitter-cli           # (or: npm install -g tree-sitter-cli)
 ```
 
+```bash
+# Debian (stable / trixie) — bat->batcat, fd->fdfind
+sudo apt install neovim ripgrep fd-find nodejs npm python3 python3-pip pipx build-essential
+# Neovim >= 0.11 required (main-branch treesitter). If apt's is older, use the
+# prebuilt tarball instead of apt's neovim (node-free, no sudo):
+#   curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
+#     | tar xz -C ~/.local --strip-components=1
+# tree-sitter CLI: prebuilt binary (node-free, no ABI drift) — not apt/npm
+curl -fsSL https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz \
+  | gunzip > ~/.local/bin/tree-sitter && chmod +x ~/.local/bin/tree-sitter
+```
+
 - **ripgrep / fd** — snacks picker live-grep and file finding.
 - **node** — powers most LSP servers (intelephense, bashls, yamlls, jsonls,
   pyright, ansiblels, dockerls, docker_compose_language_service).
@@ -54,7 +66,9 @@ sudo pacman -S tree-sitter-cli           # (or: npm install -g tree-sitter-cli)
 - **tree-sitter CLI** — nvim-treesitter's `main` branch builds parsers by
   shelling out to the `tree-sitter` binary. On macOS, Homebrew's `tree-sitter`
   formula ships the **library only** (no CLI), so install the CLI via
-  `npm install -g tree-sitter-cli`. Without it parser builds fail with
+  `npm install -g tree-sitter-cli`. On Debian, prefer the prebuilt GitHub
+  release binary (node-free, version-pinnable, no ABI drift) over apt's older
+  `tree-sitter-cli` or npm. Without the CLI, parser builds fail with
   `ENOENT ... (cmd): 'tree-sitter'`.
 
 Print the commands any time (nothing is installed automatically):
@@ -62,6 +76,7 @@ Print the commands any time (nothing is installed automatically):
 ```bash
 task deps:brew    # macOS
 task deps:arch    # Arch
+task deps:debian  # Debian
 ```
 
 ## Install (Stow)
@@ -94,6 +109,57 @@ nvim "+checkhealth" +qa   # review interactively
 After the first sync, commit the generated `lazy-lock.json` (pinned versions).
 Because the config is stowed, `:Lazy sync` writes through the symlink straight
 into this repo.
+
+## Updating plugins (`lazy-lock.json`) across machines
+
+`lazy-lock.json` is a **lockfile** — like `package-lock.json`. It pins every
+plugin to an exact git commit. It has **one source of truth** (this repo) and is
+**OS-agnostic**: the pinned commits are identical on macOS, Arch, and Debian, so
+it never matters *which* machine produces the bump.
+
+Because the package is stowed, the `lazy-lock.json` in `~/.config/nvim/` is a
+symlink into this repo's clone on that machine. When lazy rewrites the lock, it
+writes straight into that machine's working tree.
+
+**The golden rule — one updater, everyone else restores:**
+
+| Action | Command | When |
+|---|---|---|
+| **Bump** (update plugins + rewrite the lock) | `:Lazy update` | On **ONE** machine only |
+| **Commit** the lock | `git add` the lock, commit, push | Right after the bump |
+| **Apply** the lock | `:Lazy restore` | On every other machine, after `git pull` — **never** `:Lazy update` |
+
+`:Lazy restore` pins plugins to the exact commits in `lazy-lock.json`. That is
+what keeps all machines identical.
+
+**Do not** run `:Lazy update` on two machines independently — you get divergent
+locks and a JSON merge conflict. Bump on one machine; restore on the rest.
+
+### Workflow
+
+Bump (whichever machine you choose to update on — server or local, doesn't matter):
+
+```bash
+# inside Neovim
+:Lazy update
+```
+
+```bash
+# then, on that same machine — commit ONLY the lockfile so no stray state leaks in
+git add stow/common/nvim/.config/nvim/lazy-lock.json
+git commit -m "chore(nvim): bump lazy-lock.json"
+git push
+```
+
+Apply on every other machine:
+
+```bash
+git pull
+nvim          # then run:  :Lazy restore
+# headless equivalent:  nvim --headless "+Lazy! restore" +qa
+```
+
+> Branch/PR per the repo's normal flow if the clone is on `main`.
 
 ## Learning Neovim
 

@@ -1,7 +1,8 @@
 # fnayou/dotfiles
 
-Personal, cross-platform dotfiles for **macOS** and **EndeavourOS / Arch Linux**, managed with
-[GNU Stow](https://www.gnu.org/software/stow/) and themed around Catppuccin Macchiato (blue accent).
+Personal, cross-platform dotfiles for **macOS**, **EndeavourOS / Arch Linux**, and **Debian**
+(trixie / 13+), managed with [GNU Stow](https://www.gnu.org/software/stow/) and themed around
+Catppuccin Macchiato (blue accent).
 
 This is the configuration that runs my own machines: shell, prompt, terminal, editor, and a handful
 of CLI tools, wired together so a fresh machine becomes familiar in a few deliberate steps.
@@ -16,7 +17,7 @@ is installed automatically — every change to your home directory is a manual, 
 
 - People who live in the **terminal** and want a documented, working reference setup.
 - Anyone who wants to **borrow ideas or specific configs** without adopting a whole framework.
-- macOS and Arch users who want the same configuration to behave consistently on both.
+- macOS, Arch, and Debian users who want the same configuration to behave consistently across them.
 
 !!! note "Take only what you need"
     This is not an all-or-nothing install. You can read a single file, copy one alias, or stow one

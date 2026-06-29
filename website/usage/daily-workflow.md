@@ -64,6 +64,6 @@ With the optional plugins installed, `<Tab>` completion is fzf-backed and contex
 lists tasks with descriptions, `herdr <Tab>` lists session names, and file/directory completions show
 `eza` / `bat` previews. See [Completions](../features/shell.md#completions).
 
-!!! warning "Tested on macOS + Arch only"
-    These conveniences are tested on macOS (primary) and EndeavourOS / Arch Linux. Elsewhere, treat them
-    as a reference and adapt.
+!!! warning "Tested on macOS, Arch, and Debian"
+    These conveniences are tested on macOS (primary), EndeavourOS / Arch Linux, and Debian (trixie / 13+).
+    Elsewhere, treat them as a reference and adapt.

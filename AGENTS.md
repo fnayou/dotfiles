@@ -12,6 +12,7 @@ Key context:
 
 - **macOS** is frequently used (primary environment).
 - **EndeavourOS / Arch Linux** is also used.
+- **Debian** (stable, trixie / 13+) runs on all servers.
 - **GNU Stow** is the symlink manager (package-based layout under `stow/`).
 - Dotfiles are **stowed** — all `stow/common/` packages are symlinked into `$HOME`.
 - The Claude Code operating layer (agents, rules, skills, documentation workflow) is complete and active.
@@ -23,7 +24,7 @@ Key context:
 ```
 Current status:          Claude Code operating layer complete; common packages stowed.
 Dotfiles implementation: stowed — all stow/common/ packages symlinked into $HOME.
-GNU Stow packages:       see stow/common/ (source of truth; macos/ and arch/ empty).
+GNU Stow packages:       see stow/common/ (source of truth; macos/, arch/, debian/ empty).
 Stowed to $HOME:         all stow/common/ packages — live symlinks into the repo.
 Home directory:          modified by these symlinks; further modifications forbidden unless explicitly requested.
 ```
@@ -41,7 +42,7 @@ Home directory:          modified by these symlinks; further modifications forbi
 5. **Planning before building** — approved plan required before any implementation.
 6. **Review before committing** — Reviewer validates every change before commit.
 7. **Incremental adoption** — add dotfiles one package at a time, never all at once.
-8. **Cross-platform by design** — macOS and Arch are treated separately from the start.
+8. **Cross-platform by design** — macOS, Arch, and Debian are treated separately from the start.
 9. **No destructive automation** — risky commands are shown, not executed.
 
 ---
@@ -54,8 +55,8 @@ Home directory:          modified by these symlinks; further modifications forbi
 
 - Define repository structure and layout.
 - Make architecture decisions and document tradeoffs.
-- Consider long-term maintainability across macOS and Arch.
-- Consider macOS and Arch **separately** — never assume a shared approach.
+- Consider long-term maintainability across macOS, Arch, and Debian.
+- Consider macOS, Arch, and Debian **separately** — never assume a shared approach.
 - Define risks and open questions.
 - Avoid implementation unless explicitly asked.
 
@@ -166,7 +167,7 @@ Home directory:          modified by these symlinks; further modifications forbi
 
 - Review changes for **safety** — no destructive operations introduced.
 - Review changes for **privacy** — no secrets, tokens, keys, or sensitive data.
-- Review **cross-platform correctness** — macOS and Arch not incorrectly mixed.
+- Review **cross-platform correctness** — macOS, Arch, and Debian not incorrectly mixed.
 - Review **documentation clarity** — commands are copy-pasteable and safe.
 - Check that examples use placeholder values, not real data.
 - Verify no `stow --adopt`, `rm`, `mv`, or `ln -s` targeting `$HOME` was introduced.
@@ -313,16 +314,18 @@ docs/claude/       → agent guides and workflow documentation
 
 ## 10. Cross-Platform Rules
 
-- macOS and EndeavourOS / Arch must be **considered separately**.
-- Do not use Homebrew commands in Arch configs.
-- Do not use pacman or yay commands in macOS configs.
+- macOS, EndeavourOS / Arch, and Debian must be **considered separately**.
+- Do not use Homebrew commands in Arch or Debian configs.
+- Do not use pacman or yay commands in macOS or Debian configs.
+- Do not use apt commands in macOS or Arch configs.
 - Do not mix OS-specific config into shared/common config.
 - Commands must **specify the target OS** when relevant.
 - Future scripts must **detect OS** before suggesting package manager commands.
 - Avoid hardcoded machine-specific paths.
-- Common packages: configurations that work on both platforms without modification.
+- Common packages: configurations that work on all platforms without modification.
 - macOS-specific: configurations only for macOS.
 - Arch-specific: configurations only for EndeavourOS / Arch.
+- Debian-specific: configurations only for Debian.
 
 ---
 

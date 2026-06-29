@@ -16,17 +16,17 @@ This page is curated from the repository's `docs/shell-dependencies.md` and `doc
 
 ## Dependency tiers
 
-| Tool | Tier | Required? | macOS source | Arch source |
-|---|---|---|---|---|
-| `git` | core | Yes | `packages/Brewfile` | `pacman` |
-| `stow` | core | Yes | `packages/Brewfile` | `pacman` |
-| `go-task` | core | Yes | `packages/Brewfile` (tap) | `pacman` |
-| `fzf` | shell | Optional | `packages/Brewfile` | `pacman` |
-| `zoxide` | shell | Optional | `packages/Brewfile` | `pacman` |
-| `eza` | shell | Optional | `packages/Brewfile` | `pacman` |
-| `bat` | shell | Optional | `packages/Brewfile` | `pacman` |
-| `oh-my-posh` | shell | Optional | `packages/Brewfile` (tap) | AUR (`oh-my-posh-bin`) |
-| `zinit` | shell | Optional | manual git clone | manual git clone |
+| Tool | Tier | Required? | macOS source | Arch source | Debian source |
+|---|---|---|---|---|---|
+| `git` | core | Yes | `packages/Brewfile` | `pacman` | `apt` |
+| `stow` | core | Yes | `packages/Brewfile` | `pacman` | `apt` |
+| `go-task` | core | Yes | `packages/Brewfile` (tap) | `pacman` | out-of-band (`taskfile.dev` install.sh) |
+| `fzf` | shell | Optional | `packages/Brewfile` | `pacman` | `apt` |
+| `zoxide` | shell | Optional | `packages/Brewfile` | `pacman` | `apt` |
+| `eza` | shell | Optional | `packages/Brewfile` | `pacman` | `apt` (trixie / 13+) |
+| `bat` | shell | Optional | `packages/Brewfile` | `pacman` | `apt` (runs as `batcat`) |
+| `oh-my-posh` | shell | Optional | `packages/Brewfile` (tap) | AUR (`oh-my-posh-bin`) | out-of-band (`ohmyposh.dev` install.sh) |
+| `zinit` | shell | Optional | manual git clone | manual git clone | manual git clone |
 
 !!! tip "Optional means optional"
     Every shell-tier integration is guarded with `command -v` and is a no-op when its tool is absent.
@@ -37,6 +37,8 @@ This page is curated from the repository's `docs/shell-dependencies.md` and `doc
     `taskfile.zsh` enables `task <Tab>` completion. That completion relies on the native `_task` file
     shipped by the Homebrew (`go-task/tap`) and pacman (`go-task`) packages. Installing `task` another
     way (`go install`, raw `install.sh`) omits `_task`, so completion is unavailable on those installs.
+    On Debian, `go-task` is not in the archive and is installed via its `install.sh`, so `task <Tab>`
+    completion is not available there.
 
 ## Step 1 — Check what is missing
 
@@ -104,6 +106,36 @@ Exit code is non-zero if any required tool is missing.
 
     See `packages/arch/packages.txt` in the repository for a full annotated package list.
 
+=== "Debian (trixie / 13+)"
+
+    apt packages (binary names differ: `bat` → `batcat`, `fd` → `fdfind`):
+
+    ⚠️  MANUAL STEP — review before running
+
+    ```bash
+    sudo apt install git stow fzf zoxide eza bat
+    ```
+
+    `go-task` and `oh-my-posh` are not in the Debian archive — install out-of-band:
+
+    ⚠️  MANUAL STEP — review before running
+
+    ```bash
+    sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin   # go-task
+    curl -s https://ohmyposh.dev/install.sh | bash -s                              # oh-my-posh
+    ```
+
+    `zinit` (same as macOS):
+
+    ⚠️  MANUAL STEP — review before running
+
+    ```bash
+    git clone https://github.com/zdharma-continuum/zinit.git \
+      "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+    ```
+
+    See `packages/debian/packages.txt` in the repository for a full annotated package list.
+
 ## Step 3 — Verify
 
 ```bash
@@ -120,6 +152,7 @@ All lines should show `PASS`. Exit code `0` means all required shell-tier tools 
 | `task deps:check:zsh` | Check shell-tier tools |
 | `task deps:brew` | Print manual install commands for macOS / Homebrew |
 | `task deps:arch` | Print manual install commands for Arch / EndeavourOS |
+| `task deps:debian` | Print manual install commands for Debian (stable / trixie) |
 
 None of these tasks install anything — they check and report, or print instructions.
 

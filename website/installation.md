@@ -15,9 +15,10 @@ package creates symlinks in `$HOME` pointing back into the repository.
 
 ```
 stow/
-  common/     # works on macOS and Arch (source of truth)
+  common/     # works on macOS, Arch, and Debian (source of truth)
   macos/      # macOS-only packages (currently empty)
   arch/       # Arch / EndeavourOS-only packages (currently empty)
+  debian/     # Debian-only packages (currently empty)
 ```
 
 ## Dependencies
@@ -53,6 +54,22 @@ Install commands per platform (from the repository's packages guide):
     # oh-my-posh is AUR-only:
     yay -S oh-my-posh-bin
     ```
+
+=== "Debian (trixie / 13+)"
+
+    ⚠️  MANUAL STEP — review before running
+
+    ```bash
+    sudo apt install git stow fzf zoxide eza bat
+    # Binary names differ on Debian: bat -> batcat, fd -> fdfind
+    # go-task and oh-my-posh are NOT in the Debian archive — install out-of-band:
+    sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin   # go-task
+    curl -s https://ohmyposh.dev/install.sh | bash -s                              # oh-my-posh
+    ```
+
+    See `packages/debian/packages.txt` and `task deps:debian` for the full annotated list,
+    including the Neovim tier (where `tree-sitter` and, if apt's neovim is too old, neovim itself
+    come from a prebuilt binary).
 
 Want only specific tools? Install them individually — every optional tool is guarded in the zsh config
 and silently skipped when absent. See the repository's packages guide for the selective-install list and
