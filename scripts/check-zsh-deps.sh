@@ -15,6 +15,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   OS="macos"
 elif [[ -f /etc/arch-release ]]; then
   OS="arch"
+elif [[ -f /etc/debian_version ]]; then
+  OS="debian"
 else
   OS="unknown"
 fi
@@ -25,6 +27,10 @@ hint_install() {
   elif [[ "$OS" == "arch" ]]; then
     echo "  → Install hint (Arch): sudo pacman -S <tool>  (or yay -S oh-my-posh-bin for oh-my-posh)"
     echo "  → Full list: packages/arch/packages.txt"
+  elif [[ "$OS" == "debian" ]]; then
+    echo "  → Install hint (Debian): sudo apt install <tool>  (bat->batcat, fd->fdfind)"
+    echo "    go-task and oh-my-posh are not in the Debian archive — see packages/debian/packages.txt"
+    echo "  → Full list: packages/debian/packages.txt"
   else
     echo "  → Install hint: see docs/guides/packages-setup.md"
   fi

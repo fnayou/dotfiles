@@ -10,10 +10,11 @@ dotfiles/
 ├── Taskfile.yml       # go-task targets: list, dry-run, deps checks, bootstraps
 ├── mkdocs.yml         # Configuration for this documentation site
 ├── stow/              # The actual dotfiles, as Stow packages (source of truth)
-│   ├── common/        # Works on macOS and Arch
+│   ├── common/        # Works on macOS, Arch, and Debian
 │   ├── macos/         # macOS-specific (currently empty)
-│   └── arch/          # Arch / EndeavourOS-specific (currently empty)
-├── packages/          # Dependency manifests (Brewfile, arch/packages.txt)
+│   ├── arch/          # Arch / EndeavourOS-specific (currently empty)
+│   └── debian/        # Debian-specific (currently empty)
+├── packages/          # Dependency manifests (Brewfile, arch/packages.txt, debian/packages.txt)
 ├── scripts/           # Helper scripts (dependency checks, maintenance)
 ├── docs/              # Internal project documentation (kept as-is)
 ├── website/           # Public documentation source — this site

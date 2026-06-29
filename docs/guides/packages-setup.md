@@ -6,7 +6,7 @@ This guide explains how to install all tools required by this dotfiles repositor
 
 ## What needs to be installed
 
-All tools in this repository are cross-platform — they are available on both macOS and Arch / EndeavourOS.
+All tools in this repository are cross-platform — they are available on macOS, Arch / EndeavourOS, and Debian (stable, trixie / 13+).
 
 | Tool | Used by | Required? |
 |---|---|---|
@@ -26,6 +26,11 @@ Optional tools are fully guarded — the shell starts cleanly without them. Inst
 Package files:
 - macOS / Linux (Homebrew): `packages/Brewfile`
 - Arch / EndeavourOS: `packages/arch/packages.txt`
+- Debian (stable, trixie / 13+): `packages/debian/packages.txt`
+
+> Debian note: `bat` runs as `batcat` and `fd` (package `fd-find`) as `fdfind`.
+> `go-task` and `oh-my-posh` are not in the Debian archive — install them
+> out-of-band (see the Debian section below).
 
 ---
 
@@ -140,6 +145,84 @@ task deps:check:nvim
 
 ---
 
+## Debian (stable, trixie / 13+)
+
+### Step 1: Install apt packages
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+sudo apt install git stow fzf zoxide eza bat
+```
+
+Debian binary names differ from other platforms: `bat` runs as `batcat`, and
+`fd` (installed below via `fd-find`) runs as `fdfind`.
+
+### Step 2: Install out-of-band tools
+
+`go-task` and `oh-my-posh` are not in the Debian archive. Install them via their
+upstream scripts (review each before running):
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin   # go-task
+curl -s https://ohmyposh.dev/install.sh | bash -s                              # oh-my-posh
+```
+
+Skip `oh-my-posh` if you do not want the prompt — `prompt.zsh` is a no-op when it is absent.
+
+### Step 2b: Install the Neovim tier (optional)
+
+Only needed if you stow the `nvim` package. `build-essential` provides the C compiler.
+nvim-treesitter's `main` branch builds parsers by shelling out to a `tree-sitter`
+binary — without it, builds fail with `ENOENT ... (cmd): 'tree-sitter'`. On Debian,
+install the CLI from the prebuilt GitHub release (node-free, no ABI drift) rather than
+via npm. See `stow/common/nvim/README.md` for the full rationale.
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+sudo apt install neovim ripgrep fd-find nodejs npm python3 python3-pip pipx build-essential
+curl -fsSL https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz \
+  | gunzip > ~/.local/bin/tree-sitter && chmod +x ~/.local/bin/tree-sitter
+```
+
+Ensure `~/.local/bin` is on your `PATH`.
+
+> **Neovim version:** nvim-treesitter's `main` branch needs Neovim **>= 0.11**.
+> Debian stable's apt neovim may be older — check with `nvim --version`. If it is
+> too old, skip `neovim` in the apt line above and install the prebuilt tarball
+> into `~/.local` instead (node-free, no sudo):
+>
+> ```bash
+> curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
+>   | tar xz -C ~/.local --strip-components=1
+> ```
+
+### Step 3: Install zinit
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+git clone https://github.com/zdharma-continuum/zinit.git \
+  "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+```
+
+### Step 4: Verify
+
+```bash
+task deps:check:zsh
+```
+
+All lines should show `PASS`. If you installed the Neovim tier, also run:
+
+```bash
+task deps:check:nvim
+```
+
+---
+
 ## Selective install (any platform)
 
 If you want only specific tools rather than everything, install them individually:
@@ -158,6 +241,13 @@ sudo pacman -S fzf
 sudo pacman -S zoxide
 sudo pacman -S bat
 yay -S oh-my-posh-bin
+
+# Debian — individual tools (bat->batcat, fd->fdfind)
+sudo apt install eza
+sudo apt install fzf
+sudo apt install zoxide
+sudo apt install bat
+# oh-my-posh: curl -s https://ohmyposh.dev/install.sh | bash -s
 ```
 
 All optional tools are guarded in the zsh config — uninstalled tools are silently skipped.
@@ -170,6 +260,7 @@ All optional tools are guarded in the zsh config — uninstalled tools are silen
 |---|---|
 | `task deps:brew` | Print the macOS install commands (does not run them) |
 | `task deps:arch` | Print the Arch install commands (does not run them) |
+| `task deps:debian` | Print the Debian install commands (does not run them) |
 | `task deps:check:zsh` | Check which shell tools are installed vs missing |
 | `task deps:check:nvim` | Check which Neovim-tier tools are installed vs missing |
 
@@ -181,5 +272,6 @@ All optional tools are guarded in the zsh config — uninstalled tools are silen
 |---|---|---|
 | `packages/Brewfile` | macOS / Linux (Homebrew) | `brew bundle` format |
 | `packages/arch/packages.txt` | Arch / EndeavourOS | Annotated reference — read and run manually |
+| `packages/debian/packages.txt` | Debian (stable / trixie) | Annotated reference — read and run manually |
 
 Neither file is executed automatically. All installs are manual.

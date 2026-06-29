@@ -33,7 +33,7 @@ file owns a single job:
 | `aliases.zsh` | Portable aliases |
 | `tools.zsh` | zoxide integration (guarded) |
 | `prompt.zsh` | Oh My Posh (double-guarded; no-op if missing) |
-| `macos.zsh` / `arch.zsh` | Per-OS layers, runtime-selected |
+| `macos.zsh` / `arch.zsh` | Per-OS layers, runtime-selected (macOS / Arch; no `debian.zsh` yet — Debian loads shared layers only) |
 
 !!! info "Private overrides go in `local.zsh`"
     `local.zsh.example` is a skeleton you copy to `~/.config/zsh/local.zsh` for private,
@@ -106,9 +106,11 @@ stow --dir=stow/common --target="$HOME" --no-folding zsh
 After stowing, add the include block to `~/.zshrc` (see `docs/guides/zsh-setup.md` for the exact block)
 and start a new shell.
 
-!!! warning "Not claimed portable beyond macOS + Arch"
-    The layered config is tested on macOS (primary) and EndeavourOS / Arch Linux. Elsewhere, read it as
-    a reference and adapt rather than expecting a drop-in install.
+!!! warning "Not claimed portable beyond macOS, Arch, and Debian"
+    The layered config is tested on macOS (primary), EndeavourOS / Arch Linux, and Debian (trixie / 13+).
+    On Debian the shared layers load and dependencies/packages are first-class, but the per-OS layer
+    (`macos.zsh` / `arch.zsh`) has no `debian.zsh` equivalent yet. Elsewhere, read it as a reference and
+    adapt rather than expecting a drop-in install.
 
 ## Related
 

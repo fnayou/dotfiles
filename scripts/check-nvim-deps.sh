@@ -16,6 +16,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   OS="macos"
 elif [[ -f /etc/arch-release ]]; then
   OS="arch"
+elif [[ -f /etc/debian_version ]]; then
+  OS="debian"
 else
   OS="unknown"
 fi
@@ -27,6 +29,12 @@ hint_install() {
   elif [[ "$OS" == "arch" ]]; then
     echo "  → Install hint (Arch): sudo pacman -S neovim ripgrep fd nodejs npm python python-pipx base-devel tree-sitter-cli"
     echo "  → Full list: packages/arch/packages.txt"
+  elif [[ "$OS" == "debian" ]]; then
+    echo "  → Install hint (Debian): sudo apt install neovim ripgrep fd-find nodejs npm python3 python3-pip pipx build-essential"
+    echo "    tree-sitter CLI (node-free prebuilt binary):"
+    echo "    curl -fsSL https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz | gunzip > ~/.local/bin/tree-sitter && chmod +x ~/.local/bin/tree-sitter"
+    echo "    (Debian binaries: bat->batcat, fd->fdfind)"
+    echo "  → Full list: packages/debian/packages.txt"
   else
     echo "  → Install hint: see stow/common/nvim/README.md"
   fi

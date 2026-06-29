@@ -1,0 +1,40 @@
+# Debian (stable, trixie / 13+) — package list
+# For macOS see: packages/Brewfile
+# For Arch / EndeavourOS see: packages/arch/packages.txt
+#
+# Note: zinit is NOT listed here. Install via one-time manual git clone.
+# See: docs/guides/packages-setup.md
+
+# --- Repository prerequisites (apt) ---
+# go-task is NOT in the Debian archive — see "Out-of-band" below.
+# sudo apt install git stow
+
+# --- Shell runtime / zsh (apt) ---
+# sudo apt install fzf zoxide eza bat
+# Debian binary names differ:
+#   bat        -> run as `batcat`
+#   (fd is under Neovim below; package fd-find -> run as `fdfind`)
+
+# --- Neovim (apt) ---
+# node (nodejs/npm) + python power the LSP servers Mason installs inside Neovim.
+# build-essential provides the C compiler required for treesitter parsers.
+# sudo apt install neovim ripgrep fd-find nodejs npm python3 python3-pip pipx build-essential
+#
+# IMPORTANT — Neovim version: nvim-treesitter (main branch) needs Neovim >= 0.11.
+# Debian stable's apt neovim may be older. Check with:  nvim --version
+# If apt's version is too old, install the prebuilt tarball into ~/.local
+# (node-free, no sudo) instead of apt's neovim:
+#   curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
+#     | tar xz -C ~/.local --strip-components=1
+#   (then `sudo apt install ripgrep fd-find nodejs npm python3 python3-pip pipx build-essential` for the rest)
+#
+# nvim-treesitter (main branch) needs the tree-sitter CLI. Debian's apt
+# `tree-sitter-cli` trails upstream (0.22.x) and needs sudo. Prefer the
+# prebuilt static binary (node-free, version-pinnable, no ABI drift):
+#   curl -fsSL https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz \
+#     | gunzip > ~/.local/bin/tree-sitter && chmod +x ~/.local/bin/tree-sitter
+#   (ensure ~/.local/bin is on PATH)
+
+# --- Out-of-band (not in the Debian archive) ---
+# go-task:    sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+# oh-my-posh: curl -s https://ohmyposh.dev/install.sh | bash -s

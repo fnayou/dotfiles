@@ -41,8 +41,9 @@ repository. The intent is that you can always answer "why is this here?" without
 ## Reproducible and cross-platform
 
 The repository is the source of truth. A new machine is brought up *from* it, deliberately, rather than
-configured ad hoc. macOS and Arch are treated as first-class together: `common/` packages are written to
-behave identically on both, and anything genuinely platform-specific is isolated rather than mixed in.
+configured ad hoc. macOS, Arch, and Debian are treated as first-class together: `common/` packages are
+written to behave identically across them, and anything genuinely platform-specific is isolated rather
+than mixed in.
 
 !!! warning "Honest about compatibility"
     Tested on macOS (primary) and EndeavourOS / Arch Linux. It is not claimed to work on other systems —

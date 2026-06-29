@@ -17,8 +17,8 @@ Curated from `stow/common/nvim/README.md`. There is no separate setup guide for 
 - Feature files under `lua/custom/plugins/`: Catppuccin colorscheme, snacks picker, neo-tree file
   explorer, flash jump motions, indent guides, and filetype scoping.
 
-Target path is `~/.config/nvim` (XDG), identical on macOS and Arch — only the system dependencies
-differ per platform.
+Target path is `~/.config/nvim` (XDG), identical on macOS, Arch, and Debian — only the system
+dependencies differ per platform.
 
 ## Dependencies
 

@@ -2,7 +2,8 @@
 
 Routine system maintenance runs through the project's `task` runner. The helper script
 (`scripts/os-maintenance.sh`) detects the OS and runs the matching package-manager commands, so the
-same tasks work on macOS and Arch.
+same tasks work on macOS and Arch. (Debian/`apt` maintenance is not wired into this script yet — see
+[Supported Systems](../reference/supported-systems.md).)
 
 Curated from `docs/guides/os-maintenance.md` and `Taskfile.yml`.
 

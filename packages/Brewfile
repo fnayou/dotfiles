@@ -1,6 +1,7 @@
 # Cross-platform tools — install with: brew bundle --file=packages/Brewfile
 # Works on macOS and on Linux (Homebrew on Linux).
 # For Arch / EndeavourOS see: packages/arch/packages.txt
+# For Debian (stable / trixie) see: packages/debian/packages.txt
 #
 # Note: zinit is NOT listed here. Install via one-time manual git clone.
 # See: docs/guides/packages-setup.md

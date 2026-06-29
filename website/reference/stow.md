@@ -14,19 +14,20 @@ repository. Edit the file in the repo, and the change is live in `$HOME` immedia
 
 ```
 stow/
-├── common/          # Config that works on both macOS and Arch without modification
+├── common/          # Config that works on macOS, Arch, and Debian without modification
 │   ├── alacritty/   # Alacritty terminal config + Catppuccin theme
 │   ├── git/         # Git config templates
 │   ├── herdr/       # Herdr multiplexer config + Catppuccin overrides
-│   └── zsh/         # Zsh config (shared + macOS + Arch, runtime OS detection)
+│   └── zsh/         # Zsh config (shared + macOS / Arch per-OS layer, runtime OS detection)
 ├── macos/           # macOS-specific config only
-└── arch/            # EndeavourOS / Arch-specific config only
+├── arch/            # EndeavourOS / Arch-specific config only
+└── debian/          # Debian-specific config only
 ```
 
 A package belongs in `common/` only if all three hold:
 
-1. The config file path is identical on macOS and Arch.
-2. The config values work unmodified on both platforms.
+1. The config file path is identical across macOS, Arch, and Debian.
+2. The config values work unmodified on all platforms.
 3. No platform-specific tool or behavior is referenced.
 
 Otherwise it belongs in `macos/` or `arch/`.

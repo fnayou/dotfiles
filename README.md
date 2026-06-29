@@ -8,10 +8,11 @@
   <a href="https://fnayou.github.io/dotfiles/">Documentation</a>
 </p>
 
-Private, safe, cross-platform personal dotfiles for **macOS** and **EndeavourOS / Arch Linux**,
-managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Private, safe, cross-platform personal dotfiles for **macOS**, **EndeavourOS / Arch Linux**, and
+**Debian** (trixie / 13+), managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
-macOS is the primary environment; Arch is supported from the start. Configs are version-controlled
+macOS is the primary environment; Arch is supported from the start, and Debian runs on all servers.
+Configs are version-controlled
 in `stow/common/` and only ever symlinked into `$HOME` by a **deliberate, manual** Stow step —
 never automatically.
 
@@ -29,8 +30,8 @@ live symlinks point from `$HOME` into the repo. Stow is still always a deliberat
 
 ## What's included
 
-Each package is self-contained and carries its own README. `stow/macos/` and `stow/arch/` are
-reserved for platform-specific packages and are currently empty.
+Each package is self-contained and carries its own README. `stow/macos/`, `stow/arch/`, and
+`stow/debian/` are reserved for platform-specific packages and are currently empty.
 
 | Package | What it manages | Details | Guide |
 |---|---|---|---|
@@ -95,9 +96,10 @@ approval and an approved plan.
 ```
 .claude/          Claude Code agents, rules, and skills
 stow/
-  common/         Packages that work on both platforms (source of truth)
+  common/         Packages that work on all platforms (source of truth)
   macos/          macOS-specific packages (empty)
   arch/           Arch / EndeavourOS-specific packages (empty)
+  debian/         Debian-specific packages (empty)
 docs/
   guides/         Human setup guides, one per package
   architecture/   Structure decisions and tradeoffs
