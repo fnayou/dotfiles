@@ -32,6 +32,7 @@ These never modify your system — they inspect, check, or print:
 | `task deps:check:nvim` | Check Neovim-tier deps (nvim, tree-sitter, rg, fd, node) |
 | `task deps:brew` | Print macOS / Homebrew install commands (prints only) |
 | `task deps:arch` | Print Arch / EndeavourOS install commands (prints only) |
+| `task deps:debian` | Print Debian (stable / trixie) install commands (prints only) |
 | `task clean` | Report what OS cleanup *would* remove — dry-run, deletes nothing |
 | `task git:bootstrap:dry-run` | Show include entries that *would* be added to `~/.gitconfig` |
 | `task zsh:bootstrap:dry-run` | Show what `zsh:bootstrap` *would* do to `~/.zshrc` |
