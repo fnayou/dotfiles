@@ -23,9 +23,9 @@ Key context:
 
 ```
 Current status:          Claude Code operating layer complete; common packages stowed.
-Dotfiles implementation: stowed — all stow/common/ packages symlinked into $HOME.
+Dotfiles implementation: stowed — all stow/common/ packages symlinked into $HOME, except btop (added, awaiting user stow).
 GNU Stow packages:       see stow/common/ (source of truth; macos/, arch/, debian/ empty).
-Stowed to $HOME:         all stow/common/ packages — live symlinks into the repo.
+Stowed to $HOME:         all stow/common/ packages except btop — live symlinks into the repo. btop is added but not yet stowed.
 Home directory:          modified by these symlinks; further modifications forbidden unless explicitly requested.
 ```
 

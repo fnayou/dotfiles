@@ -31,3 +31,6 @@ brew "fd"
 brew "node"
 brew "python"
 brew "pipx"
+
+# --- System monitor ---
+brew "btop"
