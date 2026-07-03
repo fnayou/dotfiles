@@ -9,7 +9,7 @@ TERM = "xterm-256color"
 [window]
 padding = { x = 12, y = 12 }
 dynamic_padding = true
-decorations = "Buttonless"
+# decorations = "Buttonless"
 opacity = 0.98
 startup_mode = "Windowed"
 option_as_alt = "Both" # Highly useful for macOS CLI navigation
@@ -69,5 +69,8 @@ bindings = [
   { key = "N", mods = "Alt", chars = "~" },
   { key = "L", mods = "Alt|Shift", chars = "|" },
   { key = "Left", mods = "Alt", chars = "\u001Bb" },
-  { key = "Right", mods = "Alt", chars = "\u001Bf" }
+  { key = "Right", mods = "Alt", chars = "\u001Bf" },
+
+  # Shift+Enter inserts a newline (macOS-like); the OS otherwise drops the modifier
+  { key = "Return", mods = "Shift", chars = "\n" }
 ]
