@@ -18,5 +18,8 @@
 # nvim-treesitter (main branch) also needs the tree-sitter CLI:
 #   sudo pacman -S tree-sitter-cli      # (or: npm install -g tree-sitter-cli)
 
+# --- System monitor (pacman) ---
+# sudo pacman -S btop
+
 # --- AUR packages (requires yay or paru) ---
 # yay -S oh-my-posh-bin

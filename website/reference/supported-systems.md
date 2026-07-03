@@ -28,7 +28,7 @@ else should be treated as a reference to read and adapt, not a drop-in install.
 |---|---|
 | Zsh config, aliases, prompt, tool integrations | Portable across macOS, Arch, and Debian; optional tools are guarded and no-op when absent |
 | Git config, aliases, ignore | Portable (no OS-specific assumptions) |
-| Alacritty, bat, eza, Neovim themes | Portable config paths (XDG); some Alacritty lines are macOS-only but harmless on Linux |
+| Alacritty, bat, eza, btop, Neovim themes | Portable config paths (XDG); some Alacritty lines are macOS-only but harmless on Linux |
 | Package installation | System-specific — Homebrew on macOS, `pacman`/AUR on Arch, `apt` on Debian |
 | OS maintenance (`task update` / `clean`) | Branches by OS inside the helper script |
 

@@ -36,6 +36,22 @@ eza -la --git
 ![eza directory listing with icons and Catppuccin Blue colors](../assets/images/eza-listing.png)
 *Icon-aware project listing powered by eza.*
 
+## btop — resource monitor
+
+`stow/common/btop/` themes [btop](https://github.com/aristocratos/btop) (interactive resource
+monitor) with Catppuccin Macchiato. It manages `btop.conf` (active theme, terminal-transparent
+background, truecolor, vim keys) plus the theme file. No cache step — like eza, the theme applies as
+soon as it's stowed and btop is restarted.
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding --simulate btop
+```
+
+!!! note "Accent is already blue"
+    The [catppuccin/btop](https://github.com/catppuccin/btop) port ships one theme per flavor — there
+    is no separate accent selector. The Macchiato theme already uses **Blue** (`#8aadf4`) for
+    highlights, the selected process row, and the process-box outline.
+
 ## Claude Code status line
 
 `stow/common/claude/` provides a status line script for [Claude Code](https://code.claude.com),

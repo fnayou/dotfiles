@@ -35,6 +35,9 @@
 #     | gunzip > ~/.local/bin/tree-sitter && chmod +x ~/.local/bin/tree-sitter
 #   (ensure ~/.local/bin is on PATH)
 
+# --- System monitor (apt) ---
+# sudo apt install btop
+
 # --- Out-of-band (not in the Debian archive) ---
 # go-task:    sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
 # oh-my-posh: curl -s https://ohmyposh.dev/install.sh | bash -s
