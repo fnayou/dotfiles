@@ -300,7 +300,7 @@ The package provides example files — a shared layer, one per platform, a manag
 | `stow/common/zsh/.config/zsh/macos.zsh.example` | `macos.zsh` | macOS-specific zsh config (sourced on macOS only) |
 | `stow/common/zsh/.config/zsh/arch.zsh.example` | `arch.zsh` | Arch/EndeavourOS-specific zsh config (sourced on Arch only) |
 | `stow/common/zsh/.config/zsh/index.zsh.example` | `index.zsh` | Managed entry point — sources the layers in order (sourced by the `~/.zshrc` include block) |
-| `stow/common/zsh/.config/zsh/zshrc.example` | *(reference only — never stowed to `~/.zshrc`)* | Template for your real `~/.zshrc`; contains the guarded managed include block |
+| `stow/common/zsh/.config/zsh/zshrc.example` | *(reference only — excluded from stow via `.stow-local-ignore`)* | Template for your real `~/.zshrc`; contains the guarded managed include block. Read it in the repo; it is not symlinked into `~/.config/zsh/` |
 | *(no `.example`)* | `local.zsh` | Machine-specific/sensitive overrides — real file created directly in `~/.config/zsh/` by the user (not from the repo), git-ignored, never symlinked, sourced last (ADR-0023, ADR-0026) |
 
 After copying and stowing with `--no-folding`, Stow creates `~/.config/zsh/` as a **real directory** and places per-file symlinks inside it:
@@ -313,7 +313,9 @@ After copying and stowing with `--no-folding`, Stow creates `~/.config/zsh/` as 
 `local.zsh` is **not** a symlink — the user creates it directly in `~/.config/zsh/` with their editor. Because `~/.config/zsh/` is a real directory (not a symlink into the repo), `local.zsh` lives physically outside the repo working tree and cannot be committed by accident (ADR-0026).
 
 
-All platform files are symlinked on every platform. Runtime OS detection inside `index.zsh` determines which platform file is sourced — the unused platform file is harmless. `zshrc.example` stows to `~/.config/zsh/zshrc.example` (a reference copy); it is **never** linked to `~/.zshrc`.
+All platform files are symlinked on every platform. Runtime OS detection inside `index.zsh` determines which platform file is sourced — the unused platform file is harmless.
+
+The package `.stow-local-ignore` excludes two `.example` templates from stow entirely (ADR-0054): `local.zsh.example` and `zshrc.example`. They are references only — read them in the repo; Stow does **not** symlink them into `~/.config/zsh/`. The other `.example` templates (`shared`, `macos`, `arch`, `index`, `omp`) are still symlinked in as harmless reference copies alongside their real counterparts.
 
 ### Step 1 — Copy the example files locally
 

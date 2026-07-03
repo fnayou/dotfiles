@@ -36,8 +36,9 @@ file owns a single job:
 | `macos.zsh` / `arch.zsh` | Per-OS layers, runtime-selected (macOS / Arch; no `debian.zsh` yet — Debian loads shared layers only) |
 
 !!! info "Private overrides go in `local.zsh`"
-    `local.zsh.example` is a skeleton you copy to `~/.config/zsh/local.zsh` for private,
-    machine-specific content. `local.zsh` is git-ignored and lives outside the repository working tree —
+    `local.zsh.example` is a skeleton you copy from the repo to `~/.config/zsh/local.zsh` for private,
+    machine-specific content. The `.example` is excluded from stow — it is not symlinked into
+    `~/.config/zsh/`. `local.zsh` is git-ignored and lives outside the repository working tree —
     it is never committed.
 
 ## Prompt

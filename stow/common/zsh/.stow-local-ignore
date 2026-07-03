@@ -5,3 +5,5 @@
 ^.*\.bak$
 ^.*\.orig$
 ^/\.config/zsh/local\.zsh$
+^/\.config/zsh/local\.zsh\.example$
+^/\.config/zsh/zshrc\.example$
