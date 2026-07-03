@@ -117,3 +117,4 @@ Use numbered filenames in sequence:
 | [0046](0046-compinit-unconditional-zinit-light-mode.md) | `compinit` runs unconditionally — Zinit guard removed (light mode) | Accepted |
 | [0047](0047-zoxide-init-with-cmd-cd.md) | `zoxide init zsh` with `--cmd cd` override | Accepted |
 | [0048](0048-status-blocks-kept-in-sync-with-repo-state.md) | Status blocks in `AGENTS.md`/`CLAUDE.md` kept in sync with repo state | Accepted |
+| [0054](0054-example-templates-excluded-from-stow.md) | `local.zsh.example` and `zshrc.example` excluded from stow | Accepted |

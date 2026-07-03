@@ -34,11 +34,15 @@ The `stow/common/zsh/` package manages files under `~/.config/zsh/`. After Stow,
 
 `local.zsh` is git-ignored and must never be committed. It lives physically outside the repository working tree.
 
+`local.zsh.example` is **excluded from stow** via the package `.stow-local-ignore` (ADR-0054) — Stow does not symlink it into `~/.config/zsh/`. Copy it straight from the repo path shown above (see Step 5).
+
 ### Reference file (not sourced by zsh)
 
 | Repository file | Purpose |
 |---|---|
 | `stow/common/zsh/.config/zsh/zshrc.example` | Reference template showing the `~/.zshrc` include block |
+
+`zshrc.example` is also **excluded from stow** (ADR-0054). Read it in the repo — it is never symlinked into `~/.config/zsh/` or linked to `~/.zshrc`.
 
 ### Separate packages — zsh and omp
 
