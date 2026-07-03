@@ -18,8 +18,13 @@ The `stow/common/alacritty/` package manages two files in `~/.config/alacritty/`
 Alacritty loads the config on startup — no activation step beyond stowing.
 
 !!! note "macOS-specific lines are harmless on Linux"
-    `decorations = "Buttonless"` and `option_as_alt = "Both"` only affect macOS. Alacritty ignores
-    inapplicable values gracefully on Arch.
+    `option_as_alt = "Both"` (and the commented-out `decorations = "Buttonless"`) only affect macOS.
+    Alacritty ignores inapplicable values gracefully on Arch and Debian.
+
+!!! tip "Shift+Enter inserts a newline"
+    A `keyboard.bindings` entry maps **Shift+Enter** to a newline (`\n`), matching macOS behavior for
+    TUIs like Claude Code. macOS drops the modifier otherwise, so the binding makes it explicit; on
+    Arch / Debian the native keyboard protocol already passes it through.
 
 Dry-run, then apply (requires `--no-folding`):
 
