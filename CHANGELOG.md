@@ -5,7 +5,7 @@ Commits via [git-cliff](https://git-cliff.org). Do not edit by hand.
 
 Versioning is CalVer (`vYYYY.MM`) — see the git-cliff config for rationale.
 
-## [Unreleased]
+## [2026.07] - 2026-07-22
 
 ### Features
 
@@ -38,6 +38,8 @@ Versioning is CalVer (`vYYYY.MM`) — see the git-cliff config for rationale.
 - **btop**: Add btop package with Catppuccin Macchiato (blue) theme
 - **claude**: Add rtk savings statusline segment
 - **btop**: Stow package and adopt btop 1.4.7 config
+- **changelog**: Generate CHANGELOG from commits via git-cliff
+- **zsh**: Add SSH host completion from ~/.ssh/config
 
 ### Bug Fixes
 
