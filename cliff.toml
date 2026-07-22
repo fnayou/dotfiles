@@ -1,0 +1,71 @@
+# git-cliff configuration — https://git-cliff.org
+#
+# Generates CHANGELOG.md from Conventional Commits. The commit log is the
+# source of truth; this file is a rendered artifact, never hand-edited.
+#
+# Versioning is CalVer (vYYYY.MM), not SemVer — dotfiles have no downstream
+# API consumers, so SemVer's breaking-change semantics do not apply. Tag a
+# deploy milestone with e.g.  git tag v2026.07  then run  task changelog.
+#
+# See docs/decisions/0055-git-cliff-changelog-generation.md
+
+[changelog]
+# Rendered at the top of CHANGELOG.md.
+header = """
+# Changelog
+
+All notable changes to this dotfiles repository, generated from Conventional
+Commits via [git-cliff](https://git-cliff.org). Do not edit by hand.
+
+Versioning is CalVer (`vYYYY.MM`) — see the git-cliff config for rationale.\n
+"""
+
+# Tera template for each release block. Keep-a-Changelog flavoured.
+body = """
+{% if version %}\
+## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+## [Unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | striptags | trim | upper_first }}
+{% for commit in commits %}
+- {% if commit.scope %}**{{ commit.scope }}**: {% endif %}{{ commit.message | upper_first }}\
+{% endfor %}
+{% endfor %}\n
+"""
+
+trim = true
+footer = ""
+
+[git]
+conventional_commits = true
+# Drop commits that are not conventional (keeps noise like merge commits out).
+filter_unconventional = true
+split_commits = false
+
+# Map commit types to changelog groups. Order here controls section order.
+# Group prefixes are zero-padded so git-cliff's lexical group sort keeps them in
+# order (unpadded, "10" would sort before "4").
+commit_parsers = [
+  { message = "^feat", group = "<!-- 00 -->Features" },
+  { message = "^fix", group = "<!-- 01 -->Bug Fixes" },
+  { message = "^perf", group = "<!-- 02 -->Performance" },
+  { message = "^refactor", group = "<!-- 03 -->Refactor" },
+  { message = "^docs", group = "<!-- 04 -->Documentation" },
+  { message = "^test", group = "<!-- 05 -->Testing" },
+  { message = "^build", group = "<!-- 06 -->Build & Tooling" },
+  { message = "^ci", group = "<!-- 06 -->Build & Tooling" },
+  { message = "^chore\\(release\\)", skip = true },
+  { message = "^chore", group = "<!-- 07 -->Chores" },
+  { message = "^style", group = "<!-- 08 -->Styling" },
+  { body = ".*security", group = "<!-- 09 -->Security" },
+  { message = ".*", group = "<!-- 10 -->Other" },
+]
+
+protect_breaking_commits = true
+filter_commits = false
+# CalVer tags: vYYYY.MM (optionally with a .patch suffix).
+tag_pattern = "v[0-9]+\\.[0-9]+.*"
+topo_order = false
+sort_commits = "oldest"

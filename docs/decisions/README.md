@@ -118,3 +118,4 @@ Use numbered filenames in sequence:
 | [0047](0047-zoxide-init-with-cmd-cd.md) | `zoxide init zsh` with `--cmd cd` override | Accepted |
 | [0048](0048-status-blocks-kept-in-sync-with-repo-state.md) | Status blocks in `AGENTS.md`/`CLAUDE.md` kept in sync with repo state | Accepted |
 | [0054](0054-example-templates-excluded-from-stow.md) | `local.zsh.example` and `zshrc.example` excluded from stow | Accepted |
+| [0055](0055-git-cliff-changelog-generation.md) | Changelog generated from Conventional Commits via git-cliff (CalVer) | Accepted |
