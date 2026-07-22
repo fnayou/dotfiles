@@ -55,11 +55,28 @@ stow --dir=stow/common --target="$HOME" --no-folding --simulate btop
 ## Claude Code status line
 
 `stow/common/claude/` provides a status line script for [Claude Code](https://code.claude.com),
-rendering **OS icon · model · path · git branch+status · context %** in the same palette as the
-prompt. It needs `jq`, `git`, and a Nerd Font.
+rendering **OS icon · model · path · git branch+status · PR/MR · context %** in the same palette
+as the prompt. It needs `jq`, `git`, and a Nerd Font. The path collapses to its last 3 components
+when deep, and the **PR/MR** segment shows the open request for the current branch — GitHub via
+`gh` (`#` sigil) or GitLab via `glab` (`!` sigil), detected from the `origin` remote and cached in
+the background. Set `STATUSLINE_NERD_FONT=0` to swap the forge glyph for an ASCII `PR`/`MR` label.
 
-![Claude Code status line showing OS, model, path, git, and context segments](../assets/images/claude-statusline.png)
+![Claude Code status line showing OS, model, path, git, PR/MR, context, and rtk savings segments](../assets/images/claude-statusline.png)
 *Claude Code status line integrated into the terminal workflow.*
+
+Two **optional** trailing segments light up only when their tool is present — each is
+guarded, so a missing tool renders nothing (no error, no placeholder):
+
+- **rtk savings** — tokens saved + average savings % for the current directory
+  (exact cwd, not the whole repo), via the [rtk](https://github.com/rtk-ai/rtk)
+  CLI (`rtk gain --project --format json`).
+- **caveman badge** — the `[CAVEMAN]` mode badge + savings suffix from the
+  [caveman](https://github.com/JuliusBrussee/caveman) Claude Code plugin. The script
+  doesn't reimplement it; it calls caveman's own hardened statusline script, located
+  by glob (the plugin's install path and cache hash vary per release). The badge shows
+  when caveman is installed **and** active (`/caveman full`). See the package
+  [README](https://github.com/fnayou/dotfiles/blob/main/stow/common/claude/README.md)
+  for the exact glob paths and wiring.
 
 !!! warning "`~/.claude` holds secrets — stow carefully"
     Only `statusline-command.sh` is managed; credentials and session data in `~/.claude` are never
