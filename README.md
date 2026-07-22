@@ -38,7 +38,7 @@ Each package is self-contained and carries its own README. `stow/macos/`, `stow/
 | **alacritty** | Alacritty terminal — window, font, keybinds, Catppuccin Macchiato theme | [README](stow/common/alacritty/README.md) | [guide](docs/guides/alacritty-setup.md) |
 | **bat** | bat pager — style, wrap, paging, Catppuccin Macchiato theme | [README](stow/common/bat/README.md) | [guide](docs/guides/bat-setup.md) |
 | **btop** | btop resource monitor — theme, background, truecolor, vim keys, Catppuccin Macchiato theme | [README](stow/common/btop/README.md) | [guide](docs/guides/btop-setup.md) |
-| **claude** | Claude Code status line — OS · model · path · git · context % segments, mirrors the Catppuccin Macchiato prompt | [README](stow/common/claude/README.md) | [guide](docs/guides/claude-setup.md) |
+| **claude** | Claude Code status line — OS · model · path · git · PR/MR · context % · rtk savings segments, mirrors the Catppuccin Macchiato prompt | [README](stow/common/claude/README.md) | [guide](docs/guides/claude-setup.md) |
 | **eza** | eza `ls` replacement — Catppuccin Macchiato (Blue) color theme | [README](stow/common/eza/README.md) | [guide](docs/guides/eza-setup.md) |
 | **git** | Portable Git config — settings, aliases, global ignore (no secrets) | [README](stow/common/git/README.md) | [guide](docs/guides/git-setup.md) |
 | **herdr** | Herdr agent multiplexer — theme, terminal, UI, toast | [README](stow/common/herdr/README.md) | [guide](docs/guides/herdr-setup.md) |

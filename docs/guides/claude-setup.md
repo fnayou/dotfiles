@@ -13,9 +13,9 @@ The `stow/common/claude/` package manages **one** file, stowed into `~/.claude/`
 |---|---|---|
 | `stow/common/claude/.claude/statusline-command.sh` | `~/.claude/statusline-command.sh` | Status line script (mirrors the Oh My Posh Catppuccin Macchiato theme) |
 
-The script renders these segments: **OS icon · model · path · git branch+status · context % ·
-optional caveman badge**. Its colors are taken from the `omp` package theme — `omp` remains the
-theme source of truth.
+The script renders these segments: **OS icon · model · path · git branch+status · PR/MR ·
+context % · optional rtk savings · optional caveman badge**. Its colors are taken from the `omp`
+package theme — `omp` remains the theme source of truth.
 
 ### What this package deliberately does NOT manage
 
