@@ -27,7 +27,7 @@ portable status line script is tracked here. **Never** add these to the package:
 
 ## Segments
 
-`OS icon | model | path | git branch+status | PR/MR | ctx % | caveman badge`
+`OS icon | model | path | git branch+status | PR/MR | ctx % | rtk savings | caveman badge`
 
 - **path** shows the home-relative path, truncated to the last 3 components
   (`.../projects/document-generator`) when deeper.
@@ -40,12 +40,23 @@ portable status line script is tracked here. **Never** add these to the package:
   font has the glyph, so this fallback is a manual toggle, not automatic.
 - **ctx %** reads `.context_window.used_percentage` from the status line JSON
   (Claude Code ≥ 2.1); hidden when null (early session / right after `/compact`).
-- **caveman badge** is the optional segment below.
+- **rtk savings** and **caveman badge** are the two optional segments below.
 
 ## Optional segments (external tools)
 
-The last segment depends on a tool this package does **not** install. It is
+The last two segments depend on tools this package does **not** install. Each is
 guarded — absent tool → the segment renders nothing (no error, no placeholder).
+
+### rtk savings
+
+Shows tokens saved + average savings % for the **current directory** from
+[rtk](https://github.com/rtk-ai/rtk) (Rust Token Killer). The script calls
+`rtk gain --project --format json` — a public CLI, so we own the rendering.
+`--project` filters to the **exact** working directory — not the whole repo, so
+`cd`-ing into a subdirectory shows only that directory's stats (drop the flag for
+the global all-time total). In a Claude Code session the working directory is the
+workspace dir, usually the repo root. Guarded by `command -v rtk`; also hidden
+until rtk has at least one recorded run for this directory.
 
 ### caveman badge
 
