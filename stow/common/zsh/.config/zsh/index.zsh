@@ -38,6 +38,9 @@ fi
 # 6c) Herdr completion — guarded; no-op without `herdr`.
 [[ -r "$HOME/.config/zsh/herdr.zsh" ]] && source "$HOME/.config/zsh/herdr.zsh"
 
+# 6d) SSH host completion — guarded; no-op without `ssh` or a config.
+[[ -r "$HOME/.config/zsh/ssh.zsh" ]] && source "$HOME/.config/zsh/ssh.zsh"
+
 # 7) Key bindings.
 [[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
 

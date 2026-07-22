@@ -21,6 +21,7 @@ Layered design: `index.zsh` is the entry point and sources each layer in order. 
 | `.config/zsh/aliases.zsh`, `keybindings.zsh` | Aliases and key bindings |
 | `.config/zsh/taskfile.zsh` | go-task completion tuning — guarded, no-op without `task` |
 | `.config/zsh/herdr.zsh` | Herdr session completion — guarded, no-op without `herdr` |
+| `.config/zsh/ssh.zsh` | SSH host completion from `~/.ssh/config` — guarded, no-op without `ssh`/config |
 | `.config/zsh/macos.zsh`, `arch.zsh` | Per-platform layers |
 | `.config/zsh/local.zsh.example` | Template for local-only overrides |
 
@@ -55,6 +56,20 @@ Unlike go-task, Herdr ships **no** native zsh completion, so `herdr.zsh` **autho
 `_herdr` function itself. `jq` is recommended for parsing `herdr session list --json`; when
 absent, a plain-text fallback still completes session names. Guarded by `command -v herdr`,
 so it is a no-op when Herdr is not installed.
+
+## SSH host completion
+
+`ssh <Tab>` (also `scp`/`sftp`/`rsync`/`ssh-copy-id`) shows the `Host` aliases defined in
+`~/.ssh/config` via fzf-tab. Only your configured hosts appear — the shipped `_ssh` mix of
+`known_hosts` entries (often hashed and unusable) is swapped out for config aliases only.
+Wildcard/negation patterns (`*`, `?`, `!`) are dropped. The preview shows the effective
+config the alias resolves to (`ssh -G` — read-only, never connects).
+
+`ssh.zsh` **tunes** the shipped `_ssh` rather than replacing it, so option and remote-path
+completion stay intact. The `Host` list is re-read on every completion, so config edits show
+up without a new shell. Guarded by `command -v ssh` and a readable `~/.ssh/config`, so it is
+a no-op otherwise. The config itself is local/unstowed (private hostnames) — this layer reads
+it at runtime and commits no host data.
 
 ## Setup
 
