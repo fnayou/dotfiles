@@ -64,9 +64,12 @@ the background. Set `STATUSLINE_NERD_FONT=0` to swap the forge glyph for an ASCI
 ![Claude Code status line showing OS, model, path, git, and context segments](../assets/images/claude-statusline.png)
 *Claude Code status line integrated into the terminal workflow.*
 
-One **optional** trailing segment lights up only when its tool is present — it is
+Two **optional** trailing segments light up only when their tool is present — each is
 guarded, so a missing tool renders nothing (no error, no placeholder):
 
+- **rtk savings** — tokens saved + average savings % for the current directory
+  (exact cwd, not the whole repo), via the [rtk](https://github.com/rtk-ai/rtk)
+  CLI (`rtk gain --project --format json`).
 - **caveman badge** — the `[CAVEMAN]` mode badge + savings suffix from the
   [caveman](https://github.com/JuliusBrussee/caveman) Claude Code plugin. The script
   doesn't reimplement it; it calls caveman's own hardened statusline script, located

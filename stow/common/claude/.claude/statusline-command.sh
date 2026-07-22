@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Claude Code statusLine — mirrors Oh My Posh theme (Catppuccin Macchiato).
 # Managed by the dotfiles `claude` package; theme source is the `omp` package.
-# Segments: OS icon | model | path (depth-limited) | git branch+status | PR/MR | ctx % | caveman badge
+# Segments: OS icon | model | path (depth-limited) | git branch+status | PR/MR | ctx % | rtk savings | caveman badge
 # Colors match omp.toml: mauve #c6a0f6, teal #8bd5ca, blue #8aadf4, green #a6da95, yellow #eed49f
+# Exception: rtk savings uses 256-color 172 (orange) to match the caveman plugin badge, not omp.
 
 input=$(cat)
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // empty')
@@ -137,6 +138,34 @@ ctx=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 if [[ -n "$ctx" ]]; then
   ctx=${ctx%%.*}   # truncate any decimal
   printf ' \033[38;2;238;212;159m%s%% ctx\033[0m' "$ctx"
+fi
+
+# --- rtk savings (orange 256-color 172; matches caveman badge = stats zone; optional) ---
+# rtk gain --format json is a ~13ms local DB read, cheap enough to run inline on
+# every render (unlike the gh network call above). --project filters to the exact
+# current working directory — not the whole repo, so cd'ing into a subdirectory
+# shows only that directory's tokens saved + avg savings %, not the global total.
+# In a Claude Code session cwd is the workspace dir (usually the repo root).
+# Nerd Font bolt glyph stored as octal (pure ASCII), like the OS icon.
+# No-op when rtk is absent or has no recorded runs for this directory.
+if command -v rtk >/dev/null 2>&1; then
+  rtk_json=$(rtk gain --project --format json 2>/dev/null)
+  if [[ -n "$rtk_json" ]]; then
+    read -r rtk_saved rtk_pct < <(echo "$rtk_json" | jq -r '"\(.summary.total_saved // 0) \(.summary.avg_savings_pct // 0)"')
+    if [[ "$rtk_saved" =~ ^[0-9]+$ ]] && (( rtk_saved > 0 )); then
+      # Humanize saved tokens: 879302 -> 879K, 1347025 -> 1.3M
+      if (( rtk_saved >= 1000000 )); then
+        rtk_h=$(awk -v n="$rtk_saved" 'BEGIN{printf "%.1fM", n/1000000}')
+      elif (( rtk_saved >= 1000 )); then
+        rtk_h=$(awk -v n="$rtk_saved" 'BEGIN{printf "%dK", n/1000}')
+      else
+        rtk_h="$rtk_saved"
+      fi
+      rtk_pct=${rtk_pct%%.*}   # truncate decimal
+      rtk_icon=$(printf '\357\203\247')   # bolt (nf-fa-bolt, U+F0E7)
+      printf ' \033[38;5;172m%s rtk %s↓ %s%%\033[0m' "$rtk_icon" "$rtk_h" "$rtk_pct"
+    fi
+  fi
 fi
 
 # --- Caveman badge (chained; optional) ---
