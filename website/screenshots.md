@@ -17,7 +17,7 @@ pages; this page collects them in one place.
 ![Neovim editing a file with the Catppuccin Macchiato colorscheme](assets/images/nvim-editor.png)
 *Neovim editing inside the dotfiles repository.*
 
-![Claude Code status line showing OS, model, path, git, and context segments](assets/images/claude-statusline.png)
+![Claude Code status line showing OS, model, path, git, PR/MR, context, and rtk savings segments](assets/images/claude-statusline.png)
 *Claude Code status line integrated into the terminal workflow.*
 
 ![Herdr multiplexer session with panes and agent labels](assets/images/herdr-session.png)

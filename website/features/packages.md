@@ -61,7 +61,7 @@ when deep, and the **PR/MR** segment shows the open request for the current bran
 `gh` (`#` sigil) or GitLab via `glab` (`!` sigil), detected from the `origin` remote and cached in
 the background. Set `STATUSLINE_NERD_FONT=0` to swap the forge glyph for an ASCII `PR`/`MR` label.
 
-![Claude Code status line showing OS, model, path, git, and context segments](../assets/images/claude-statusline.png)
+![Claude Code status line showing OS, model, path, git, PR/MR, context, and rtk savings segments](../assets/images/claude-statusline.png)
 *Claude Code status line integrated into the terminal workflow.*
 
 Two **optional** trailing segments light up only when their tool is present — each is
