@@ -1,7 +1,7 @@
 # Plan: Implement Claude Code Statusline Package
 
 **Number:** 0020
-**Status:** Approved
+**Status:** Complete — implementation review [0058](../reviews/0058-claude-statusline-implementation-review.md). One blocking issue (non-portable `stat` call breaking the PR/MR segment on Linux) was found during review and fixed in the same change.
 **Date:** 2026-06-24
 **PRD:** 0017
 **Architecture:** 0017
