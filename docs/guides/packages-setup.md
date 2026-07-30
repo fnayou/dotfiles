@@ -13,6 +13,7 @@ All tools in this repository are cross-platform — they are available on macOS,
 | `git` | repository management | Yes |
 | `stow` | symlink manager | Yes |
 | [`go-task`](https://taskfile.dev/) | task runner; also powers `task <Tab>` zsh completion | Yes |
+| [`git-cliff`](https://git-cliff.org/) | regenerates `CHANGELOG.md` via `task changelog` | Optional |
 | `herdr` | terminal multiplexer with AI agent integration | Optional |
 | `fzf` | fuzzy finder (shell integration, fzf-tab completion previews) | Optional |
 | `zoxide` | smarter `cd` | Optional |
@@ -30,8 +31,8 @@ Package files:
 - Debian (stable, trixie / 13+): `packages/debian/packages.txt`
 
 > Debian note: `bat` runs as `batcat` and `fd` (package `fd-find`) as `fdfind`.
-> `go-task` and `oh-my-posh` are not in the Debian archive — install them
-> out-of-band (see the Debian section below).
+> `go-task`, `oh-my-posh`, and `git-cliff` are not in the Debian archive —
+> install them out-of-band (see the Debian section below).
 
 ---
 
@@ -63,7 +64,7 @@ This shows which packages would be installed. No changes are made.
 brew bundle --file=packages/Brewfile
 ```
 
-This installs all tools in one step: `git`, `stow`, `go-task`, `fzf`, `zoxide`, `eza`, `bat`, and `oh-my-posh`.
+This installs all tools in one step: `git`, `stow`, `go-task`, `git-cliff`, `fzf`, `zoxide`, `eza`, `bat`, and `oh-my-posh`.
 
 ### Step 3: Install zinit
 
@@ -95,7 +96,7 @@ All lines should show `PASS`. If any tool shows `FAIL`, follow the install hint 
 ⚠️  MANUAL STEP — review before running
 
 ```bash
-sudo pacman -S git stow go-task fzf zoxide eza bat
+sudo pacman -S git stow go-task git-cliff fzf zoxide eza bat
 ```
 
 ### Step 2: Install AUR packages
@@ -161,7 +162,7 @@ Debian binary names differ from other platforms: `bat` runs as `batcat`, and
 
 ### Step 2: Install out-of-band tools
 
-`go-task` and `oh-my-posh` are not in the Debian archive. Install them via their
+`go-task`, `oh-my-posh`, and `git-cliff` are not in the Debian archive. Install them via their
 upstream scripts (review each before running):
 
 ⚠️  MANUAL STEP — review before running
@@ -172,6 +173,10 @@ curl -s https://ohmyposh.dev/install.sh | bash -s                              #
 ```
 
 Skip `oh-my-posh` if you do not want the prompt — `prompt.zsh` is a no-op when it is absent.
+
+`git-cliff` is only needed to run `task changelog`. Install it with `cargo install git-cliff` if you
+have a Rust toolchain, or download a release binary from
+<https://github.com/orhun/git-cliff/releases> into `~/.local/bin`.
 
 ### Step 2b: Install the Neovim tier (optional)
 
@@ -235,6 +240,7 @@ brew install fzf
 brew install zoxide
 brew install bat
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
+brew install git-cliff
 
 # Arch — individual tools
 sudo pacman -S eza
@@ -242,6 +248,7 @@ sudo pacman -S fzf
 sudo pacman -S zoxide
 sudo pacman -S bat
 yay -S oh-my-posh-bin
+sudo pacman -S git-cliff
 
 # Debian — individual tools (bat->batcat, fd->fdfind)
 sudo apt install eza
@@ -249,6 +256,7 @@ sudo apt install fzf
 sudo apt install zoxide
 sudo apt install bat
 # oh-my-posh: curl -s https://ohmyposh.dev/install.sh | bash -s
+# git-cliff:  cargo install git-cliff   (or a release binary — see Step 2 above)
 ```
 
 All optional tools are guarded in the zsh config — uninstalled tools are silently skipped.

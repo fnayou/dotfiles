@@ -41,3 +41,8 @@
 # --- Out-of-band (not in the Debian archive) ---
 # go-task:    sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
 # oh-my-posh: curl -s https://ohmyposh.dev/install.sh | bash -s
+#
+# git-cliff — only needed to run `task changelog`, which regenerates CHANGELOG.md
+# from Conventional Commits. See docs/decisions/0055-git-cliff-changelog-generation.md
+#   cargo install git-cliff   # if a Rust toolchain is present
+#   # or download a release binary from https://github.com/orhun/git-cliff/releases
