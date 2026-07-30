@@ -4,16 +4,22 @@ onboarding = false
 channel = "stable"
 
 [theme]
-# Built-in base: catppuccin (closest to Macchiato palette)
-name = "tokyo-night"
+# Built-in base: catppuccin — closest to Macchiato; Herdr ships catppuccin,
+# catppuccin-latte and catppuccin-mocha, but no macchiato variant. The base
+# only shows through for colours Herdr does not expose as overrides below.
+name = "catppuccin"
 
-# Catppuccin Macchiato color overrides
+# Catppuccin Macchiato overrides — all eight slots Herdr exposes, so no
+# colour is inherited from the base theme by accident.
 [theme.custom]
-panel_bg = "#24273a"   # Base
-accent    = "#8aadf4"  # Blue
-green     = "#a6da95"  # Green
-red       = "#ed8796"  # Red
-yellow    = "#eed49f"  # Yellow
+panel_bg    = "#24273a"  # Base
+surface_dim = "#1e2030"  # Mantle
+accent      = "#8aadf4"  # Blue
+mauve       = "#c6a0f6"  # Mauve
+green       = "#a6da95"  # Green
+yellow      = "#eed49f"  # Yellow
+red         = "#ed8796"  # Red
+peach       = "#f5a97f"  # Peach
 
 [terminal]
 default_shell = "zsh"  # Matches shell preference on both macOS and Arch

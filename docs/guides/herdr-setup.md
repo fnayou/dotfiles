@@ -22,8 +22,8 @@ Herdr loads `~/.config/herdr/config.toml` automatically on startup. No manual ac
 
 | Setting | Value | Notes |
 |---|---|---|
-| `theme.name` | `tokyo-night` | Base theme; custom palette overrides apply on top |
-| `theme.custom` | Catppuccin Macchiato palette | panel_bg, accent, green, red, yellow |
+| `theme.name` | `catppuccin` | Base theme. Herdr ships `catppuccin`, `catppuccin-latte` and `catppuccin-mocha` — there is no `macchiato` variant, so the overrides below supply it |
+| `theme.custom` | Catppuccin Macchiato palette | All eight slots Herdr exposes: `panel_bg`, `surface_dim`, `accent`, `mauve`, `green`, `yellow`, `red`, `peach`. Setting every one means no colour is inherited from the base by accident |
 | `terminal.default_shell` | `zsh` | Consistent with shell setup on all three platforms |
 | `terminal.new_cwd` | `follow` | New panes inherit the active pane's working directory |
 | `ui.show_agent_labels_on_pane_borders` | `true` | Labels visible on pane borders |
