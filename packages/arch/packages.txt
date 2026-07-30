@@ -26,5 +26,12 @@
 # --- System monitor (pacman) ---
 # sudo pacman -S btop
 
+# --- Terminal workspace manager ---
+# Optional — only needed if you stow the `herdr` package.
+# Not in the official Arch repos. Either Homebrew or the AUR package below.
+# See: docs/guides/herdr-setup.md
+# brew install herdr
+
 # --- AUR packages (requires yay or paru) ---
 # yay -S oh-my-posh-bin
+# yay -S herdr            # alternative to `brew install herdr`
