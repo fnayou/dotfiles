@@ -5,7 +5,7 @@ Commits via [git-cliff](https://git-cliff.org). Do not edit by hand.
 
 Versioning is CalVer (`vYYYY.MM`) — see the git-cliff config for rationale.
 
-## [Unreleased]
+## [2026.08] - 2026-07-30
 
 ### Bug Fixes
 
@@ -20,6 +20,7 @@ Versioning is CalVer (`vYYYY.MM`) — see the git-cliff config for rationale.
 ### Chores
 
 - **packages**: Add git-cliff to the package manifests
+- **changelog**: Regenerate CHANGELOG.md with the Unreleased section
 
 ## [2026.07] - 2026-07-22
 
