@@ -27,7 +27,8 @@ Herdr loads `~/.config/herdr/config.toml` automatically on startup. No manual ac
 | `terminal.default_shell` | `zsh` | Consistent with shell setup on both platforms |
 | `terminal.new_cwd` | `follow` | New panes inherit the active pane's working directory |
 | `ui.show_agent_labels_on_pane_borders` | `true` | Labels visible on pane borders |
-| `ui.sidebar.initial_split_width` | `25` | 25% initial sidebar width |
+| `ui.sidebar_width` | `25` | Starting sidebar width in **columns** (not percent); Herdr clamps it to 18–36 and auto-scales from workspace name length |
+| `ui.agent_panel_sort` | `spaces` | Agent panel grouped by space — Herdr's default (alternative: `priority`) |
 | `ui.toast.delivery` | `herdr` | Toast notifications shown inside Herdr UI |
 | `ui.toast.herdr.position` | `bottom-right` | Toast position within the Herdr UI |
 | `ui.sound.enabled` | `true` | Sound notifications enabled |
@@ -156,6 +157,15 @@ readlink ~/.config/herdr/config.toml
 
 Should resolve to a path inside your dotfiles repository.
 
+Ask Herdr to validate the file — this catches keys your Herdr version does not know:
+
+```bash
+herdr config check
+```
+
+Expected: `config: ok`. Any `unknown config key <name>; ignoring key` line means that setting is being
+silently dropped — fix the key name before relying on it.
+
 Launch Herdr to confirm the configuration loads correctly:
 
 ```bash
@@ -165,7 +175,7 @@ herdr
 Confirm visually:
 - Catppuccin Macchiato colors (dark blue base `#24273a`)
 - Agent labels visible on pane borders
-- Sidebar width approximately 25%
+- Sidebar roughly 25 columns wide
 - New panes inherit the working directory of the active pane
 - Toast notifications appear inside the Herdr UI (bottom-right), not as macOS/system alerts
 
@@ -234,6 +244,26 @@ Resolution:
    ```
 
 4. Confirm it is now a real directory: `test ! -L "$HOME/.config/herdr" && echo "OK: real directory"`
+
+### `unknown config key ...; ignoring key`
+
+Symptom: Herdr prints a warning at startup, and `herdr config check` reports:
+
+```
+config: issues found
+unknown config key ui.sidebar.initial_split_width; ignoring key
+```
+
+Cause: the key does not exist in your installed Herdr version — either it was renamed upstream, or it
+was never valid. Herdr ignores it and falls back to the default, so the setting silently does nothing.
+
+Resolution: compare against the key names your binary actually accepts, then fix the key in
+`stow/common/herdr/.config/herdr/config.toml` and re-run `herdr config check` until it prints
+`config: ok`. Because `config.toml` is stowed, the edit applies immediately — no restow needed.
+
+Note: `herdr config check` only reports unknown keys for the tables it validates. A wrong key inside
+some nested tables can still be dropped silently, so `config: ok` is necessary but not sufficient —
+confirm visually that the setting took effect.
 
 ---
 

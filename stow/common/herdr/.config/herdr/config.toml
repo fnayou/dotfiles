@@ -21,9 +21,8 @@ new_cwd = "follow"     # New panes inherit the working directory of the active p
 
 [ui]
 show_agent_labels_on_pane_borders = true
-
-[ui.sidebar]
-initial_split_width = 25
+sidebar_width = 25            # Starting sidebar width in columns (Herdr clamps to 18–36)
+agent_panel_sort = "spaces"   # Group the agent panel by space (Herdr's default ordering)
 
 [ui.toast]
 delivery = "herdr"     # Herdr-internal toast UI (not OS notification system)
