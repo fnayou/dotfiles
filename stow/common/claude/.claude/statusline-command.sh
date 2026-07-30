@@ -173,20 +173,50 @@ if command -v rtk >/dev/null 2>&1; then
   fi
 fi
 
-# --- Caveman badge (chained; optional) ---
-# When the caveman plugin owns the statusLine on a fresh install it renders its own
-# badge. Here we call its hardened, self-contained script to append the [CAVEMAN]
-# badge + token-savings suffix. No-op when caveman is inactive or not installed.
-# Path is globbed, not hardcoded: Claude Code installs the plugin under
-# marketplaces/ (canonical) or cache/<name>/<name>/<hash>/ (versioned checkout),
-# and the hash changes per release. Prefer marketplaces; else fall back to the
-# newest cache checkout by mtime (hash dirs sort by hex, not by age, so a plain
-# glob could pick a stale version). The final -f test handles the empty result
-# from an unmatched glob, so a missing plugin is a clean no-op.
+# --- Caveman badge (orange 256-color 172; optional) ---
+# Mode badge + tokens saved, scoped to THIS session and THIS repository.
+#
+# We deliberately do not call caveman's own caveman-statusline.sh here. That
+# script renders ~/.claude/.caveman-statusline-suffix, which is the sum of every
+# caveman session ever recorded on this machine across every project — a
+# machine-wide lifetime total sitting in a project-scoped status line, right next
+# to the project-scoped rtk figure. See docs/prd/0021-caveman-session-scoped-savings.md.
+#
+# statusline-caveman.js recomputes the figure from this session's own
+# transcript_path, reusing caveman's exported estimator rather than forking it.
+# It is handed the payload we already captured in $input — stdin is read exactly
+# once, at the top of this script, and never re-read by a segment.
 # Plugin source: https://github.com/JuliusBrussee/caveman
-caveman_sl="$HOME/.claude/plugins/marketplaces/caveman/src/hooks/caveman-statusline.sh"
-[[ -f "$caveman_sl" ]] || caveman_sl=$(ls -t "$HOME"/.claude/plugins/cache/caveman/*/*/src/hooks/caveman-statusline.sh 2>/dev/null | head -1)
-if [[ -f "$caveman_sl" ]]; then
-  badge=$(bash "$caveman_sl" 2>/dev/null)
+# Sibling of this script. Stow links both files into ~/.claude/ side by side, so
+# resolving relative to BASH_SOURCE works stowed and works when run from the repo
+# for testing. Guard the no-slash case: ${x%/*} returns x unchanged when x has no
+# directory part, which would build "statusline-command.sh/statusline-caveman.js".
+caveman_dir="${BASH_SOURCE[0]%/*}"
+[[ "$caveman_dir" == "${BASH_SOURCE[0]}" ]] && caveman_dir="."
+caveman_seg="$caveman_dir/statusline-caveman.js"
+if [[ -f "$caveman_seg" ]] && command -v node >/dev/null 2>&1; then
+  badge=$(printf '%s' "$input" | node "$caveman_seg" 2>/dev/null)
   [[ -n "$badge" ]] && printf ' %s' "$badge"
+else
+  # No node, or the segment is missing (package not fully stowed). Fall back to
+  # caveman's own script with its savings suffix switched OFF, so we degrade to
+  # the mode badge alone — less information, never the wrong number.
+  # Path is globbed, not hardcoded: Claude Code installs the plugin under
+  # marketplaces/ (canonical) or cache/<name>/<name>/<hash>/ (versioned checkout),
+  # and the hash changes per release. Prefer marketplaces; else fall back to the
+  # newest cache checkout by mtime (hash dirs sort by hex, not by age, so a plain
+  # glob could pick a stale version). The final -f test handles the empty result
+  # from an unmatched glob, so a missing plugin is a clean no-op.
+  caveman_sl="$HOME/.claude/plugins/marketplaces/caveman/src/hooks/caveman-statusline.sh"
+  [[ -f "$caveman_sl" ]] || caveman_sl=$(ls -t "$HOME"/.claude/plugins/cache/caveman/*/*/src/hooks/caveman-statusline.sh 2>/dev/null | head -1)
+  if [[ -f "$caveman_sl" ]]; then
+    badge=$(CAVEMAN_STATUSLINE_SAVINGS=0 bash "$caveman_sl" 2>/dev/null)
+    [[ -n "$badge" ]] && printf ' %s' "$badge"
+  fi
 fi
+
+# The last command above is a `[[ ... ]] &&` short-circuit, which returns 1 when
+# the badge is empty — the normal case for an inactive or absent caveman. That
+# would make the whole status line exit non-zero on an ordinary render. Every
+# segment here is optional by design, so the script always succeeds.
+exit 0

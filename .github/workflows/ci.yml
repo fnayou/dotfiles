@@ -120,3 +120,11 @@ jobs:
             exit 1
           fi
           echo "Secret scan passed"
+
+      # Non-destructive: the suite redirects XDG_CACHE_HOME to a temp dir and never
+      # touches $HOME. Tests needing the caveman plugin skip themselves when it is
+      # absent, which is always the case on a runner.
+      - name: Status line segment tests
+        run: |
+          echo "Running caveman status line segment tests..."
+          node --test stow/common/claude/tests/statusline-caveman.test.js
