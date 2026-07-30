@@ -110,8 +110,16 @@ section covering the five commits since `v2026.07`. The regeneration was folded 
 rather than a separate PR: PR #55 was still open, so regenerating from `main` would have produced a
 `CHANGELOG.md` that was stale the moment #55 merged.
 
-No tag was created — that is a release decision, so the section renders as `[Unreleased]` rather
-than a new CalVer heading.
+The section was first rendered as `[Unreleased]`, then cut as a real release on the user's
+instruction: `git-cliff --tag v2026.08` rewrites the heading to `## [2026.08] - 2026-07-30` and
+picks up the regeneration commit that could not list itself. This reproduces the `v2026.07`
+convention exactly — the `chore(release)` commit *carries* the CHANGELOG rewrite, and the tag is
+placed on that commit afterwards.
+
+**The tag itself is not created in this change.** `main` is protected (PR required, strict
+up-to-date), so the release commit reaches `main` only through this PR, and the merge rewrites its
+SHA — as it did for #54. Tagging before the merge would leave `v2026.08` pointing at an orphaned
+commit. The tag must be created on `main` after merge, then pushed.
 
 The run emits `6 commit(s) were skipped due to parse error(s)`. This is expected, not a defect:
 `cliff.toml` sets `filter_unconventional = true`, and every skipped commit is either a merge commit
