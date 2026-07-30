@@ -11,6 +11,16 @@ prompt and the Claude Code status line stay visually consistent.
 | Source (repo)                                  | Target (`$HOME`)                  |
 |------------------------------------------------|-----------------------------------|
 | `stow/common/claude/.claude/statusline-command.sh` | `$HOME/.claude/statusline-command.sh` |
+| `stow/common/claude/.claude/statusline-caveman.js` | `$HOME/.claude/statusline-caveman.js` |
+
+`statusline-command.sh` reads the Claude Code status line JSON from stdin
+**exactly once** and holds it in `$input`. Segments that need the payload are
+handed that copy — no segment re-reads the stream. `statusline-caveman.js` is the
+only segment implemented outside the main script; it is resolved as a sibling of
+`statusline-command.sh`, so it works both stowed and when run from the repository.
+
+`stow/common/claude/tests/` holds the segment's test suite. It is not a stow
+source and is never linked into `$HOME` (`.stow-local-ignore` excludes it).
 
 The script is fully portable — it detects the OS at runtime, uses `$HOME`, and
 contains **no secrets or machine-specific paths**. No `.example` step needed.
@@ -60,24 +70,92 @@ until rtk has at least one recorded run for this directory.
 
 ### caveman badge
 
-Appends the `[CAVEMAN]` mode badge + token-savings suffix from the
-[caveman](https://github.com/JuliusBrussee/caveman) Claude Code plugin. Caveman
-exposes no query CLI, so instead of reparsing its private state files we **call its
-own hardened statusline script** — that script is its stable seam.
+Shows the [caveman](https://github.com/JuliusBrussee/caveman) plugin's mode badge
+plus estimated tokens saved, **scoped to this session and this repository**.
 
-The script path is **globbed**, not hardcoded, because Claude Code installs plugins
-under either layout, and the cache hash changes per release:
+| State | Renders |
+|---|---|
+| mode `full`, one session | `[CAVEMAN] ⛏ 68.3k` |
+| mode `full`, repo has more | `[CAVEMAN] ⛏ 68.3k sess · 844.7k repo` |
+| mode `lite` / `ultra` / `wenyan-*` | `[CAVEMAN:ULTRA]` — no benchmark data exists for those modes |
+| installed, no mode active | `[CAVEMAN:OFF]` |
+| not installed, or any failure | *(nothing)* |
+
+#### Why not caveman's own statusline script
+
+We used to call `caveman-statusline.sh`, which renders
+`~/.claude/.caveman-statusline-suffix`. That file holds the sum of **every
+caveman session ever recorded on this machine, across every project** — a
+machine-wide lifetime total sitting in a project-scoped status line, immediately
+next to the project-scoped `rtk` figure, reading as if it belonged to the current
+project. It is also frozen between `/caveman-stats` runs.
+
+`statusline-caveman.js` replaces it. See
+`docs/prd/0021-caveman-session-scoped-savings.md` and ADRs 0056–0060.
+
+#### How the numbers are produced
+
+**Session** — recomputed every render from the `transcript_path` Claude Code
+supplies in the status line payload. That transcript belongs to exactly one
+session, so no other session can contribute. Caveman's own `parseSession` and
+`deriveSavings` are called directly; the estimate is caveman's, not a
+reimplementation. Warm renders parse only the bytes appended since the last one,
+via a byte-offset cache.
+
+**Repository** — the sum of a small ledger this script maintains, one file per
+session, so a session can never be counted twice:
 
 ```
-~/.claude/plugins/marketplaces/caveman/src/hooks/caveman-statusline.sh   # canonical
-~/.claude/plugins/cache/caveman/*/*/src/hooks/caveman-statusline.sh      # versioned checkout
+${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline/caveman/repos/<hash>/<session-id>.json
+${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline/caveman/sessions/<session-id>.json
 ```
 
-First existing match wins. The badge only appears when caveman is both installed
-**and** active (`~/.claude/.caveman-active` set via `/caveman <level>`).
+Caveman's `.caveman-history.jsonl` cannot supply this — its rows carry no project
+or repository field, and are written only when you run `/caveman-stats`.
+
+The repository key prefers the git remote (`github.com/owner/name`, from the
+payload or `git remote get-url origin`), falling back to the canonicalised git
+top level, then `project_dir`, then `current_dir`. Nothing requires a remote.
+
+#### Things worth knowing
+
+- **Repository totals start when this segment is installed.** Sessions from
+  before it cannot be counted — caveman never recorded which mode they ran in.
+- **Two clones or worktrees of one repository share one total**, by design: they
+  resolve to the same remote-derived identity.
+- **The ledger is a cache.** Deleting
+  `${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline/caveman/` loses repository
+  history and nothing else; the session figure is recomputed regardless.
+- **Caveman's mode flag is global** (`~/.claude/.caveman-active`, one file for the
+  whole machine). Two concurrent sessions cannot run different modes, and
+  `/caveman off` in one session disables caveman in the other. That is upstream
+  behaviour and predates this change; token figures stay independent per session
+  because they come from separate transcripts. See ADR 0060.
+- **Cost.** The segment adds roughly 50 ms per render, almost all of it Node
+  start-up. The status line is debounced at 300 ms.
+- Caveman's plugin path is **globbed**, not hardcoded — `marketplaces/` first,
+  then the newest `cache/<name>/<name>/<hash>/` checkout by mtime, with
+  `$CAVEMAN_HOOKS_DIR` as an override. Nothing under `~/.claude/plugins/` is ever
+  written; the plugin checkout is read-only to us (ADR 0056).
+
+#### Degradation
+
+If `node` is missing or `statusline-caveman.js` is not stowed, the script falls
+back to caveman's own badge with `CAVEMAN_STATUSLINE_SAVINGS=0` — the mode badge
+with **no number**. Degrading to less information, never to the wrong number.
 
 To add caveman: install the plugin, then activate a mode with `/caveman full`
 (or `lite`/`ultra`). No dotfiles change needed — the segment lights up automatically.
+
+#### Tests
+
+```bash
+task test:statusline
+```
+
+Runs against a temporary `XDG_CACHE_HOME`; it never touches the real cache,
+caveman's state files, or `$HOME`. Tests needing the plugin skip themselves when
+it is absent, so the suite passes on a machine without caveman.
 
 ## Wiring
 
@@ -100,6 +178,10 @@ credentials and session data).
 # ~/.claude/statusline-command.sh already exists — resolve it manually first)
 stow --dir=stow/common --target="$HOME" --no-folding --simulate claude
 ```
+
+Re-run the same pair after pulling a change that adds a file to this package —
+already-correct links are left alone and only the new one is created. `tests/` is
+excluded by `.stow-local-ignore` and is never linked into `$HOME`.
 
 ⚠️  MANUAL STEP — run only after reviewing dry-run output and resolving any conflict
 ```bash

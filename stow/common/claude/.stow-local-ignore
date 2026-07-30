@@ -2,5 +2,6 @@
 ^/\.git$
 ^/\.gitignore$
 ^/\.stow-local-ignore$
+^/tests$
 ^.*\.bak$
 ^.*\.orig$

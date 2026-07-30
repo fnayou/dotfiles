@@ -7,11 +7,20 @@ status line on a new machine. It is written for a human user, not for implementa
 
 ## 1. What this package manages
 
-The `stow/common/claude/` package manages **one** file, stowed into `~/.claude/`:
+The `stow/common/claude/` package manages **two** files, stowed into `~/.claude/`:
 
 | Repository file | Symlink created at | Purpose |
 |---|---|---|
 | `stow/common/claude/.claude/statusline-command.sh` | `~/.claude/statusline-command.sh` | Status line script (mirrors the Oh My Posh Catppuccin Macchiato theme) |
+| `stow/common/claude/.claude/statusline-caveman.js` | `~/.claude/statusline-caveman.js` | Caveman segment — mode badge + tokens saved for this session and repository |
+
+`statusline-command.sh` reads the Claude Code status line JSON from stdin once and passes that
+copy to the caveman segment, which it finds as its own sibling. Both files must be linked for the
+savings figures to appear; with only the first, the segment degrades to a mode badge without a
+number.
+
+`stow/common/claude/tests/` holds the segment's tests. It is excluded by `.stow-local-ignore` and
+is **never** linked into `$HOME`.
 
 The script renders these segments: **OS icon · model · path · git branch+status · PR/MR ·
 context % · optional rtk savings · optional caveman badge**. Its colors are taken from the `omp`
@@ -45,6 +54,10 @@ identical on both platforms.
 
 GNU Stow, plus `jq` and `git` (used by the script at runtime). A Nerd Font in your terminal is
 required for the OS icon and git glyphs to render.
+
+`node` is required only for the caveman savings segment, and only if you use the caveman plugin —
+which needs `node` for its own hooks anyway. Without `node` the rest of the status line is
+unaffected and the caveman segment falls back to a mode badge with no number.
 
 ### macOS
 
@@ -138,14 +151,29 @@ test ! -L "$HOME/.claude" && echo "OK: ~/.claude is a real directory"
 ```
 
 ```bash
-# The script should be a symlink resolving into the repository
+# Both files should be symlinks resolving into the repository
 readlink ~/.claude/statusline-command.sh
+readlink ~/.claude/statusline-caveman.js
 ```
 
 ```bash
 # Render it directly with a sample payload (should print a colored line)
 echo '{"model":{"display_name":"Opus"},"workspace":{"current_dir":"'"$HOME"'"},"context_window":{"used_percentage":12}}' \
   | bash ~/.claude/statusline-command.sh; echo
+```
+
+```bash
+# Render with a real session payload — the caveman segment needs session_id and
+# transcript_path. Substitute a transcript that exists under ~/.claude/projects/.
+TX=$(ls -t ~/.claude/projects/*/*.jsonl 2>/dev/null | head -1)
+echo '{"session_id":"validate","transcript_path":"'"$TX"'","model":{"display_name":"Opus"},'\
+'"workspace":{"current_dir":"'"$PWD"'","project_dir":"'"$PWD"'"}}' \
+  | bash ~/.claude/statusline-command.sh; echo
+```
+
+```bash
+# Run the caveman segment's test suite (temp cache; never touches $HOME)
+task test:statusline
 ```
 
 ---
@@ -210,6 +238,33 @@ Cause: the terminal font is not a Nerd Font, or the glyph is missing. Use a Nerd
 after `/compact`. The segment is intentionally hidden until a value is available. Requires
 Claude Code ≥ 2.1.
 
+### Caveman segment shows a badge but no number
+
+Expected when any of these is true:
+
+- `statusline-caveman.js` is not linked yet — re-run the dry-run and apply steps above.
+- `node` is not on `PATH`.
+- The active caveman mode is `lite`, `ultra` or a `wenyan-*` variant. Caveman only has
+  benchmark data for `full`, so no estimate exists for the others. This is upstream behaviour,
+  not a fault in the segment.
+
+### Caveman segment shows `[CAVEMAN:OFF]`
+
+Caveman is installed but no mode is active. Activate one with `/caveman full`.
+
+### Repository total looks too low
+
+It counts only sessions recorded **since this segment was installed**. Earlier sessions cannot be
+counted — caveman never recorded which mode they ran in, so their savings are not reconstructable.
+See `docs/decisions/0058-repository-savings-use-a-statusline-owned-ledger.md`.
+
+### Two sessions show the same caveman mode
+
+Caveman keeps one mode flag for the whole machine (`~/.claude/.caveman-active`), so concurrent
+sessions cannot run different modes and `/caveman off` in one disables it in the other. Upstream
+behaviour, documented in `docs/decisions/0060-caveman-global-mode-flag-limitation-accepted.md`.
+The **token figures** stay independent per session — those come from separate transcripts.
+
 ---
 
 ## 10. Expected final file layout
@@ -217,10 +272,19 @@ Claude Code ≥ 2.1.
 ```
 ~/.claude/
   statusline-command.sh  ->  /path/to/dotfiles/stow/common/claude/.claude/statusline-command.sh
+  statusline-caveman.js  ->  /path/to/dotfiles/stow/common/claude/.claude/statusline-caveman.js
   .credentials.json          (real file — NOT managed)
   settings.json              (real file — NOT managed; wires the status line)
   projects/ plugins/ ...     (real dirs — NOT managed)
 ```
 
-`statusline-command.sh` is a symlink (`->` arrow). `~/.claude` itself is a real directory, never
-a symlink.
+Both `statusline-*.sh|js` entries are symlinks (`->` arrow). `~/.claude` itself is a real
+directory, never a symlink.
+
+The segment also writes a cache — a plain directory, not managed by Stow, safe to delete:
+
+```
+${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline/caveman/
+  sessions/<session-id>.json   parse offset + running totals for one session
+  repos/<hash>/<session-id>.json   one ledger row per session, summed per repository
+```
