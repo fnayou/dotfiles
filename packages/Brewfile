@@ -39,3 +39,10 @@ brew "pipx"
 
 # --- System monitor ---
 brew "btop"
+
+# --- Terminal workspace manager ---
+# Optional — only needed if you stow the `herdr` package.
+# Not in the official Arch repos or the Debian archive; Homebrew carries it on
+# macOS, Arch and Debian alike. Arch users may prefer the AUR package instead.
+# See: docs/guides/herdr-setup.md
+brew "herdr"

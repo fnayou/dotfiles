@@ -44,5 +44,11 @@
 #
 # git-cliff — only needed to run `task changelog`, which regenerates CHANGELOG.md
 # from Conventional Commits. See docs/decisions/0055-git-cliff-changelog-generation.md
+# Confirmed absent from every Debian suite (packages.debian.org, 2026-07-31).
 #   cargo install git-cliff   # if a Rust toolchain is present
 #   # or download a release binary from https://github.com/orhun/git-cliff/releases
+#
+# herdr — only needed if you stow the `herdr` package. Also absent from the
+# Debian archive; install via Homebrew on Linux.
+# See: docs/guides/herdr-setup.md
+#   brew install herdr

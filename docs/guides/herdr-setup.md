@@ -24,7 +24,7 @@ Herdr loads `~/.config/herdr/config.toml` automatically on startup. No manual ac
 |---|---|---|
 | `theme.name` | `tokyo-night` | Base theme; custom palette overrides apply on top |
 | `theme.custom` | Catppuccin Macchiato palette | panel_bg, accent, green, red, yellow |
-| `terminal.default_shell` | `zsh` | Consistent with shell setup on both platforms |
+| `terminal.default_shell` | `zsh` | Consistent with shell setup on all three platforms |
 | `terminal.new_cwd` | `follow` | New panes inherit the active pane's working directory |
 | `ui.show_agent_labels_on_pane_borders` | `true` | Labels visible on pane borders |
 | `ui.sidebar_width` | `25` | Starting sidebar width in **columns** (not percent); Herdr clamps it to 18–36 and auto-scales from workspace name length |
@@ -38,7 +38,13 @@ Herdr loads `~/.config/herdr/config.toml` automatically on startup. No manual ac
 
 ## 3. Platform notes
 
-This package lives under `stow/common/` and is shared across macOS and Arch. All settings are cross-platform. Herdr is available via Homebrew on both platforms.
+This package lives under `stow/common/` and is shared across macOS, Arch / EndeavourOS, and Debian
+(stable, trixie / 13+). All settings are cross-platform.
+
+Herdr is **not** in the official Arch repositories or the Debian archive. Homebrew carries it on all
+three platforms (Homebrew on Linux for Arch and Debian), and an AUR package (`herdr`, currently
+0.7.5) is available on Arch as an alternative. GNU Stow, by contrast, comes from each platform's
+native package manager.
 
 ---
 
@@ -61,11 +67,32 @@ brew install stow
 brew install herdr
 ```
 
+Or, from the AUR instead of Homebrew:
+
+⚠️  MANUAL STEP — review before running
+```bash
+yay -S herdr
+```
+
 Stow is installed via pacman if not already present:
 
 ⚠️  MANUAL STEP — review before running
 ```bash
 sudo pacman -S stow
+```
+
+### Debian (stable, trixie / 13+)
+
+⚠️  MANUAL STEP — review before running
+```bash
+brew install herdr
+```
+
+Stow is installed via apt if not already present:
+
+⚠️  MANUAL STEP — review before running
+```bash
+sudo apt install stow
 ```
 
 Verify Herdr is available:

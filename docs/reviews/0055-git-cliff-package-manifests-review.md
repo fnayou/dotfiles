@@ -56,6 +56,7 @@ None.
   archive because `task changelog:install` and this repository already assert it. That claim could
   not be checked from this Arch machine — no `apt` available. Worth confirming on an actual Debian
   trixie box before relying on it.
+  **Resolved 2026-07-31 — see Post-Completion Note below.**
 
 - **`git-cliff` is now installed on this machine via Homebrew, not pacman**, because `sudo pacman`
   needs an interactive password. The Arch manifest correctly documents the native `pacman` route
@@ -120,6 +121,25 @@ placed on that commit afterwards.
 up-to-date), so the release commit reaches `main` only through this PR, and the merge rewrites its
 SHA — as it did for #54. Tagging before the merge would leave `v2026.08` pointing at an orphaned
 commit. The tag must be created on `main` after merge, then pushed.
+
+### Debian availability — verified 2026-07-31
+
+The open caveat above is closed. `git-cliff` is **confirmed absent from every Debian suite**, so the
+manifest's `cargo install` / release-binary instructions are correct.
+
+Checked without a Debian host, against Debian's own infrastructure:
+
+| Source | Query | Result |
+|---|---|---|
+| `sources.debian.org/api/search/git-cliff/` | source packages | `{"exact":null,"other":[]}` |
+| `sources.debian.org/api/src/git-cliff/` | package versions | `404` |
+| `packages.debian.org` (all suites, all archs, binary names) | `git-cliff` | "Sorry, your search gave no results" |
+| `packages.debian.org` **control query** | `bat` in trixie | "Found 10 matching packages. Exact hits" |
+
+The control query matters: it proves the search was functioning and the empty result reflects
+absence rather than a broken query or a rate limit.
+
+### Changelog run
 
 The run emits `6 commit(s) were skipped due to parse error(s)`. This is expected, not a defect:
 `cliff.toml` sets `filter_unconventional = true`, and every skipped commit is either a merge commit
