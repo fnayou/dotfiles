@@ -1,7 +1,7 @@
 # Plan: Implement btop Configuration
 
 **Number:** 0023
-**Status:** Done
+**Status:** Complete — implementation review [0053](../reviews/0053-btop-implementation-review.md), no blocking issues
 **PRD:** [0020-btop-configuration.md](../prd/0020-btop-configuration.md)
 **Date:** 2026-07-03
 
