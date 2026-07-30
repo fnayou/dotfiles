@@ -11,6 +11,11 @@ brew "git"
 brew "stow"
 brew "go-task", tap: "go-task/tap"
 
+# --- Changelog tooling ---
+# Only needed to run `task changelog`, which regenerates CHANGELOG.md from
+# Conventional Commits. See: docs/decisions/0055-git-cliff-changelog-generation.md
+brew "git-cliff"
+
 # --- Shell runtime (zsh) ---
 brew "fzf"
 brew "zoxide"

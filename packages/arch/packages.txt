@@ -8,6 +8,11 @@
 # --- Repository prerequisites (pacman) ---
 # sudo pacman -S git stow go-task
 
+# --- Changelog tooling (pacman, extra repo) ---
+# Only needed to run `task changelog`, which regenerates CHANGELOG.md from
+# Conventional Commits. See: docs/decisions/0055-git-cliff-changelog-generation.md
+# sudo pacman -S git-cliff
+
 # --- Shell runtime / zsh (pacman) ---
 # sudo pacman -S fzf zoxide eza bat
 
