@@ -1,7 +1,7 @@
 # Plan: Implement bat Configuration Package
 
 **Number:** 0017
-**Status:** Approved
+**Status:** Complete — implementation review [0042](../reviews/0042-bat-configuration-implementation-review.md), no blocking issues
 **Date:** 2026-06-21
 **PRD:** [0013-bat-configuration](../prd/0013-bat-configuration.md)
 **Architecture:** [0013-bat-configuration-architecture](../architecture/0013-bat-configuration-architecture.md)

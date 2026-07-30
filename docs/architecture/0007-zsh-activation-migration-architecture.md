@@ -1,7 +1,7 @@
 # Architecture: Zsh Activation & Migration Strategy
 
 **Number:** 0007
-**Status:** Draft
+**Status:** Approved — review 0021 passed all verdicts; implemented by Plan 0012 (Complete)
 **Date:** 2026-06-17
 **PRD:** [0007-zsh-activation-migration.md](../prd/0007-zsh-activation-migration.md)
 

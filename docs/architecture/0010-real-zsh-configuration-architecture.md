@@ -1,7 +1,7 @@
 # Architecture: Real Zsh Configuration Adoption
 
 **Number:** 0010
-**Status:** Draft
+**Status:** Approved — review 0033 approved with non-blocking notes; implemented by Plan 0014 (Complete)
 **Date:** 2026-06-19
 **PRD:** [0010-real-zsh-configuration.md](../prd/0010-real-zsh-configuration.md)
 **Related:** Architecture 0004, 0005, 0006, 0007, 0008, 0009; ADR-0016, ADR-0020, ADR-0021, ADR-0023, ADR-0024, ADR-0025, ADR-0026, ADR-0027, ADR-0028, ADR-0029
