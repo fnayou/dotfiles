@@ -98,3 +98,24 @@ the commit, restoring the documented Build → Review → Commit order.
 ## Recommended Next Action
 
 Approve and open the PR. Confirm CI is green before merging.
+
+---
+
+## Post-Completion Note — CHANGELOG regenerated
+
+**Date:** 2026-07-30. Appended after the review was written; **Status: Complete** unchanged.
+
+`task changelog` was run on this branch once `git-cliff` was available, adding an `## [Unreleased]`
+section covering the five commits since `v2026.07`. The regeneration was folded into this branch
+rather than a separate PR: PR #55 was still open, so regenerating from `main` would have produced a
+`CHANGELOG.md` that was stale the moment #55 merged.
+
+No tag was created — that is a release decision, so the section renders as `[Unreleased]` rather
+than a new CalVer heading.
+
+The run emits `6 commit(s) were skipped due to parse error(s)`. This is expected, not a defect:
+`cliff.toml` sets `filter_unconventional = true`, and every skipped commit is either a merge commit
+or one of the two pre-convention initial commits (`Initial commit`,
+`Initialize Claude Code operating layer`). `chore(release): v2026.07` is skipped separately and
+deliberately by the `^chore\(release\)` parser rule. Verdicts are unaffected: the diff is purely
+additive to a generated artifact, with no commands, paths, or secrets involved.

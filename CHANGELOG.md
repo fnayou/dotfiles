@@ -5,6 +5,22 @@ Commits via [git-cliff](https://git-cliff.org). Do not edit by hand.
 
 Versioning is CalVer (`vYYYY.MM`) — see the git-cliff config for rationale.
 
+## [Unreleased]
+
+### Bug Fixes
+
+- **herdr**: Replace unknown ui.sidebar.initial_split_width with ui.sidebar_width
+
+### Documentation
+
+- Sync PRD, architecture and plan statuses with review outcomes
+- **assets**: Resize social preview back under GitHub's 1MB limit
+- **reviews**: Add review 0054 for the herdr and status-sync fixes
+
+### Chores
+
+- **packages**: Add git-cliff to the package manifests
+
 ## [2026.07] - 2026-07-22
 
 ### Features
