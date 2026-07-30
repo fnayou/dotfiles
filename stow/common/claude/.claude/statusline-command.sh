@@ -102,7 +102,12 @@ if git -C "$cwd" rev-parse --is-inside-work-tree &>/dev/null 2>&1; then
     cache_file="$cache_dir/mr_${forge}_${cache_key}"
     ttl=120
     now=$(date +%s)
-    mtime=$(stat -f %m "$cache_file" 2>/dev/null || stat -c %Y "$cache_file" 2>/dev/null || echo 0)
+    # GNU form first: on Linux `stat -f` means --file-system, which exits non-zero but still
+    # prints a filesystem block to stdout, so the BSD-first order concatenated that garbage with
+    # the fallback's timestamp. BSD/macOS stat rejects -c cleanly (no stdout), so this order is
+    # safe on both. The regex guard keeps any future surprise out of the arithmetic below.
+    mtime=$(stat -c %Y "$cache_file" 2>/dev/null || stat -f %m "$cache_file" 2>/dev/null || echo 0)
+    [[ "$mtime" =~ ^[0-9]+$ ]] || mtime=0
     if (( now - mtime > ttl )); then
       # Record every attempt (even "no request" -> empty file) so the TTL throttles re-runs.
       if [[ "$forge" == "github" ]]; then

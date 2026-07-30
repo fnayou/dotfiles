@@ -1,7 +1,7 @@
 # Plan: Implement Herdr Configuration Package
 
 **Number:** 0016
-**Status:** Approved
+**Status:** Complete — implementation review [0057](../reviews/0057-herdr-configuration-implementation-review.md), no blocking issues. Two accepted divergences (`theme.name`, `[scrollback]`) are recorded there; the config block below is a historical record, not the current file.
 **Date:** 2026-06-20
 **PRD:** [0012-herdr-configuration](../prd/0012-herdr-configuration.md)
 **Architecture:** [0012-herdr-configuration-architecture](../architecture/0012-herdr-configuration-architecture.md)
