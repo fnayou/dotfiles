@@ -8,7 +8,7 @@
 - docs/plans/0006-implement-git-package.md
 - docs/prd/0003-git-package.md
 - docs/architecture/0003-git-package-architecture.md
-- docs/reviews/0006-git-package-prd-architecture-review.md
+- docs/reviews/0063-git-package-prd-architecture-review.md
 
 ---
 

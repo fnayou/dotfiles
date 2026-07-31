@@ -28,9 +28,9 @@ Comprehensive status check across all documents in `docs/prd/`, `docs/architectu
 | 0003 | Review | 0003-dotfiles-foundation-prd-architecture-review.md | (implicit Complete) | Complete | OK |
 | 0004 | Review | 0004-dotfiles-foundation-plan-review.md | (implicit Complete) | Complete | OK |
 | 0005 | Review | 0005-dotfiles-foundation-plan-revision-review.md | (implicit Complete) | Complete | OK |
-| 0005 | Review | 0005-dotfiles-foundation-implementation-review.md | (implicit Complete) | Complete | OK |
+| 0062 | Review | 0062-dotfiles-foundation-implementation-review.md | (implicit Complete) | Complete | OK |
 | 0006 | Review | 0006-dotfiles-foundation-implementation-review.md | (implicit Complete) | Complete | OK |
-| 0006 | Review | 0006-git-package-prd-architecture-review.md | APPROVED WITH NOTES | Complete | Fixed |
+| 0063 | Review | 0063-git-package-prd-architecture-review.md | APPROVED WITH NOTES | Complete | Fixed |
 | 0007 | Review | 0007-git-package-plan-review.md | APPROVED | Complete | Fixed |
 | 0008 | Review | 0008-git-package-implementation-review.md | APPROVED | Complete | Fixed |
 | 0009 | Review | 0009-zsh-prd-architecture-review.md | Complete | Complete | OK |
@@ -40,7 +40,7 @@ Comprehensive status check across all documents in `docs/prd/`, `docs/architectu
 
 1. **0004-zsh-configuration-architecture.md** — Status changed from "Accepted" to "Approved". Per DOCUMENT-LIFECYCLE.md, Architecture documents transition Draft → Approved only. No "Accepted" state exists for Architectures. The document is approved and ready for planning (consistent with plans already having been written). Fixed in file.
 
-2. **0006-git-package-prd-architecture-review.md** — Status line contained "APPROVED WITH NOTES". Per DOCUMENT-LIFECYCLE.md, reviews are always Complete — they are written once as final reports. The document contains extensive findings and notes, which is correct for a review; the status field must be "Complete". Fixed in file.
+2. **0063-git-package-prd-architecture-review.md** — Status line contained "APPROVED WITH NOTES". Per DOCUMENT-LIFECYCLE.md, reviews are always Complete — they are written once as final reports. The document contains extensive findings and notes, which is correct for a review; the status field must be "Complete". Fixed in file.
 
 3. **0007-git-package-plan-review.md** — Status line reads "APPROVED". Per lifecycle rules, plan reviews are written as Complete (e.g., "Implementation approved" goes in the Summary/Verdict, not the Status field). Fixed in file.
 
