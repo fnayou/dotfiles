@@ -172,8 +172,15 @@ echo '{"session_id":"validate","transcript_path":"'"$TX"'","model":{"display_nam
 ```
 
 ```bash
-# Run the caveman segment's test suite (temp cache; never touches $HOME)
+# Run the caveman segment's unit tests (temp cache; never touches $HOME)
 task test:statusline
+```
+
+```bash
+# End-to-end check with synthetic transcripts — sandboxes CLAUDE_CONFIG_DIR and
+# XDG_CACHE_HOME, so your real caveman mode flag and cache are never touched.
+# Prints PASS/FAIL per assertion; exits 1 if any fail.
+task check:statusline
 ```
 
 ---

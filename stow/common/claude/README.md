@@ -150,12 +150,23 @@ To add caveman: install the plugin, then activate a mode with `/caveman full`
 #### Tests
 
 ```bash
+# Unit tests — the segment's internals (parser equivalence, ledger, identity)
 task test:statusline
+
+# End-to-end — drives the real statusline-command.sh as Claude Code does
+task check:statusline
 ```
 
-Runs against a temporary `XDG_CACHE_HOME`; it never touches the real cache,
-caveman's state files, or `$HOME`. Tests needing the plugin skip themselves when
-it is absent, so the suite passes on a machine without caveman.
+Both run against a temporary `XDG_CACHE_HOME`; neither touches the real cache,
+caveman's state files, or `$HOME`. The unit tests skip the caveman-dependent
+cases when the plugin is absent, so the suite passes on a machine without it
+(this is what CI runs).
+
+`scripts/check-statusline.sh` goes further and redirects `CLAUDE_CONFIG_DIR` to a
+temp directory holding its own mode flag, so the result does not depend on which
+caveman mode you happen to have active and your real flag is never read. Its
+transcripts are synthesised rather than taken from `~/.claude/projects/`, so it
+depends on none of your session history and reveals nothing from it.
 
 ## Wiring
 

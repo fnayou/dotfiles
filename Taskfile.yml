@@ -97,13 +97,19 @@ tasks:
         echo ""
 
   test:statusline:
-    desc: "Run the Claude Code status line caveman-segment tests — read-only, uses a temp cache, never touches $HOME"
+    desc: "Run the Claude Code status line caveman-segment unit tests — read-only, uses a temp cache, never touches $HOME"
     silent: true
     preconditions:
       - sh: command -v node >/dev/null 2>&1
         msg: "node not installed — required by the caveman status line segment"
     cmds:
       - node --test stow/common/claude/tests/statusline-caveman.test.js
+
+  check:statusline:
+    desc: "End-to-end check of the status line with synthetic transcripts — sandboxed, never touches your real caveman state or cache"
+    silent: true
+    cmds:
+      - bash scripts/check-statusline.sh
 
   deps:check:zsh:
     desc: "Check zsh shell-tier dependencies (fzf, zoxide, eza, bat, oh-my-posh, zinit) — read-only, never installs"
