@@ -180,3 +180,43 @@ user, dry-run first, per `.claude/rules/stow.md`. Until then the status line
 degrades correctly to a bare `[CAVEMAN]` badge, which was confirmed live.
 
 **Plan 0024: Complete.** No blocking issues.
+
+---
+
+## Addendum — end-to-end check promoted to `scripts/`
+
+**Date:** 2026-07-31 (after PR #60 merged as `6c88a54`)
+
+The scenario matrix used to validate this feature existed only as a scratch
+script. It has been rewritten as `scripts/check-statusline.sh` and wired to
+`task check:statusline`, so the validation is repeatable rather than a one-off.
+
+Rewritten rather than moved — the scratch version was unfit for the repository:
+
+- hardcoded the absolute repository path, two session UUIDs, and two real
+  repository names, all of which violate the cross-platform and privacy rules;
+- depended on the author's own transcripts under `~/.claude/projects/`, so it
+  could not run on another machine and read real session data to do its work;
+- read the real `~/.claude/.caveman-active`, making results depend on whichever
+  mode happened to be active.
+
+The committed version derives the repository root from `BASH_SOURCE`, synthesises
+its own transcripts with known token counts, and redirects **both**
+`CLAUDE_CONFIG_DIR` and `XDG_CACHE_HOME` into one temp directory removed on exit.
+It therefore reads no real session data, never touches the real mode flag, and is
+deterministic regardless of local state.
+
+17 assertions, all passing. The figures are independently checkable against
+caveman's estimator: a synthetic 10 000-output-token session gives
+`round(10000 / 0.35) - 10000 = 18 571`, displayed `18.6k`; the two-session
+repository total 18 571 + 55 714 = 74 285, displayed `74.3k`. Both match.
+
+Verified afterwards that the real cache contains only this machine's genuine
+session entries, the real `.caveman-active` still reads `full`, and the caveman
+plugin checkout is still clean.
+
+Not added to CI: without the plugin every segment assertion skips, and CI already
+runs `bash -n` over all shell scripts, so the marginal value did not justify the
+runtime. `task test:statusline` remains the CI-facing suite.
+
+**Safety / privacy verdicts unchanged: PASS.**
