@@ -5,7 +5,7 @@
 **Date:** 2026-06-17
 **PRD:** [0003-git-package](../prd/0003-git-package.md)
 **Architecture:** [0003-git-package-architecture](../architecture/0003-git-package-architecture.md)
-**Review:** [0006-git-package-prd-architecture-review](../reviews/0006-git-package-prd-architecture-review.md)
+**Review:** [0063-git-package-prd-architecture-review](../reviews/0063-git-package-prd-architecture-review.md)
 
 ---
 

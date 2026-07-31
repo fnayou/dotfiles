@@ -255,7 +255,7 @@ Suggested addition (after line 94):
 
 ## Files Reviewed
 
-- /Users/fnayou/works/dotfiles/docs/plans/0013-real-zsh-git-configuration-plan.md — revised plan with corrections
+- /Users/fnayou/works/dotfiles/docs/plans/0025-real-zsh-git-configuration-plan.md — revised plan with corrections
 - /Users/fnayou/works/dotfiles/docs/reviews/0030-real-zsh-git-plan-review.md — original review with blockers
 - /Users/fnayou/works/dotfiles/docs/decisions/0028-require-human-setup-guides-for-manually-activated-packages.md — referenced ADR
 - /Users/fnayou/works/dotfiles/docs/decisions/README.md — index (note: missing ADR-0028)

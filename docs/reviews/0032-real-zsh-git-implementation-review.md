@@ -3,7 +3,7 @@
 **Number:** 0032
 **Date:** 2026-06-18
 **Status:** Complete
-**Plan Reviewed:** [0013-real-zsh-git-configuration-plan.md](../plans/0013-real-zsh-git-configuration-plan.md)
+**Plan Reviewed:** [0025-real-zsh-git-configuration-plan.md](../plans/0025-real-zsh-git-configuration-plan.md)
 **Re-Review Reference:** [0031-real-zsh-git-plan-re-review.md](0031-real-zsh-git-plan-re-review.md)
 
 ---
@@ -30,7 +30,7 @@ Implementation of Plan 0013 is **COMPLETE** with respect to repository-side task
 
 ### 1. Plan Status and Lifecycle
 
-**docs/plans/0013-real-zsh-git-configuration-plan.md** (currently **Draft**):
+**docs/plans/0025-real-zsh-git-configuration-plan.md** (currently **Draft**):
 
 Status should be transitioned from Draft → **Complete** by this review. Per DOCUMENT-LIFECYCLE.md rules:
 - Implementation review completed (this document, 0032).
@@ -294,7 +294,7 @@ All implementation work for Plan 0013 is complete and verified. All files are cr
 
 ## Files Reviewed
 
-- /Users/fnayou/works/dotfiles/docs/plans/0013-real-zsh-git-configuration-plan.md
+- /Users/fnayou/works/dotfiles/docs/plans/0025-real-zsh-git-configuration-plan.md
 - /Users/fnayou/works/dotfiles/docs/prd/0009-real-zsh-git-configuration.md
 - /Users/fnayou/works/dotfiles/docs/architecture/0009-real-zsh-git-configuration-architecture.md
 - /Users/fnayou/works/dotfiles/docs/reviews/0030-real-zsh-git-plan-review.md

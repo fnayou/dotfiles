@@ -1,10 +1,10 @@
 # Git Setup Guide Fix Review
 
-**Number:** 0034
+**Number:** 0065
 **Date:** 2026-06-19
 **Status:** Complete
 **Type:** Documentation fix review
-**Related Documents:** docs/guides/git-setup.md, docs/reviews/0033-git-local-setup-validation.md, ADR-0030
+**Related Documents:** docs/guides/git-setup.md, docs/reviews/0064-git-local-setup-validation.md, ADR-0030
 
 ---
 
@@ -121,7 +121,7 @@ All 8 safety and design checks pass. The guide is now safe for copy-paste execut
 ## Files Reviewed
 
 - /Users/fnayou/works/dotfiles/docs/guides/git-setup.md (361 lines)
-- /Users/fnayou/works/dotfiles/docs/reviews/0033-git-local-setup-validation.md (validation baseline)
+- /Users/fnayou/works/dotfiles/docs/reviews/0064-git-local-setup-validation.md (validation baseline)
 - /Users/fnayou/works/dotfiles/Taskfile.yml (task definitions)
 - /Users/fnayou/works/dotfiles/docs/decisions/0030-xdg-style-git-config-layout.md (layout requirement)
 

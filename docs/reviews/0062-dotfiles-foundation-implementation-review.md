@@ -1,6 +1,6 @@
 # Review: Dotfiles Foundation — Corrected Implementation
 
-**Number:** 0005-impl
+**Number:** 0062
 **Date:** 2026-06-15
 **Reviewer:** Claude Code (Reviewer role per AGENTS.md §4)
 **Scope:** Corrected implementation of plan 0005, including stow slash-bug fix

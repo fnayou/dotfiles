@@ -1,6 +1,6 @@
 # Plan: Real Zsh and Git Configuration Adoption
 
-**Number:** 0013
+**Number:** 0025
 **Status:** Complete
 **Date:** 2026-06-18
 **PRD:** [0009-real-zsh-git-configuration.md](../prd/0009-real-zsh-git-configuration.md)
@@ -845,7 +845,7 @@ git diff --staged --name-only
 #   docs/decisions/0026-*.md                      (new)
 #   docs/decisions/0027-*.md                      (new)
 #   docs/guides/git-setup.md                      (new)
-#   docs/plans/0013-real-zsh-git-configuration-plan.md (new or modified)
+#   docs/plans/0025-real-zsh-git-configuration-plan.md (new or modified)
 ```
 
 **Rollback:** If any audit step produces output, fix the offending file before continuing. Use `git checkout -- <file>` to revert a specific file.
@@ -1305,7 +1305,7 @@ rm docs/guides/git-setup.md
 | `docs/decisions/0026-git-aliases-separate-file.md` | created |
 | `docs/decisions/0027-git-bootstrap-taskfile-tasks.md` | created |
 | `docs/guides/git-setup.md` | created — required by ADR-0028 |
-| `docs/plans/0013-real-zsh-git-configuration-plan.md` | created/updated — this file |
+| `docs/plans/0025-real-zsh-git-configuration-plan.md` | created/updated — this file |
 | `~/.config/git/config-common` | created (symlink) — Task 9 manual step only |
 | `~/.config/git/aliases` | created (symlink) — Task 9 manual step only |
 | `~/.config/git/ignore` | created (symlink) — Task 9 manual step only |
