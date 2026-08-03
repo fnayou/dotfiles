@@ -5,8 +5,13 @@
 # ~/.config/zsh/local.zsh (sourced last, git-ignored) overrides them per machine.
 #
 # Nothing here runs a test at shell startup: the guard is the only command executed at
-# source time. `speed-log` is the sole writer, and only when you call it — it creates
-# its own directory under XDG state and appends a CSV. See docs/guides/speedtest-setup.md.
+# source time.
+#
+# History is the tool's own: with --auto-save (default true) every run is written as one
+# JSON file under ${XDG_DATA_HOME:-$HOME/.local/share}/cloudflare-speed-cli/runs/, and
+# `speed-history` exports the whole set to a single CSV. Note that --export-csv writes
+# only the current run and TRUNCATES its target, so it is not an append log.
+# See docs/guides/speedtest-setup.md.
 
 command -v cloudflare-speed-cli >/dev/null 2>&1 || return
 
@@ -29,9 +34,17 @@ speed-json() {
   speed --json "$@"
 }
 
-# speed-log — silent run appended to a monthly CSV under XDG state. Cron/timer friendly.
+# speed-log — silent run for cron/timers. The result goes to the tool's own auto-saved
+# history; stdout is discarded, so only errors surface (cron mails those). --silent is
+# rejected without --json, hence both flags.
 speed-log() {
-  local dir="${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli"
-  mkdir -p "$dir" || return 1
-  speed --silent --export-csv "$dir/history-$(date +%Y%m).csv" "$@"
+  speed --json --silent "$@" >/dev/null
+}
+
+# speed-history — export every auto-saved run to one CSV. Runs no test.
+# Optional argument: output path (default: <XDG state>/cloudflare-speed-cli/history.csv).
+speed-history() {
+  local out="${1:-${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli/history.csv}"
+  mkdir -p "${out:h}" || return 1
+  cloudflare-speed-cli --export-all-csv "$out"
 }

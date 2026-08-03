@@ -48,8 +48,13 @@ new Stow package.
   sourced from `index.zsh` at slot 6e.
 - Because the tool has **no configuration file**, that layer *is* its configuration: three defaults
   (`SPEEDTEST_DOWNLOAD_DURATION`, `SPEEDTEST_UPLOAD_DURATION`, `SPEEDTEST_CONCURRENCY`) set with
-  `: "${VAR:=…}"` so `~/.config/zsh/local.zsh` and the environment win, plus three functions:
-  `speed` (TUI), `speed-json` (machine-readable), `speed-log` (silent CSV append under XDG state).
+  `: "${VAR:=…}"` so `~/.config/zsh/local.zsh` and the environment win, plus four functions:
+  `speed` (TUI), `speed-json` (machine-readable), `speed-log` (silent, for cron), and
+  `speed-history` (export all saved runs to one CSV).
+- History is delegated to the tool, not reimplemented: `--auto-save` (default true) writes one JSON
+  per run under `${XDG_DATA_HOME:-$HOME/.local/share}/cloudflare-speed-cli/runs/`, and
+  `--export-all-csv` renders the set. `--export-csv` truncates its target and holds only the current
+  run, so it is not an append log.
 - No new Stow package, no `deps:check:*` entry, no Taskfile task — the tool is optional, exactly like
   `herdr`, and is never invoked automatically.
 
@@ -71,6 +76,11 @@ the functions, and any `apt install` line for Debian.
   re-runs `stow` manually.
 - **Flags are the API.** The wrappers depend on upstream flag names; a rename fails loudly with an
   unknown-argument error rather than silently. `docs/guides/speedtest-setup.md` tells the user to
-  confirm with `cloudflare-speed-cli --help` after install.
+  confirm with `cloudflare-speed-cli --help` after install. Validated against 1.0.8 on
+  EndeavourOS — see review `docs/reviews/0068-cli-speed-test-local-validation.md`, which caught
+  `--silent` requiring `--json` and `--export-csv` truncating rather than appending.
+- **Saved runs are personal data.** Each recorded run holds the public IP, ISP, region, local IP, and
+  interface MAC of the machine that ran it. They live under XDG data, outside the repository, and must
+  never be committed.
 - **GPL-3.0** applies to the tool only. It is invoked as a separate binary — no linking, no effect on
   this repository's licence.

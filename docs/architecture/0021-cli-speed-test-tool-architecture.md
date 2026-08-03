@@ -25,7 +25,7 @@ packages/
 
 stow/common/zsh/.config/zsh/
 ├── index.zsh                 # + guarded source of speedtest.zsh (slot 6e)
-└── speedtest.zsh             # NEW — defaults + speed / speed-json / speed-log
+└── speedtest.zsh             # NEW — defaults + speed / speed-json / speed-log / speed-history
 
 docs/
 ├── guides/speedtest-setup.md # NEW — install, usage, overrides, re-stow
@@ -79,13 +79,14 @@ Option A: alias speed='cloudflare-speed-cli'
   Con: Carries no defaults and no pass-through composition; the JSON and cron uses
        still need long flag strings by hand.
 
-Option B: speed (TUI) + speed-json (machine-readable) + speed-log (silent CSV append)
-  Pro: Covers the three real uses. speed-json and speed-log both delegate to speed, so
+Option B: speed (TUI) + speed-json (machine-readable) + speed-log (silent, for cron)
+          + speed-history (export all saved runs to CSV)
+  Pro: Covers the real uses. speed-json and speed-log both delegate to speed, so
        defaults are defined once. Extra flags still pass through via "$@".
-  Con: Three names instead of one.
+  Con: Four names instead of one.
 
-Decision: Option B. speed-log is the reason — an unattended run needs --silent plus a
-dated export path, which is not something to retype.
+Decision: Option B. speed-log is the reason — an unattended run needs --json --silent
+together (the binary rejects --silent alone), which is not something to retype.
 ```
 
 ### Decision 4: Source position — slot 6e, before keybindings
@@ -100,15 +101,28 @@ tool-specific layers and keeps index.zsh readable. Any position after shared.zsh
 work; 6e is chosen for grouping, not for correctness.
 ```
 
-### Decision 5: History path under XDG state, monthly file
+### Decision 5: Delegate history to the tool; export on demand
 
 ```
-speed-log writes ${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli/history-YYYYMM.csv.
+Option A: speed-log maintains its own CSV via --export-csv.
+  Pro: Self-contained, one file per month.
+  Con: Does not work. Verified on 1.0.8: --export-csv writes only the current run and
+       TRUNCATES its target, so consecutive runs never accumulate. Making it an append
+       log would mean stripping headers and concatenating by hand — reimplementing
+       state the tool already keeps.
 
-State (not config, not cache): it is generated, machine-local, and worth keeping.
-Monthly rotation keeps a single file from growing without bound and makes a month's
-data easy to hand to a spreadsheet. mkdir -p runs only inside the function — never at
-shell startup — so a shell on a machine without the binary creates nothing.
+Option B: Let --auto-save (default true) record each run, and export on demand.
+  Pro: The tool already writes one JSON per run under
+       ${XDG_DATA_HOME:-$HOME/.local/share}/cloudflare-speed-cli/runs/ and renders the
+       whole set with --export-all-csv. speed-log becomes a silent run and nothing
+       more; speed-history does the export.
+  Con: Two locations to know about — saved runs under XDG data, exported CSV under
+       XDG state.
+
+Decision: Option B. speed-history defaults its output to
+${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli/history.csv (a derived
+artifact) and accepts a path argument. mkdir -p runs only inside that function — never
+at shell startup — so a shell on a machine without the binary creates nothing.
 ```
 
 ### Decision 6: Debian handled out-of-band, not with a fake apt line
@@ -126,9 +140,11 @@ fail on a real machine.
 
 ## Risks
 
-- **Flag drift.** Flags were read from upstream `src/cli.rs`, not from a locally installed binary.
-  If upstream renames a flag, the wrappers break loudly (unknown argument), not silently. The guide
-  tells the user to confirm with `--help` after install.
+- **Flag drift.** Flags were first read from upstream `src/cli.rs`, then verified against an installed
+  1.0.8 on EndeavourOS (review 0068). That verification caught two things source reading missed:
+  `--silent` is rejected without `--json`, and `--export-csv` truncates. If upstream renames a flag,
+  the wrappers break loudly (unknown argument), not silently. The guide tells the user to confirm with
+  `--help` after install.
 - **No theming.** The tool has no colour options, so it will not match the Catppuccin Macchiato look
   of the other packages. Accepted by the user; recorded in the ADR.
 - **Measurement semantics.** Results describe the path to the Cloudflare edge, not a generic internet

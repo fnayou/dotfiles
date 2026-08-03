@@ -22,7 +22,7 @@ Layered design: `index.zsh` is the entry point and sources each layer in order. 
 | `.config/zsh/taskfile.zsh` | go-task completion tuning — guarded, no-op without `task` |
 | `.config/zsh/herdr.zsh` | Herdr session completion — guarded, no-op without `herdr` |
 | `.config/zsh/ssh.zsh` | SSH host completion from `~/.ssh/config` — guarded, no-op without `ssh`/config |
-| `.config/zsh/speedtest.zsh` | `speed` / `speed-json` / `speed-log` helpers — guarded, no-op without `cloudflare-speed-cli` |
+| `.config/zsh/speedtest.zsh` | `speed` / `speed-json` / `speed-log` / `speed-history` helpers — guarded, no-op without `cloudflare-speed-cli` |
 | `.config/zsh/macos.zsh`, `arch.zsh` | Per-platform layers |
 | `.config/zsh/local.zsh.example` | Template for local-only overrides |
 
@@ -75,8 +75,13 @@ it at runtime and commits no host data.
 ## Speed test helpers
 
 `speedtest.zsh` wraps [`cloudflare-speed-cli`](https://github.com/kavehtehrani/cloudflare-speed-cli):
-`speed` runs the interactive TUI, `speed-json` prints JSON for `jq`, and `speed-log` appends a silent
-run to a monthly CSV under `${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli/`.
+`speed` runs the interactive TUI, `speed-json` prints JSON for `jq`, `speed-log` is the silent
+cron/timer form, and `speed-history` exports every saved run to one CSV.
+
+History belongs to the tool, not to this layer: with `--auto-save` (default true) each run is written
+as a JSON file under `${XDG_DATA_HOME:-$HOME/.local/share}/cloudflare-speed-cli/runs/`, and
+`speed-history` calls `--export-all-csv` over that set. `--export-csv` is **not** an append log — it
+truncates its target and holds only the current run.
 
 The tool ships **no config file** — every knob is a flag — so this layer holds the defaults
 (`SPEEDTEST_DOWNLOAD_DURATION`, `SPEEDTEST_UPLOAD_DURATION`, `SPEEDTEST_CONCURRENCY`), set with

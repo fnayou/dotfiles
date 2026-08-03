@@ -59,8 +59,13 @@ add an `apt install` line — the package is not in the archive.
 ### Task 4 — Create `stow/common/zsh/.config/zsh/speedtest.zsh`
 
 New guarded layer: `command -v cloudflare-speed-cli >/dev/null 2>&1 || return`, three
-`: "${SPEEDTEST_*:=...}"` defaults, and the functions `speed`, `speed-json`, `speed-log`. Header
-comment must state that the tool has no config file and that `local.zsh` overrides the defaults.
+`: "${SPEEDTEST_*:=...}"` defaults, and the functions `speed`, `speed-json`, `speed-log`,
+`speed-history`. Header comment must state that the tool has no config file, that `local.zsh`
+overrides the defaults, and where the tool's auto-saved runs live.
+
+Corrected during local validation on EndeavourOS (review 0068): `speed-log` must pass `--json
+--silent` together (the binary rejects `--silent` alone), and history comes from the tool's
+`--auto-save` store via `speed-history` → `--export-all-csv`, because `--export-csv` truncates.
 
 Rules for the file:
 
@@ -192,7 +197,7 @@ history.
 ## Completion Criteria
 
 - [x] All three manifests list the tool with the correct per-platform install source.
-- [x] `speedtest.zsh` exists, is guarded, defines the three overridable defaults and three functions.
+- [x] `speedtest.zsh` exists, is guarded, defines the three overridable defaults and four functions.
 - [x] `index.zsh` sources it once, at slot 6e, with existing ordering unchanged.
 - [x] `zsh -n` passes on both files.
 - [x] ADR 0061 and `docs/guides/speedtest-setup.md` exist and cross-reference PRD 0022 / this plan.
