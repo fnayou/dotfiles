@@ -29,6 +29,7 @@ file owns a single job:
 | `completions.zsh` | Completion styles + fzf-tab previews |
 | `taskfile.zsh` | `task <Tab>` completion tuning (no-op without `task`) |
 | `herdr.zsh` | `herdr <Tab>` session-name completion (no-op without `herdr`) |
+| `speedtest.zsh` | `speed` / `speed-json` / `speed-log` helpers (no-op without `cloudflare-speed-cli`) |
 | `keybindings.zsh` | Key bindings |
 | `aliases.zsh` | Portable aliases |
 | `tools.zsh` | zoxide integration (guarded) |
@@ -55,6 +56,8 @@ Aliases live in `aliases.zsh` (portable) with tool-specific behaviour gated behi
 - `bat` adds suffix aliases (`.md`, `.txt`, `.log`) for file preview.
 - `zoxide` powers a smarter `cd`.
 - `fzf` drives fuzzy completion and fzf-tab previews.
+- `cloudflare-speed-cli` gets `speed` / `speed-json` / `speed-log` wrappers — see
+  [Functions](../usage/functions.md).
 
 Each integration disappears cleanly if its tool is absent.
 

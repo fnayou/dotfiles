@@ -22,6 +22,7 @@ Layered design: `index.zsh` is the entry point and sources each layer in order. 
 | `.config/zsh/taskfile.zsh` | go-task completion tuning — guarded, no-op without `task` |
 | `.config/zsh/herdr.zsh` | Herdr session completion — guarded, no-op without `herdr` |
 | `.config/zsh/ssh.zsh` | SSH host completion from `~/.ssh/config` — guarded, no-op without `ssh`/config |
+| `.config/zsh/speedtest.zsh` | `speed` / `speed-json` / `speed-log` helpers — guarded, no-op without `cloudflare-speed-cli` |
 | `.config/zsh/macos.zsh`, `arch.zsh` | Per-platform layers |
 | `.config/zsh/local.zsh.example` | Template for local-only overrides |
 
@@ -70,6 +71,20 @@ completion stay intact. The `Host` list is re-read on every completion, so confi
 up without a new shell. Guarded by `command -v ssh` and a readable `~/.ssh/config`, so it is
 a no-op otherwise. The config itself is local/unstowed (private hostnames) — this layer reads
 it at runtime and commits no host data.
+
+## Speed test helpers
+
+`speedtest.zsh` wraps [`cloudflare-speed-cli`](https://github.com/kavehtehrani/cloudflare-speed-cli):
+`speed` runs the interactive TUI, `speed-json` prints JSON for `jq`, and `speed-log` appends a silent
+run to a monthly CSV under `${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli/`.
+
+The tool ships **no config file** — every knob is a flag — so this layer holds the defaults
+(`SPEEDTEST_DOWNLOAD_DURATION`, `SPEEDTEST_UPLOAD_DURATION`, `SPEEDTEST_CONCURRENCY`), set with
+`: "${VAR:=…}"` so `local.zsh` or the environment overrides them. Extra flags pass through
+(`speed -4`, `speed --traceroute`). Guarded by `command -v cloudflare-speed-cli`; nothing runs at
+shell startup, and only `speed-log` writes anything.
+
+See [Speed Test Setup Guide](../../../docs/guides/speedtest-setup.md).
 
 ## Setup
 

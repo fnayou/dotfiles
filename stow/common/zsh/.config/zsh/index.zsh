@@ -41,6 +41,11 @@ fi
 # 6d) SSH host completion — guarded; no-op without `ssh` or a config.
 [[ -r "$HOME/.config/zsh/ssh.zsh" ]] && source "$HOME/.config/zsh/ssh.zsh"
 
+# 6e) cloudflare-speed-cli helpers (speed / speed-json / speed-log) — guarded; no-op
+#     without the binary. Functions only, no compdef, so the position is grouping and
+#     not an ordering requirement.
+[[ -r "$HOME/.config/zsh/speedtest.zsh" ]] && source "$HOME/.config/zsh/speedtest.zsh"
+
 # 7) Key bindings.
 [[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
 
