@@ -20,7 +20,7 @@ Also in `aliases.zsh`. `chpwd` is a Zsh hook that runs whenever the working dire
 runs `ll`, so every `cd` immediately lists the new directory. You don't call it directly — it fires on
 navigation.
 
-## `speed`, `speed-json`, `speed-log`
+## `speed`, `speed-json`, `speed-log`, `speed-history`
 
 From `speedtest.zsh`. Wrappers around
 [`cloudflare-speed-cli`](https://github.com/kavehtehrani/cloudflare-speed-cli), which ships **no
@@ -30,7 +30,8 @@ config file** — so this layer holds the defaults and the shortcuts:
 speed                     # interactive TUI run
 speed -4                  # extra flags pass straight through
 speed-json | jq '.'       # headless, machine-readable
-speed-log                 # silent run appended to a monthly CSV under XDG state
+speed-log                 # silent, for cron/timers — nothing on stdout
+speed-history             # export every saved run to one CSV (runs no test)
 ```
 
 Defaults are `SPEEDTEST_DOWNLOAD_DURATION=10s`, `SPEEDTEST_UPLOAD_DURATION=10s`, and
@@ -41,15 +42,20 @@ environment variable overrides them:
 SPEEDTEST_CONCURRENCY=12 speed
 ```
 
-`speed-log` is the one worth scheduling; it writes to
-`${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli/history-YYYYMM.csv`. The whole layer is
-guarded by `command -v cloudflare-speed-cli`, so the functions simply do not exist on a machine
-without the tool.
+`speed-log` is the one worth scheduling. History belongs to the tool, not to this layer: with
+`--auto-save` (default true) every run is written as a JSON file under
+`${XDG_DATA_HOME:-$HOME/.local/share}/cloudflare-speed-cli/runs/`, and `speed-history` exports that
+whole set to a single CSV. The layer is guarded by `command -v cloudflare-speed-cli`, so the functions
+simply do not exist on a machine without the tool.
 
 !!! note "Measures the path to Cloudflare"
     Results describe your connection to the Cloudflare anycast edge and are not directly comparable to
     Ookla Speedtest figures. The tool also has no theme options, so it is the one integration that
     does not follow the Catppuccin Macchiato palette.
+
+!!! warning "Saved runs contain identifying data"
+    Each saved run records your public IP, ISP, region, local IP, and interface MAC. Keep those files
+    where they are — never paste them into an issue or a repository.
 
 ## Internal helpers (not for direct use)
 

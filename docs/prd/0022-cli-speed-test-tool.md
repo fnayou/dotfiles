@@ -39,8 +39,8 @@ TUI + headless, Cloudflare backend).
 
 - As a user, I want `speed` to run a speed test with sane defaults so that I do not retype flags.
 - As a user, I want `speed-json` to emit machine-readable output so that I can pipe results to `jq`.
-- As a user, I want `speed-log` to append silent results to a CSV so that I can track my connection
-  over time from `cron` or a systemd timer.
+- As a user, I want `speed-log` to record silent results so that I can track my connection over time
+  from `cron` or a systemd timer, and `speed-history` to export those results to a CSV on demand.
 - As a user, I want the integration to vanish cleanly on machines without the binary so that the same
   stowed config works everywhere.
 - As a user, I want per-machine tuning (durations, concurrency) without editing a tracked file.
@@ -75,7 +75,7 @@ TUI + headless, Cloudflare backend).
 - [ ] `packages/arch/packages.txt` documents the `pacman` install under a network section.
 - [ ] `packages/debian/packages.txt` documents the out-of-band install with the other non-archive tools.
 - [ ] `stow/common/zsh/.config/zsh/speedtest.zsh` exists, is guarded by `command -v
-      cloudflare-speed-cli`, and defines `speed`, `speed-json`, and `speed-log`.
+      cloudflare-speed-cli`, and defines `speed`, `speed-json`, `speed-log`, and `speed-history`.
 - [ ] Defaults are set with `: "${VAR:=...}"` so `local.zsh` and the environment can override them.
 - [ ] `index.zsh` sources the new layer, guarded, without altering existing ordering guarantees.
 - [ ] `docs/guides/speedtest-setup.md` documents per-platform install, the three functions, the

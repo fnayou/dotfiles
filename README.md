@@ -56,7 +56,7 @@ Setup guides are written for a human operator, not for agents.
 - [Packages setup](docs/guides/packages-setup.md) — install the tools every package depends on (`git`, `stow`, `go-task`, …).
 - [GNU Stow usage](docs/stow-usage.md) — dry-run workflow, install steps, conflict handling, adding packages.
 - Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [bat](docs/guides/bat-setup.md) · [btop](docs/guides/btop-setup.md) · [claude](docs/guides/claude-setup.md) · [eza](docs/guides/eza-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [zsh](docs/guides/zsh-setup.md).
-- [Speed test setup](docs/guides/speedtest-setup.md) — optional `cloudflare-speed-cli` helpers (`speed`, `speed-json`, `speed-log`) shipped by the zsh package.
+- [Speed test setup](docs/guides/speedtest-setup.md) — optional `cloudflare-speed-cli` helpers (`speed`, `speed-json`, `speed-log`, `speed-history`) shipped by the zsh package.
 - [Shell dependencies](docs/shell-dependencies.md) · [Zsh migration notes](docs/zsh-migration.md).
 
 ## Installing a package

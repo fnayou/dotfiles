@@ -30,7 +30,24 @@ The file provides:
 | `SPEEDTEST_CONCURRENCY` | variable (default `6`) | Parallel workers |
 | `speed` | function | Interactive TUI run using the defaults |
 | `speed-json` | function | Headless run, JSON to stdout |
-| `speed-log` | function | Silent run, appended to a monthly CSV |
+| `speed-log` | function | Silent run for cron/timers — result lands in the tool's own history |
+| `speed-history` | function | Export every saved run to one CSV (runs no test) |
+
+### Where results are stored
+
+The tool keeps its own history: with `--auto-save` (default **true**) **every** run — `speed`,
+`speed-json`, `speed-log` alike — is written as one JSON file under
+
+```
+${XDG_DATA_HOME:-$HOME/.local/share}/cloudflare-speed-cli/runs/
+```
+
+`speed-history` turns that set into a single CSV. Pass `--auto-save false` to any of the functions for
+a run you do not want recorded.
+
+**`--export-csv` is not an append log.** It writes only the **current** run and **truncates** its
+target file — verified on 1.0.8: two consecutive runs against the same path leave the file at header
+plus one row. Use `speed-history` (`--export-all-csv`) for accumulated data.
 
 ---
 
@@ -165,23 +182,30 @@ Machine-readable output:
 speed-json | jq '.'
 ```
 
-Silent run appended to a monthly CSV under XDG state:
+Silent run — nothing on stdout, result recorded in the tool's own history:
 
 ```bash
 speed-log
-ls "${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli/"
+ls "${XDG_DATA_HOME:-$HOME/.local/share}/cloudflare-speed-cli/runs/"
 ```
 
-`speed-log` is the one to schedule. Example hourly `cron` entry — note the absolute path, since `cron`
-does not load your shell config:
+Export the accumulated history to a CSV (runs no test):
+
+```bash
+speed-history                      # default: <XDG state>/cloudflare-speed-cli/history.csv
+speed-history ~/speedtest.csv      # or any path you pass
+```
+
+`speed-log` is the one to schedule. Example hourly `cron` entry — `cron` does not load your shell
+config, so call the binary directly. `--silent` is rejected without `--json`, so both flags are
+required:
 
 ```cron
-# crontab -e — hourly, silent, appended to the monthly CSV.
-# The backslashes before % are required: cron treats a bare % as a newline.
-0 * * * * PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin" cloudflare-speed-cli --silent --export-csv "$HOME/.local/state/cloudflare-speed-cli/history-$(date +\%Y\%m).csv"
+# crontab -e — hourly, silent, auto-saved to the tool's own history
+0 * * * * PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin" cloudflare-speed-cli --json --silent >/dev/null
 ```
 
-The directory must exist first — run `speed-log` once by hand, or `mkdir -p` it.
+Then run `speed-history` whenever you want the CSV. Errors still reach stderr, so `cron` mails them.
 
 ---
 
@@ -243,12 +267,14 @@ sudo pacman -Rs cloudflare-speed-cli
 cargo uninstall cloudflare-speed-cli
 ```
 
-The CSV history is yours and is never removed automatically. Delete it by hand if you want it gone:
+Your run history is yours and is never removed automatically. Two locations — the tool's saved runs
+and any CSV you exported:
 
 ⚠️  MANUAL STEP — review before running; this deletes your saved history
 
 ```bash
-rm -rf "${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli"
+rm -rf "${XDG_DATA_HOME:-$HOME/.local/share}/cloudflare-speed-cli"    # saved runs
+rm -rf "${XDG_STATE_HOME:-$HOME/.local/state}/cloudflare-speed-cli"   # exported CSV
 ```
 
 ---
@@ -275,6 +301,16 @@ cloudflare-speed-cli --help
 
 Adjust `stow/common/zsh/.config/zsh/speedtest.zsh` to match, and note the version in the commit.
 
+### `--silent can only be used with --json`
+
+`--silent` is not standalone. `speed-log` already passes both; you only hit this by calling the binary
+directly with `--silent` alone.
+
+### `speed-history` says `Exported 0 run(s)`
+
+No run has been auto-saved yet. Runs invoked with `--auto-save false` are deliberately not recorded —
+run `speed-log` once and try again.
+
 ### Results look far below your line rate
 
 Try a longer sample and more streams before blaming the ISP:
@@ -298,6 +334,16 @@ Home (after stow)
   ~/.config/zsh/speedtest.zsh                    # symlink into the repository
   ~/.config/zsh/local.zsh                        # optional overrides, untracked
 
-State (created by speed-log only)
-  ~/.local/state/cloudflare-speed-cli/history-YYYYMM.csv
+Data (written by the tool itself on every auto-saved run)
+  ~/.local/share/cloudflare-speed-cli/runs/run-<timestamp>-<id>.json
+
+State (created by speed-history only)
+  ~/.local/state/cloudflare-speed-cli/history.csv
 ```
+
+## 11. Privacy note
+
+Saved runs and exported CSV/JSON contain your **public IP, ISP, geographic region, local IP, and
+interface MAC address**. They live outside the repository and must stay there — never paste that
+output into an issue, a commit, or this repository. `--hide-network-info` redacts the TUI display only,
+not the saved files.
