@@ -40,6 +40,12 @@ brew "pipx"
 # --- System monitor ---
 brew "btop"
 
+# --- Network speed test ---
+# Optional — powers the `speed` / `speed-json` / `speed-log` helpers in the zsh package.
+# Homebrew core formula: no tap required.
+# See: docs/guides/speedtest-setup.md
+brew "cloudflare-speed-cli"
+
 # --- Terminal workspace manager ---
 # Optional — only needed if you stow the `herdr` package.
 # Not in the official Arch repos or the Debian archive; Homebrew carries it on

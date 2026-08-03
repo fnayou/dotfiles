@@ -26,6 +26,12 @@
 # --- System monitor (pacman) ---
 # sudo pacman -S btop
 
+# --- Network speed test (pacman, extra repo) ---
+# Optional — powers the `speed` / `speed-json` / `speed-log` helpers in the zsh package.
+# In the official extra repository: no AUR helper required.
+# See: docs/guides/speedtest-setup.md
+# sudo pacman -S cloudflare-speed-cli
+
 # --- Terminal workspace manager ---
 # Optional — only needed if you stow the `herdr` package.
 # Not in the official Arch repos. Either Homebrew or the AUR package below.

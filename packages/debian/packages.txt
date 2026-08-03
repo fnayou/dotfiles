@@ -52,3 +52,11 @@
 # Debian archive; install via Homebrew on Linux.
 # See: docs/guides/herdr-setup.md
 #   brew install herdr
+#
+# cloudflare-speed-cli — optional; powers the `speed` / `speed-json` / `speed-log`
+# helpers in the zsh package. Not in the Debian archive (it is in Arch extra and
+# Homebrew core, but has no apt package).
+# See: docs/guides/speedtest-setup.md
+#   cargo install cloudflare-speed-cli   # if a Rust toolchain is present
+#   # or download a release binary from
+#   #   https://github.com/kavehtehrani/cloudflare-speed-cli/releases
