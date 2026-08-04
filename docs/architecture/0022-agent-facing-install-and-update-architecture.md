@@ -1,9 +1,10 @@
 # Architecture: Agent-Facing Install and Update Documents
 
 **Number:** 0022
-**Status:** Draft
+**Status:** Approved
 **Date:** 2026-08-04
 **PRD:** 0023 — Agent-Facing Install and Update Documents
+**Review:** 0074 — two blocking issues found and fixed before approval
 
 ## Context
 
@@ -118,7 +119,7 @@ This matters because `AGENTS.md` is loaded in every session in this repository. 
 as a general softening; it must read as "when the operator asks you to provision this machine,
 stowing is the task, not a violation."
 
-### 3a. Missing prerequisites abort in Assess
+### 5. Missing prerequisites abort in Assess
 
 Three tools are blocking: **`stow`**, **`task`**, and **`zsh`**. Absent any of them, the run aborts in
 Assess having changed nothing, and reports the per-OS install command. (`git` is present by
@@ -138,7 +139,7 @@ tasks so `task` would not be required. `zsh:bootstrap` performs symlink refusal,
 and idempotent block insertion. A markdown reimplementation of that will drift from the Taskfile, and
 the copy is the one running unattended against the operator's real `~/.zshrc`.
 
-### 3b. Install stows every package, with no per-machine subset
+### 6. Install stows every package, with no per-machine subset
 
 All ten packages, on every machine, with no exclusion mechanism. No package is platform-conditional —
 they all live in `stow/common/`, and `macos/`, `arch/`, `debian/` are empty — so there is no technical
@@ -161,7 +162,7 @@ Stowing everything makes **fully-stowed the only healthy state**, so any deviati
 The cost is a handful of inert symlinks under `~/.config` on headless servers — exactly what the
 guard design already tolerates everywhere else.
 
-### 4b. Update pins the checkout to a tag, on a named branch
+### 7. Update pins the checkout to a tag, on a named branch
 
 Update moves the working tree to the newest tag — genuinely, not by tracking `main`. Because packages
 are symlinked *into this checkout*, the checkout's content **is** the deployed configuration, so
@@ -172,6 +173,20 @@ It does so with a **named branch pointer, never a detached HEAD**:
 ```bash
 git switch -C deployed <tag>
 ```
+
+**`-C` force-resets the branch, so it must be guarded.** If the operator has committed anything on
+`deployed` — an experiment, a local tweak — `switch -C` moves the ref off those commits and they
+become unreachable except through the reflog. Silent data loss, from the one command this design runs
+most often.
+
+The guard: before moving the ref, refuse if `deployed` holds commits reachable from no tag.
+
+```bash
+git rev-list deployed --not --tags    # must be empty
+```
+
+Non-empty means the operator has work there. The run aborts, lists the commits, and changes nothing.
+`deployed` is an agent-owned pointer; the moment it stops being one, the agent stops touching it.
 
 The content is exactly the tag's. The difference is that the live configuration is served from a
 named ref rather than an unnamed one — which matters here far more than in a normal repository,
@@ -226,7 +241,7 @@ until a new tag is cut. That is the correct outcome, not a bug: moving it to the
 a tooling downgrade. Cutting a tag is the documented unblock, and it is a step this repository
 already performs routinely.
 
-### 5. Update classifies changes by whether they need a re-stow
+### 8. Update classifies changes by whether they need a re-stow
 
 The distinction that made `speedtest.zsh` invisible on a pulled-but-not-re-stowed machine:
 
@@ -242,7 +257,7 @@ Only the second row is counter-intuitive, and it is the one that fails silently.
 linkage check detects it independently, which gives update a verifier it does not have to trust
 itself for.
 
-### 6. The report is a fixed structure, printed
+### 9. The report is a fixed structure, printed
 
 ```
 1. What ran            OS, tag range, packages touched
@@ -260,7 +275,7 @@ exception. The verdict deliberately has three values rather than two: `complete-
 a correct run on a machine missing Zinit or `oh-my-posh` returns, and collapsing it into either
 `complete` or `aborted` would misinform.
 
-### 6b. The login shell is checked, never changed
+### 10. The login shell is checked, never changed
 
 `chsh` is a forbidden repository action (ADR-0027 / PRD-0007), and it prompts for a password an
 unattended run could not answer even if it were permitted. So the run detects the login shell,
@@ -279,7 +294,7 @@ reports `WARN` rather than `FAIL`, because a terminal configured to launch zsh d
 legitimate setup, and a failure the operator has deliberately chosen becomes noise they learn to
 ignore.
 
-### 7. Documents assert, `doctor` verifies
+### 11. Documents assert, `doctor` verifies
 
 Neither document re-derives what "correctly installed" means. Both end with `task doctor` and quote
 it. This is why it was built first (ADR-0063), and it keeps the definition of health in one place
@@ -294,8 +309,12 @@ that is independently tested.
 | §8 ADR read as a general softening | Low | High | Relaxation keyed to invocation; ADR states what remains absolute before what is lifted |
 | Documents drift from the repository | Medium | Medium | Shared contract in one file; `doctor` is the single definition of health; acceptance criteria require a sandbox run |
 | Model without the context window for the whole document | Medium | Medium | Keep each document short and imperative; push shared material into `README.md`; no long rationale |
-| Debian path least exercised | High | Medium | Debian has no platform zsh layer and lacks `go-task`/`oh-my-posh`/`git-cliff`; document explicitly, expect `complete-with-caveats` |
+| Debian path least exercised | High | Medium | No platform zsh layer, and `go-task` is not in the archive — so a fresh Debian server **aborts** on its first run by decision 5, rather than completing with caveats. Document that as the expected outcome |
 | Sandbox validation not representative | Medium | Medium | Validate against a sandbox `$HOME`, and state plainly that it is not a real fresh machine |
+| `git switch -C deployed` discards operator commits on that branch | Low | **High** | Refuse when `git rev-list deployed --not --tags` is non-empty; abort and list the commits (decision 7) |
+| Operator never cuts a tag, so updates block indefinitely | **High** | Medium | Inherent to tag-pinning: the refusal is the design working. Report names the unblock (`cut a tag`) rather than just refusing |
+| Tag pinning rolls back tooling on machines adopted before it | High | Low | One-time migration; refusal rule makes it visible rather than silent (decision 7) |
+| `bat cache --build` grows into a general activation escape hatch | Medium | Medium | It is the only package needing one; any addition must be argued against the no-configuration-file-creation property in decision 3 |
 
 ## Extensibility
 
@@ -307,7 +326,7 @@ that is independently tested.
 
 ## Open Questions
 
-None. The prerequisite question this section previously carried is resolved in Design Decision 3a:
+None. The prerequisite question this section previously carried is resolved in Design Decision 5:
 `stow`, `task`, and `zsh` are blocking; everything else is a caveat.
 
 ## Recommended Next Step

@@ -100,8 +100,10 @@ Autonomy removes the per-step human gate, so these replace it. They are the core
 - **`--no-folding` is mandatory** on every stow invocation (ADR-0024).
 - **`~/.zshrc` is modified only via `task zsh:bootstrap`**, which is idempotent and takes a
   timestamped backup. The agent must not hand-edit it, and must refuse if it is a symlink.
-- **`.example` templates are copied, never filled.** The agent must not invent values for private
-  files. It copies the template where the repo prescribes and lists what needs human completion.
+- **No private file is created by the agent at all.** Superseding this document's earlier wording
+  ("`.example` templates are copied, never filled"), which ADR-0064 settled the other way: the agent
+  does not copy `local.zsh.example`, and creates no `local.zsh`. It reports the absence and stops.
+  Authoring private, machine-specific content is the operator's act.
 - **No secrets are generated, requested, or written.**
 - **No third-party code is fetched.** Zinit and every system package are reported with their install
   command printed, never cloned or installed by the agent.
