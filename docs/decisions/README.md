@@ -81,8 +81,8 @@ Use numbered filenames in sequence:
 | [0010](0010-packages-dir-deferred.md) | Packages directory deferred | Accepted |
 | [0011](0011-task-dry-run-single-package-var.md) | Task dry-run single package var | Superseded by 0012 |
 | [0012](0012-use-area-and-package-for-stow-task-interface.md) | Use AREA and PACKAGE for Stow task interface | Accepted |
-| [0013](0013-include-based-git-config-strategy.md) | Include-based Git config strategy | Accepted |
-| [0014](0014-gitconfig-common-filename.md) | `.gitconfig.common` filename | Accepted |
+| [0013](0013-include-based-git-config-strategy.md) | Include-based Git config strategy | Superseded in part by 0030 |
+| [0014](0014-gitconfig-common-filename.md) | `.gitconfig.common` filename | Superseded by 0030 |
 | [0015](0015-git-credential-helpers-deferred.md) | Git credential helpers deferred | Accepted |
 | [0016](0016-zsh-common-package-runtime-os-detection.md) | Zsh files in `stow/common/zsh/` with runtime OS detection | Accepted |
 | [0017](0017-use-fake-home-for-stow-validation.md) | Use fake home for Stow validation | Accepted |

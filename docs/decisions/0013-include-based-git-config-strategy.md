@@ -2,9 +2,14 @@
 
 **Number:** 0013
 **Date:** 2026-06-17
-**Status:** Accepted
+**Status:** Superseded in part by [ADR-0030](0030-xdg-style-git-config-layout.md)
 **PRD:** 0003-git-package
 **Architecture:** 0003-git-package-architecture
+
+> **Superseded in part.** The include-based strategy decided here is still current. The managed
+> file's name and location are not: ADR-0030 moved it from `~/.gitconfig.common` to
+> `~/.config/git/config-common`. Read the strategy below as live and every `~/.gitconfig.common`
+> path as historical.
 
 ## Context
 

@@ -19,6 +19,12 @@ tasks:
     cmds:
       - bash scripts/check.sh
 
+  check:decisions:
+    desc: "Validate the ADR record for internal contradictions — read-only, also runs in CI"
+    silent: true
+    cmds:
+      - bash scripts/check-decisions.sh
+
   doctor:
     desc: "Health-check this machine's installed dotfiles — read-only, mutates nothing"
     silent: true

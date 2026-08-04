@@ -121,6 +121,12 @@ jobs:
           fi
           echo "Secret scan passed"
 
+      # Read-only: reads docs/decisions/ and prints. Needs no $HOME and no network.
+      # Catches contradictions between ADRs, which a per-file status audit cannot see —
+      # see ADR-0064 and review 0073.
+      - name: Decision record consistency
+        run: bash scripts/check-decisions.sh
+
       # Non-destructive: the suite redirects XDG_CACHE_HOME to a temp dir and never
       # touches $HOME. Tests needing the caveman plugin skip themselves when it is
       # absent, which is always the case on a runner.
