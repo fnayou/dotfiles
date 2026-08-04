@@ -2,9 +2,13 @@
 
 **Number:** 0014
 **Date:** 2026-06-17
-**Status:** Accepted
+**Status:** Superseded by [ADR-0030](0030-xdg-style-git-config-layout.md)
 **PRD:** 0003-git-package
 **Architecture:** 0003-git-package-architecture
+
+> **Superseded.** This ADR decided only the filename `.gitconfig.common` at `~/.gitconfig.common`.
+> ADR-0030 replaced that layout entirely with `~/.config/git/config-common`, so nothing decided here
+> is still in force.
 
 ## Context
 
