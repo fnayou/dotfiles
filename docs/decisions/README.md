@@ -131,3 +131,4 @@ Use numbered filenames in sequence:
 | [0060](0060-caveman-global-mode-flag-limitation-accepted.md) | Caveman's global mode flag is a known limitation, accepted as-is | Accepted |
 | [0061](0061-cloudflare-speed-cli-for-cli-speed-tests.md) | cloudflare-speed-cli for CLI speed tests, wired through the zsh layer | Accepted |
 | [0062](0062-path-affecting-setup-belongs-in-zshrc-above-the-managed-block.md) | `PATH`/`FPATH` setup belongs in `~/.zshrc` above the managed block, not in `local.zsh` | Accepted |
+| [0063](0063-machine-health-check-is-a-read-only-offline-task.md) | Machine health verification is a read-only, offline `task doctor` | Accepted |

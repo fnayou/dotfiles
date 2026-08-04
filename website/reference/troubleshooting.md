@@ -7,6 +7,18 @@ with read-only checks before any fix. Destructive or modifying steps are marked.
     `--adopt` silently overwrites your existing files with the repository version and cannot be undone
     without the original. It is forbidden in this repository. Resolve conflicts manually instead.
 
+## Start here: `task doctor`
+
+Before working through the cases below, run the health check — it is read-only, needs no network, and
+usually names the problem outright:
+
+```bash
+task doctor
+```
+
+Because every managed layer is guarded, a broken setup starts a shell exactly as cleanly as a correct
+one. `doctor` asserts the positives instead of inferring health from the absence of errors.
+
 ## Stow reports a conflict
 
 A real file already exists at the link target. Inspect it:
