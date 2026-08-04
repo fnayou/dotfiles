@@ -5,6 +5,31 @@ Commits via [git-cliff](https://git-cliff.org). Do not edit by hand.
 
 Versioning is CalVer (`vYYYY.MM`) — see the git-cliff config for rationale.
 
+## [2026.08.1] - 2026-08-04
+
+### Features
+
+- **herdr**: Set catppuccin base and fill all eight Macchiato colour slots
+- **claude**: Scope caveman savings to the current session and repository
+- **zsh**: Add cloudflare-speed-cli speed test helpers
+
+### Bug Fixes
+
+- **claude**: Make the statusline mtime check OS-portable
+- **zsh**: Correct speed-log flags and delegate speed test history to the tool
+
+### Documentation
+
+- **claude**: Correct the ship-change skill's hang guidance
+- **herdr**: Document Debian support, add herdr to the package manifests
+- Give colliding document numbers unique identifiers
+- **zsh**: Document that PATH setup belongs above the managed block
+- **decisions**: Make the ADR index match the ADR files
+
+### Testing
+
+- **claude**: Add a sandboxed end-to-end check for the status line
+
 ## [2026.08] - 2026-07-30
 
 ### Bug Fixes
