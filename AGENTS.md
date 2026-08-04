@@ -299,6 +299,15 @@ docs/claude/       → agent guides and workflow documentation
 - Prefer `.example`, `.sample`, or `.template` files for initial config.
 - Any risky command must be **shown to the user, not executed**.
 
+> **One bounded exception.** When an operator explicitly asks for an install or update run and you are
+> following `docs/agent/` (a different contract from this one — that directory is for *deploying* this
+> repository onto a machine, not authoring it), that request is the approval this section requires for
+> `stow` and the symlinks it creates. See
+> [ADR-0065](docs/decisions/0065-provisioning-runs-lift-the-agents-md-section-8-stow-ban.md) for what
+> is lifted and what stays absolutely forbidden — `sudo`, `--adopt`, `rm`/`mv` in `$HOME`, and
+> resolving conflicts among them. The exception cannot be inferred: absent an explicit request, this
+> section applies unchanged.
+
 ---
 
 ## 9. Privacy Rules

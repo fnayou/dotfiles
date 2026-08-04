@@ -133,3 +133,4 @@ Use numbered filenames in sequence:
 | [0062](0062-path-affecting-setup-belongs-in-zshrc-above-the-managed-block.md) | `PATH`/`FPATH` setup belongs in `~/.zshrc` above the managed block, not in `local.zsh` | Accepted |
 | [0063](0063-machine-health-check-is-a-read-only-offline-task.md) | Machine health verification is a read-only, offline `task doctor` | Accepted |
 | [0064](0064-local-zsh-example-exists-and-agents-never-create-local-zsh.md) | `local.zsh.example` exists for humans; agents never create `local.zsh` | Accepted |
+| [0065](0065-provisioning-runs-lift-the-agents-md-section-8-stow-ban.md) | Operator-initiated provisioning runs lift the `AGENTS.md` §8 stow ban | Accepted |
