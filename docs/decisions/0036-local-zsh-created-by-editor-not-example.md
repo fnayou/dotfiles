@@ -2,8 +2,13 @@
 
 **Number:** 0036
 **Date:** 2026-06-19
-**Status:** Accepted
+**Status:** Superseded by [ADR-0064](0064-local-zsh-example-exists-and-agents-never-create-local-zsh.md)
 **Related:** PRD-0010, Architecture-0010 §6, ADR-0023, ADR-0026
+
+> **Superseded.** A `local.zsh.example` template was added in `fb807ea` without an accompanying
+> decision record, contradicting this ADR; ADR-0054 then assumed its existence. ADR-0064 reconciles
+> the record: the template exists and stays, and agents never create `local.zsh`. The reasoning below
+> is retained as the original argument, not as current practice.
 
 ## Context
 

@@ -104,7 +104,7 @@ Use numbered filenames in sequence:
 | [0033](0033-shared-zsh-content-scope.md) | `shared.zsh` content scope | Accepted |
 | [0034](0034-platform-layers-runtime-selected.md) | `macos.zsh` and `arch.zsh` as runtime-selected platform layers | Accepted |
 | [0035](0035-omp-zsh-double-guarded-prompt-file.md) | `omp.zsh` as standalone double-guarded prompt file | Accepted |
-| [0036](0036-local-zsh-created-by-editor-not-example.md) | `local.zsh` created directly by user, not copied from `.example` | Accepted |
+| [0036](0036-local-zsh-created-by-editor-not-example.md) | `local.zsh` created directly by user, not copied from `.example` | Superseded by 0064 |
 | [0037](0037-extended-aliases-excluded-from-examples.md) | Extended aliases excluded from committed `.example` files | Superseded by 0044 |
 | [0038](0038-histfile-at-home-not-xdg.md) | `HISTFILE` at `$HOME/.zsh_history`, not XDG | Accepted |
 | [0039](0039-completion-guard-avoid-double-compinit.md) | Completion guard — avoid double `compinit` when Zinit is present | Superseded by 0046 |
@@ -132,3 +132,4 @@ Use numbered filenames in sequence:
 | [0061](0061-cloudflare-speed-cli-for-cli-speed-tests.md) | cloudflare-speed-cli for CLI speed tests, wired through the zsh layer | Accepted |
 | [0062](0062-path-affecting-setup-belongs-in-zshrc-above-the-managed-block.md) | `PATH`/`FPATH` setup belongs in `~/.zshrc` above the managed block, not in `local.zsh` | Accepted |
 | [0063](0063-machine-health-check-is-a-read-only-offline-task.md) | Machine health verification is a read-only, offline `task doctor` | Accepted |
+| [0064](0064-local-zsh-example-exists-and-agents-never-create-local-zsh.md) | `local.zsh.example` exists for humans; agents never create `local.zsh` | Accepted |
