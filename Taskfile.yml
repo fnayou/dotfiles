@@ -8,7 +8,7 @@ tasks:
       - task --list
 
   detect:
-    desc: "Print detected OS (macos or arch)"
+    desc: "Print detected OS (macos, arch, or debian)"
     silent: true
     cmds:
       - bash scripts/detect-os.sh
