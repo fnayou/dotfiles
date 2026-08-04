@@ -79,7 +79,7 @@ Use numbered filenames in sequence:
 | [0008](0008-minimal-github-actions-ci.md) | Minimal GitHub Actions CI | Accepted |
 | [0009](0009-foundation-taskfile-no-install-tasks.md) | Foundation Taskfile — no install tasks | Accepted |
 | [0010](0010-packages-dir-deferred.md) | Packages directory deferred | Accepted |
-| [0011](0011-task-dry-run-single-package-var.md) | Task dry-run single package var | Accepted |
+| [0011](0011-task-dry-run-single-package-var.md) | Task dry-run single package var | Superseded by 0012 |
 | [0012](0012-use-area-and-package-for-stow-task-interface.md) | Use AREA and PACKAGE for Stow task interface | Accepted |
 | [0013](0013-include-based-git-config-strategy.md) | Include-based Git config strategy | Accepted |
 | [0014](0014-gitconfig-common-filename.md) | `.gitconfig.common` filename | Accepted |
@@ -114,9 +114,20 @@ Use numbered filenames in sequence:
 | [0043](0043-zsh-bootstrap-taskfile-tasks.md) | `zsh:bootstrap` and `zsh:bootstrap:dry-run` as mutating Taskfile tasks for zsh | Accepted |
 | [0044](0044-personal-preferences-in-committed-zsh-files.md) | Personal preferences permitted in committed managed zsh files | Accepted |
 | [0045](0045-cross-platform-packages-flat-brewfile.md) | Cross-platform packages — single Brewfile and Arch package list | Accepted |
-| [0046](0046-compinit-unconditional-zinit-light-mode.md) | `compinit` runs unconditionally — Zinit guard removed (light mode) | Accepted |
+| [0046](0046-compinit-unconditional-zinit-light-mode.md) | `compinit` runs unconditionally — Zinit guard removed (light mode) | Superseded by 0049 |
 | [0047](0047-zoxide-init-with-cmd-cd.md) | `zoxide init zsh` with `--cmd cd` override | Accepted |
 | [0048](0048-status-blocks-kept-in-sync-with-repo-state.md) | Status blocks in `AGENTS.md`/`CLAUDE.md` kept in sync with repo state | Accepted |
+| [0049](0049-compinit-moves-to-plugins-for-fzf-tab-order.md) | `compinit` moves into `plugins.zsh` for correct fzf-tab load order | Accepted |
+| [0050](0050-os-maintenance-single-script.md) | OS maintenance is one detecting script, not per-OS files | Accepted |
+| [0051](0051-os-maintenance-task-only-interface.md) | OS maintenance exposed via `task` only; zsh wrapper deferred | Accepted |
+| [0052](0052-os-maintenance-mutating-tasks-lift-adr-0009.md) | OS maintenance Taskfile tasks may mutate — lifts the ADR-0009 ban for this feature | Accepted |
+| [0053](0053-debian-added-as-third-supported-platform.md) | Debian added as a third supported platform | Accepted |
 | [0054](0054-example-templates-excluded-from-stow.md) | `local.zsh.example` and `zshrc.example` excluded from stow | Accepted |
 | [0055](0055-git-cliff-changelog-generation.md) | Changelog generated from Conventional Commits via git-cliff (CalVer) | Accepted |
+| [0056](0056-caveman-segment-lives-in-dotfiles-not-in-the-plugin.md) | The caveman status line segment lives in dotfiles, not in the plugin | Accepted |
+| [0057](0057-session-savings-derived-from-transcript-path.md) | Session savings derived from `transcript_path`, not from caveman's history | Accepted |
+| [0058](0058-repository-savings-use-a-statusline-owned-ledger.md) | Repository savings use a status-line-owned ledger | Accepted |
+| [0059](0059-project-identity-prefers-git-remote-over-path.md) | Project identity prefers the git remote, falling back to canonical paths | Accepted |
+| [0060](0060-caveman-global-mode-flag-limitation-accepted.md) | Caveman's global mode flag is a known limitation, accepted as-is | Accepted |
+| [0061](0061-cloudflare-speed-cli-for-cli-speed-tests.md) | cloudflare-speed-cli for CLI speed tests, wired through the zsh layer | Accepted |
 | [0062](0062-path-affecting-setup-belongs-in-zshrc-above-the-managed-block.md) | `PATH`/`FPATH` setup belongs in `~/.zshrc` above the managed block, not in `local.zsh` | Accepted |
