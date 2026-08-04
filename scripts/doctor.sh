@@ -215,6 +215,32 @@ else
   skip "index.zsh not present (zsh package not stowed)"
 fi
 
+# Login shell. The probe below runs `zsh -ic` explicitly, so it proves the config is
+# correct while saying nothing about whether this machine ever REACHES it. A terminal
+# that launches the passwd shell (Alacritty does) on a bash login shell never loads
+# any of this. chsh is a forbidden repository action (ADR-0027 / PRD-0007), so this
+# reports and prints; it never changes anything.
+login_shell=""
+if command -v getent >/dev/null 2>&1; then
+  login_shell=$(getent passwd "$(id -un)" 2>/dev/null | cut -d: -f7)
+fi
+if [[ -z "$login_shell" && "$OS" == "macos" ]]; then
+  login_shell=$(dscl . -read "/Users/$(id -un)" UserShell 2>/dev/null | awk '{print $2}')
+fi
+[[ -z "$login_shell" ]] && login_shell="${SHELL:-}"
+
+if [[ -z "$login_shell" ]]; then
+  skip "login shell could not be determined"
+elif [[ "$(basename -- "$login_shell")" == "zsh" ]]; then
+  pass "login shell is zsh ($login_shell)"
+else
+  warn "login shell is $(basename -- "$login_shell") ($login_shell), not zsh"
+  note "→ a terminal that launches your login shell will never load the managed layer."
+  note "  Not necessarily broken: a terminal configured to run zsh directly still works."
+  note "  To change it yourself (this repo never will — ADR-0027):"
+  note "    chsh -s \"\$(command -v zsh)\"   # then log out and back in"
+fi
+
 # --- PATH placement (ADR-0062) -----------------------------------------------
 # Static detection of the trap that ADR-0062 documents: PATH set in local.zsh,
 # which is sourced LAST — after every guard and after compinit. Line numbers only;
@@ -340,6 +366,33 @@ else
   warn "zinit not found at $ZINIT_HOME — plugins.zsh prints an error at startup"
   note "→ one-time manual clone, never automatic (ADR-0020):"
   note "  see docs/shell-dependencies.md"
+fi
+
+# --- Package activation ------------------------------------------------------
+# Steps a package needs AFTER stowing before its config actually takes effect.
+# bat is currently the only one: it loads themes from a compiled cache, so a stowed
+# config naming an unbuilt theme is silently ignored — bat exits 0 and prints
+# normally with its default theme, so nothing else on this machine reveals it.
+
+section "Package activation"
+
+# Debian ships bat as `batcat` (cross-platform rule).
+BAT_BIN=""
+for candidate in bat batcat; do
+  command -v "$candidate" >/dev/null 2>&1 && { BAT_BIN=$candidate; break; }
+done
+
+if [[ -z "$BAT_BIN" ]]; then
+  skip "bat theme (bat not installed)"
+elif [[ ! -L "$HOME/.config/bat/config" ]]; then
+  skip "bat theme (bat package not stowed)"
+elif "$BAT_BIN" --list-themes 2>/dev/null | grep -q 'Catppuccin Macchiato'; then
+  pass "bat theme registered ($BAT_BIN)"
+else
+  fail "bat is installed and stowed, but the Catppuccin Macchiato theme is not registered"
+  note "→ the compiled theme cache has not been built. bat falls back to its default"
+  note "  theme and still exits 0, so nothing else reveals this. Build it:"
+  note "    $BAT_BIN cache --build"
 fi
 
 # --- Git package -------------------------------------------------------------

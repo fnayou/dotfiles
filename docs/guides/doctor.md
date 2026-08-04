@@ -49,13 +49,16 @@ legitimate state, not a fault.
 3. **Stow linkage** — every managed file exists in `$HOME` as a symlink pointing back into *this*
    repository. Catches the re-stow drift described below, and links owned by a different checkout.
 4. **Directory folding** — `~/.config/<pkg>` must be a real directory, not a symlink (ADR-0024).
-5. **Zsh activation** — `~/.zshrc` is a real, unmanaged file (ADR-0027) and carries the managed block.
+5. **Zsh activation** — `~/.zshrc` is a real, unmanaged file (ADR-0027) and carries the managed block,
+   and your **login shell** is zsh.
 6. **PATH placement** — statically flags `PATH` / `brew shellenv` in `local.zsh` (ADR-0062). Reports
    **line numbers only** — `local.zsh` is private and its contents are never printed.
 7. **Live shell probe** — the decisive test; see below.
 8. **Optional tooling** — which guarded layers are active and which are inert.
-9. **Git configuration** — the managed include is wired into the global config.
-10. **Version** — current `HEAD` against the newest **local** tag. Offline: run `git fetch --tags`
+9. **Package activation** — steps a package needs *after* stowing before its config takes effect.
+   `bat` is currently the only one.
+10. **Git configuration** — the managed include is wired into the global config.
+11. **Version** — current `HEAD` against the newest **local** tag. Offline: run `git fetch --tags`
     yourself to compare against origin.
 
 ## The live shell probe
@@ -107,6 +110,26 @@ stow --dir=stow/common --target="$HOME" --no-folding <package>
 
 **`zoxide registered N chpwd hooks`** — zoxide was initialised more than once, usually a leftover
 `eval "$(zoxide init …)"` in `local.zsh` duplicating what `tools.zsh` already does. Remove it.
+
+**`login shell is bash (/bin/bash), not zsh`** — a terminal that launches your login shell will never
+load the managed layer. Everything can be stowed and wired correctly and still be unreachable. It is
+a `WARN` rather than a `FAIL` because a terminal configured to run zsh directly is a legitimate setup.
+This repository never changes your login shell (ADR-0027):
+
+⚠️  MANUAL STEP — changes your login shell; log out and back in afterwards
+
+```bash
+chsh -s "$(command -v zsh)"
+```
+
+**`bat … theme is not registered`** — the `bat` package is stowed but its compiled theme cache was
+never built, so `--theme="Catppuccin Macchiato"` names a theme bat does not know. bat then falls back
+to its default theme and **still exits 0**, so nothing else on the machine reveals it. Build it once
+(`batcat` on Debian):
+
+```bash
+bat cache --build
+```
 
 **`zinit not found`** — a one-time manual clone that is never automated (ADR-0020). See
 [shell dependencies](../shell-dependencies.md).
