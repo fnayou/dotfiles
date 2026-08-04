@@ -91,6 +91,29 @@ task zsh:bootstrap
 
 Then start a new shell. See [Shell](../features/shell.md).
 
+## A completion only works after `exec zsh`
+
+Symptom: in a newly opened terminal, `herdr <Tab>` or `task <Tab>` completes filenames instead of
+arguments. Typing `exec zsh` fixes it — until the next new window.
+
+The tool is not on `PATH` yet when its layer loads. Every optional layer opens with
+`command -v <tool> >/dev/null 2>&1 || return`, and a failed guard does not retry — the layer returns
+and registers nothing. `compinit` behaves the same way with `fpath`: it runs once, so a completion
+directory added afterwards is never scanned. `exec zsh` seems to cure it only because `PATH` and
+`FPATH` are exported and the replacement shell inherits them.
+
+The usual cause is `PATH` setup sitting in `~/.config/zsh/local.zsh`, which is sourced **last** —
+after every guard and after `compinit`. Check, in a clean environment (`0` means never registered):
+
+```bash
+env -i HOME="$HOME" TERM=xterm PATH=/usr/local/sbin:/usr/local/bin:/usr/bin zsh -ic \
+  'print -r -- "herdr=${+_comps[herdr]} task=${+_comps[task]}"'
+```
+
+Fix: move that setup — including any `brew shellenv` call — into `~/.zshrc` **above** the managed
+block, and drop any hand re-init lines it left behind (`tools.zsh` already initialises zoxide, in its
+correct after-prompt position). See [Shell](../features/shell.md).
+
 ## Git config not applied
 
 Confirm the managed includes are wired into `~/.gitconfig`:

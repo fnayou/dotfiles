@@ -119,3 +119,4 @@ Use numbered filenames in sequence:
 | [0048](0048-status-blocks-kept-in-sync-with-repo-state.md) | Status blocks in `AGENTS.md`/`CLAUDE.md` kept in sync with repo state | Accepted |
 | [0054](0054-example-templates-excluded-from-stow.md) | `local.zsh.example` and `zshrc.example` excluded from stow | Accepted |
 | [0055](0055-git-cliff-changelog-generation.md) | Changelog generated from Conventional Commits via git-cliff (CalVer) | Accepted |
+| [0062](0062-path-affecting-setup-belongs-in-zshrc-above-the-managed-block.md) | `PATH`/`FPATH` setup belongs in `~/.zshrc` above the managed block, not in `local.zsh` | Accepted |

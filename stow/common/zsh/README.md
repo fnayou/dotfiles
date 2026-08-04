@@ -91,6 +91,18 @@ shell startup, and only `speed-log` writes anything.
 
 See [Speed Test Setup Guide](../../../docs/guides/speedtest-setup.md).
 
+## Where machine-specific setup goes
+
+Two different files, split by role (ADR-0062):
+
+| Need | File | Why |
+|---|---|---|
+| `PATH`, `FPATH`, `brew shellenv` — making a tool **findable** | `~/.zshrc`, above the managed block | Layers are guarded on `command -v <tool>` and `compinit` reads `fpath` once (step 5). Both run before `local.zsh`. |
+| Aliases, tokens, editor — values that must **win** | `~/.config/zsh/local.zsh` | Sourced last, so it overrides every managed layer. |
+
+Putting `PATH` in `local.zsh` produces a completion that works only after `exec zsh` — the second
+shell inherits the exported `PATH` the first one set too late. See the setup guide's Troubleshooting.
+
 ## Setup
 
 See [Zsh Package Setup Guide](../../../docs/guides/zsh-setup.md) for the full dry-run → install workflow, `.zshenv` wiring, and local override setup.

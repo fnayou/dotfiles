@@ -249,6 +249,32 @@ fi
 # <<< dotfiles managed zsh layer <<<
 ```
 
+### 3b-bis. Machine-specific `PATH` goes **above** the block
+
+If tools the managed layer uses (`herdr`, `task`, `fzf`, `zoxide`, `eza`, `bat`, …) live somewhere
+that is not on `PATH` by default — a linuxbrew prefix, a private work directory — set that up in
+`~/.zshrc` **above** the managed block, not in `local.zsh` (ADR-0062):
+
+```zsh
+# --- Homebrew (linuxbrew) ---
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# >>> dotfiles managed zsh layer >>>
+if [[ -r "$HOME/.config/zsh/index.zsh" ]]; then
+  source "$HOME/.config/zsh/index.zsh"
+fi
+# <<< dotfiles managed zsh layer <<<
+```
+
+Every optional layer is guarded on `command -v <tool>`, and `compinit` reads `fpath` once during
+step 5. Both happen before `local.zsh` is sourced, so `PATH` and `FPATH` must be complete before
+`index.zsh` runs. See the Troubleshooting entry on completions that only work after `exec zsh`.
+
+`task zsh:bootstrap` appends its block at the end of the file, so lines you add above it are
+preserved and keep running first.
+
 ### 3c. Rollback
 
 To undo the managed block:
@@ -291,6 +317,12 @@ yay -S oh-my-posh-bin
 ## Step 5 (optional): Create `local.zsh`
 
 `local.zsh` is the machine-specific, private layer. It is sourced last by `index.zsh` and wins over all managed layers. Copy the example skeleton to get started:
+
+**What belongs here:** values that must **override** the managed layers — private aliases, tokens, an
+editor choice. **What does not:** `PATH` and `FPATH`. Being sourced last means every `command -v`
+guard has already run and `compinit` has already read `fpath`, so making a tool findable here is too
+late for the shell that does it. Put that in `~/.zshrc` above the managed block instead — step 3b-bis
+and ADR-0062.
 
 ⚠️  MANUAL STEP — this creates a private file at ~/.config/zsh/local.zsh; never commit it
 
@@ -444,6 +476,34 @@ stow --dir=stow/common --target="$HOME" --delete zsh
 stow --dir=stow/common --target="$HOME" --no-folding --simulate zsh
 stow --dir=stow/common --target="$HOME" --no-folding zsh
 ```
+
+**A completion only works after `exec zsh` (new terminal windows are broken):**
+
+Symptom: in a freshly opened terminal, `herdr <Tab>` or `task <Tab>` lists filenames instead of
+arguments. Running `exec zsh` in that same window fixes it, and it breaks again in the next new
+window.
+
+Cause: the tool is not on `PATH` yet when its layer is sourced. Every optional layer is guarded
+(`command -v <tool> || return`) and a failed guard does not retry — the layer returns and registers
+nothing. `compinit` has the same problem with `fpath`: it runs once, in step 5, so a completion
+directory added later is never scanned. `exec zsh` appears to fix it because `PATH` and `FPATH` are
+exported, so the replacement shell inherits whatever was set too late in the first one.
+
+The usual cause is `PATH` setup living in `local.zsh`, which `index.zsh` sources last (step 11) —
+after every guard and after `compinit`.
+
+Confirm it. In a clean environment, `0` means the completion never registered:
+
+```bash
+env -i HOME="$HOME" TERM=xterm PATH=/usr/local/sbin:/usr/local/bin:/usr/bin zsh -ic \
+  'print -r -- "herdr=${+_comps[herdr]} task=${+_comps[task]}"'
+# Expected after the fix: herdr=1 task=1
+```
+
+Fix: move the `PATH`/`FPATH` setup — including any `brew shellenv` call — from `local.zsh` into
+`~/.zshrc` above the managed block (step 3b-bis, ADR-0062). Also delete any hand re-init lines it
+left behind, such as `eval "$(zoxide init --cmd cd zsh)"`: `tools.zsh` already does that in its
+correct after-Oh-My-Posh position, and a second call registers a duplicate `__zoxide_hook`.
 
 **`fzf --zsh` reports an error:**
 

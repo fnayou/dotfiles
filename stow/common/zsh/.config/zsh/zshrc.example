@@ -14,9 +14,19 @@
 # The managed block is guarded: if index.zsh is not present (not yet copied/stowed),
 # the line is a no-op and your shell still starts normally.
 
-# --- (optional) fresh-machine starter lines — keep minimal and portable ---
-# Add only what you want before the managed layer loads. Machine-specific or
-# sensitive values belong in ~/.config/zsh/local.zsh (git-ignored), not here.
+# --- (optional) starter lines — run BEFORE the managed layer loads ---
+# Machine-specific PATH and FPATH belong HERE, above the block (ADR-0062): the
+# managed layers are guarded on `command -v <tool>` and compinit reads fpath once,
+# both before ~/.config/zsh/local.zsh is sourced, so a tool must already be
+# findable by the time index.zsh runs. Example — Homebrew on Linux (linuxbrew),
+# which arch.zsh intentionally omits since brew is a per-machine choice on Arch:
+#
+# if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+#   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# fi
+#
+# Sensitive values, and overrides that must WIN over the managed layers, belong in
+# ~/.config/zsh/local.zsh (git-ignored) instead — it is sourced last.
 
 # >>> dotfiles managed (zsh) — added manually; delete this block to disable >>>
 [[ -r "$HOME/.config/zsh/index.zsh" ]] && source "$HOME/.config/zsh/index.zsh"
