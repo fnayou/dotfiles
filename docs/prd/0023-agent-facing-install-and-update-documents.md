@@ -1,8 +1,9 @@
 # PRD: Agent-Facing Install and Update Documents
 
 **Number:** 0023
-**Status:** Draft
+**Status:** Approved
 **Date:** 2026-08-04
+**Approved:** 2026-08-04 — all four open questions resolved by the operator; see Resolved Decisions.
 
 ## Context
 
@@ -102,6 +103,10 @@ Autonomy removes the per-step human gate, so these replace it. They are the core
 - **`.example` templates are copied, never filled.** The agent must not invent values for private
   files. It copies the template where the repo prescribes and lists what needs human completion.
 - **No secrets are generated, requested, or written.**
+- **No third-party code is fetched.** Zinit and every system package are reported with their install
+  command printed, never cloned or installed by the agent.
+- **No report file is created.** The report is printed to the operator; nothing persists in `$HOME`.
+- **Update aborts on a dirty working tree**, having changed nothing.
 - **The run must be interruptible without leaving a broken shell.** Because every layer is guarded, a
   half-stowed machine must still open a working shell — this is asserted, not assumed.
 - **`task doctor` runs last**, and its findings appear in the report even when everything passed.
@@ -126,27 +131,45 @@ Autonomy removes the per-step human gate, so these replace it. They are the core
       already-linked files) — the distinction that made `speedtest.zsh` invisible on a pulled-but-
       not-re-stowed machine.
 - [ ] Both documents define the same report structure: succeeded / failed / needs-operator, with
-      `task doctor` output included.
+      `task doctor` output included. The report is printed only; neither document writes it to a file.
+- [ ] The install document reports missing Zinit and prints the ADR-0020 clone command without running
+      it, and its report states plainly that a shell on such a machine will print `plugins.zsh`'s
+      error until the operator completes that step.
+- [ ] The update document aborts on a dirty working tree, naming what is dirty, having changed
+      nothing.
+- [ ] Neither document fetches third-party code by any means.
 - [ ] Every corner case listed under Goals appears as an explicit precondition or step.
 - [ ] Both documents were executed end-to-end by an agent against a **sandbox `$HOME`**, and the
       resulting report and `task doctor` output are recorded in a review under `docs/reviews/`.
 - [ ] Neither document instructs any use of `sudo`, `--adopt`, `rm`, or `mv` against `$HOME`.
 
-## Open Questions
+## Resolved Decisions
 
-1. **Does an install run resolve ADR-0020's Zinit clone?** ADR-0020's five stated reasons are all
-   shell-startup concerns — latency, offline start, wedged shells, drift — none of which apply to a
-   provisioning run. But its decision text says the clone is one "the user runs deliberately," which
-   an autonomous agent contradicts literally. Either the install document clones Zinit under a
-   bounded exception, or it reports Zinit as missing and prints the command. **Must be settled by ADR
-   before the install document is written.**
-2. **Is the §8 relaxation one ADR or two?** Install mutates `$HOME` substantially; update mutates far
-   less. One ADR covering "operator-initiated provisioning runs" is simpler; two would let update
-   keep a tighter boundary.
-3. **Where does the report go?** Printed to the operator only, or also written to a file? A file is
-   greppable across many machines but is a new artifact in `$HOME`.
-4. **Does update handle a dirty working tree**, or abort? Aborting is safer and simpler; handling it
-   is friendlier on a machine where the operator has been experimenting.
+Settled by the operator on 2026-08-04. These close the questions that blocked architecture.
+
+1. **Zinit is reported, never cloned.** ADR-0020 stands unmodified. The install run treats Zinit like
+   any other missing tool: it detects the absence and prints the documented clone command for the
+   operator to run. The agent performs no network fetch of third-party code.
+
+   **This has a consequence that must be stated, not buried:** on a machine without Zinit, an install
+   run cannot end in a fully working shell. `plugins.zsh` will print its red error on every shell
+   start until the operator runs the clone. That is an *expected, documented* terminal state — not a
+   failure of the run — and the report must say so prominently enough that the operator does not
+   mistake it for a broken install. `task doctor` already reports this as a `WARN`.
+
+2. **One ADR, covering operator-initiated provisioning runs.** It names precisely which `AGENTS.md`
+   §8 prohibitions are lifted, for which invocation, and which remain absolute (never `--adopt`,
+   never `rm`/`mv` in `$HOME`, never `sudo`, never outside `$HOME` and the checkout). Install and
+   update share one boundary; update simply exercises less of it. Following ADR-0052's precedent.
+
+3. **The report is printed, never written to a file.** No new artifact appears in `$HOME`. This keeps
+   the "read-only except for the stow operations themselves" property legible, and avoids a stale
+   report file outliving the state it described. Cross-machine greppability was judged not worth a
+   persistent artifact.
+
+4. **Update aborts on a dirty working tree.** It reports what is dirty and stops, having changed
+   nothing. An unattended run must not have to guess whether uncommitted local edits are precious
+   experiments or forgotten debris.
 
 ## Out of Scope
 
