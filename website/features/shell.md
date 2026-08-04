@@ -42,6 +42,16 @@ file owns a single job:
     `~/.config/zsh/`. `local.zsh` is git-ignored and lives outside the repository working tree —
     it is never committed.
 
+!!! warning "`PATH` is the exception — it goes in `~/.zshrc`, above the managed block"
+    `local.zsh` is sourced **last**, which is what makes it override the managed layers. That also
+    puts it after every `command -v <tool>` guard and after `compinit` has read `fpath`. So `PATH`,
+    `FPATH`, and anything that produces them (`brew shellenv`) must be set in `~/.zshrc` above the
+    managed block instead — otherwise the tool is invisible to its own layer and the completion only
+    starts working after `exec zsh`. See [ADR-0062] and
+    [Troubleshooting](../reference/troubleshooting.md#a-completion-only-works-after-exec-zsh).
+
+    [ADR-0062]: https://github.com/fnayou/dotfiles/blob/main/docs/decisions/0062-path-affecting-setup-belongs-in-zshrc-above-the-managed-block.md
+
 ## Prompt
 
 The prompt comes from **Oh My Posh** via the separate `stow/common/omp/` package (Catppuccin Macchiato

@@ -2,19 +2,21 @@
 # Copy this file to ~/.config/zsh/local.zsh (never commit that copy).
 # local.zsh is git-ignored; it is sourced last by index.zsh.
 #
-# Add machine-specific PATH, tokens, aliases, editor overrides here.
+# This file is for values that must WIN over the managed layers — aliases, tokens,
+# editor choices. It is NOT the place to make a tool findable.
+#
+# PATH and FPATH belong in ~/.zshrc, ABOVE the managed block (ADR-0062). Being
+# sourced last means every `command -v` guard has already run and compinit has
+# already read fpath, so a PATH set here arrives too late: the tool's completions
+# and integrations are skipped for that shell. The classic symptom is a completion
+# that only starts working after `exec zsh` — the second shell inherits the
+# exported PATH that this file set too late in the first one.
+#
 # Examples:
 
-# Private PATH (work tools, internal binaries):
+# Private PATH (work tools, internal binaries) — see the note above: put this in
+# ~/.zshrc above the managed block if anything in the managed layer needs to find it.
 # export PATH="$HOME/work/bin:$PATH"
-
-# Homebrew on Linux (linuxbrew) — machine-specific; arch.zsh intentionally omits
-# brew (no Homebrew assumptions on Arch), so wire it here if you use it. brew is
-# not yet on PATH at this point, so call the binary by absolute path. tools.zsh
-# runs before local.zsh, so re-init PATH-dependent tools after brew is loaded:
-# [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-# command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init --cmd cd zsh)"
-# command -v fzf    >/dev/null 2>&1 && eval "$(fzf --zsh)"
 
 # Machine-specific editor override:
 # export EDITOR="code --wait"

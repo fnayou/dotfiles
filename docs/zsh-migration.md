@@ -183,6 +183,12 @@ Open your real `~/.zshrc` and add this block **at the end**, so managed defaults
 # <<< dotfiles managed (zsh) <<<
 ```
 
+Keep `PATH` and `FPATH` setup **above** this block — including any `brew shellenv` call.
+The managed layers are guarded on `command -v <tool>` and `compinit` reads `fpath` once,
+both before `local.zsh` is sourced, so a tool must already be findable when `index.zsh`
+runs. Putting it in `local.zsh` yields a completion that works only after `exec zsh`
+(ADR-0062). Item 7 below means values that must *win*, not values that must be *found*.
+
 Open a new shell to verify:
 
 ```bash
