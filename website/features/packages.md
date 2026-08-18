@@ -70,13 +70,21 @@ guarded, so a missing tool renders nothing (no error, no placeholder):
 - **rtk savings** — tokens saved + average savings % for the current directory
   (exact cwd, not the whole repo), via the [rtk](https://github.com/rtk-ai/rtk)
   CLI (`rtk gain --project --format json`).
-- **caveman badge** — the `[CAVEMAN]` mode badge + savings suffix from the
-  [caveman](https://github.com/JuliusBrussee/caveman) Claude Code plugin. The script
-  doesn't reimplement it; it calls caveman's own hardened statusline script, located
-  by glob (the plugin's install path and cache hash vary per release). The badge shows
-  when caveman is installed **and** active (`/caveman full`). See the package
+- **caveman badge** — the `[CAVEMAN]` mode badge plus tokens saved **for this
+  session** and **for this repository**, from the
+  [caveman](https://github.com/JuliusBrussee/caveman) Claude Code plugin. The
+  estimate is caveman's own — `statusline-caveman.js` calls the plugin's exported
+  functions rather than reimplementing the algorithm — but the *scoping* is this
+  repository's: caveman's own suffix file holds one machine-wide lifetime total
+  across every project, which is the wrong number to show inside a project-scoped
+  status line, so it is never rendered. The plugin is located by glob (its install
+  path and cache hash vary per release), and its export contract is detected by
+  capability, so a caveman major upgrade cannot silently zero the figure. If
+  `node` is missing the segment falls back to caveman's own badge script with no
+  number. The badge shows when caveman is installed **and** active
+  (`/caveman full`). See the package
   [README](https://github.com/fnayou/dotfiles/blob/main/stow/common/claude/README.md)
-  for the exact glob paths and wiring.
+  for the glob paths, the ledger layout, and the wiring.
 
 !!! warning "`~/.claude` holds secrets — stow carefully"
     Only `statusline-command.sh` is managed; credentials and session data in `~/.claude` are never

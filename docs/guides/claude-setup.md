@@ -254,6 +254,13 @@ Expected when any of these is true:
 - The active caveman mode is `lite`, `ultra` or a `wenyan-*` variant. Caveman only has
   benchmark data for `full`, so no estimate exists for the others. This is upstream behaviour,
   not a fault in the segment.
+- **[caveman 2.x]** The session's turns predate the last write to
+  `~/.claude/.caveman-active`, and `~/.claude/.caveman-mode-log.jsonl` does not exist yet.
+  Caveman 2.x credits tokens to the mode that was active when each message was written; with
+  no transition log it can only date the session against the flag file's mtime, and it
+  declines to guess about anything earlier rather than invent savings. The log is created on
+  your next mode change (`/caveman full`), after which the figure fills in normally. Expect
+  this once, right after upgrading caveman from 1.x.
 
 ### Caveman segment shows `[CAVEMAN:OFF]`
 

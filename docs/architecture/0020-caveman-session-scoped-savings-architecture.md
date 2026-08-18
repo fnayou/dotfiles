@@ -2,6 +2,15 @@
 
 **Status:** Approved
 **PRD:** `docs/prd/0021-caveman-session-scoped-savings.md`
+**Amended by:** `docs/decisions/0066-caveman-seam-detected-by-capability-not-version.md`
+
+> **Amendment (2026-08-18, ADR 0066).** This document describes caveman 1.x's
+> module seam. Caveman 2.0 changed `deriveSavings` from
+> `({ outputTokens, mode, model })` to `({ byMode, model })` and added
+> `attributeByMode` / `readModeLog` to bucket tokens by the mode active when each
+> message was written. Both contracts are supported, selected by capability
+> probe. The architecture below is otherwise unchanged; the v1 signatures it
+> quotes are now one of two. Sections affected are marked inline.
 
 ---
 
@@ -39,16 +48,29 @@ Caveman's relevant surface:
 | File | Role |
 |---|---|
 | `src/hooks/caveman-config.js` | `readFlag` (symlink-safe, whitelisted mode read), `readHistory`, `safeWriteFlag`, `appendFlag` |
-| `src/hooks/caveman-stats.js` | `parseSession`, `deriveSavings`, `humanizeTokens`, `aggregateHistory` — all exported |
+| `src/hooks/caveman-stats.js` | `parseSession`, `deriveSavings`, `humanizeTokens`, `aggregateHistory` — all exported. **2.x adds** `attributeByMode`, `readModeLog`, `deriveNet`, `ruleOverheadPerTurn`, `outputReductionPct` |
 | `src/hooks/caveman-statusline.sh` | mode badge + savings suffix; the current integration seam |
 | `~/.claude/.caveman-active` | single global file holding the active mode |
 | `~/.claude/.caveman-history.jsonl` | append log, written **only** by `/caveman-stats` |
 | `~/.claude/.caveman-statusline-suffix` | pre-rendered machine-wide lifetime figure |
+| `~/.claude/.caveman-mode-log.jsonl` | **2.x only** — append log of mode transitions, used for per-message attribution |
 
-`deriveSavings({ outputTokens, mode, model })` is the estimator:
+`deriveSavings` is the estimator:
 `estNormal = round(outputTokens / (1 - ratio))`, `saved = estNormal - outputTokens`,
 with `ratio = 0.65` for mode `full` and **undefined for every other mode** — so
 `lite`, `ultra` and the `wenyan-*` modes legitimately produce no figure.
+
+Its input shape differs by version (ADR 0066):
+
+```
+1.x  deriveSavings({ outputTokens, mode, model })   one mode for the whole session
+2.x  deriveSavings({ byMode, model })               tokens pre-bucketed per mode
+```
+
+Under 2.x the bucketing comes from `attributeByMode`, which slices the session's
+per-message records against `.caveman-mode-log.jsonl`, falls back to the mode
+flag's mtime when no log exists, and declines to attribute at all when neither is
+available — a session that switched modes partway is never credited wholesale.
 
 ## Proposed architecture
 
@@ -65,8 +87,9 @@ Claude Code ──stdin──▶ statusline-command.sh
                           │
                           └─▶ printf '%s' "$input" | node statusline-caveman.js
                                        │
-                                       ├─ require(caveman-config.js)  → readFlag
+                                       ├─ require(caveman-config.js)  → readFlag  [2.x: + MODE_LOG_BASENAME]
                                        ├─ require(caveman-stats.js)   → parseSession, deriveSavings, humanizeTokens
+                                       │                                [2.x: + attributeByMode, readModeLog]
                                        ├─ transcript_path             → session totals
                                        └─ ledger dir                  → repository total
 ```
@@ -87,8 +110,14 @@ prerequisite of this package.
 Computed **only** from `payload.transcript_path`:
 
 ```
-parseSession(transcript) → { outputTokens, model, turns }
+parseSession(transcript) → { outputTokens, model, turns }   [2.x: + messages[]]
+
+# caveman 1.x
 deriveSavings({ outputTokens, mode, model }) → estSavedTokens
+
+# caveman 2.x — see ADR 0066
+attributeByMode({ messages, modeLog, mode, flagMtimeMs, outputTokens }) → { byMode }
+deriveSavings({ byMode, model }) → estSavedTokens
 ```
 
 The transcript is per-session by construction — Claude Code names it
@@ -196,7 +225,8 @@ information, per PRD safety requirement 6.
    not from caveman's history. See ADR 0058.
 4. Reuse `deriveSavings` / `parseSession` / `humanizeTokens` / `readFlag`
    verbatim; implement only the incremental tail accumulation locally, verified
-   equal to `parseSession` by test.
+   equal to `parseSession` by test. Select the `deriveSavings` contract by
+   capability probe, never by version string. See ADR 0066.
 5. Prefer remote-derived repository identity, with a canonicalised-path fallback
    chain. See ADR 0059.
 6. Leave caveman's global mode flag alone. See ADR 0060.
@@ -206,6 +236,7 @@ information, per PRD safety requirement 6.
 | Risk | Mitigation |
 |---|---|
 | Caveman upgrade renames or drops the exported functions | Every `require` and every property access is guarded; a missing export degrades to the mode badge alone. A test pins the expected exports so breakage surfaces as a test failure, not a broken status line. |
+| Caveman upgrade changes an export's **arguments** while keeping its name | **This mitigation was missing and the risk materialised in caveman 2.0.** A `typeof x === 'function'` guard cannot see a signature change: v1 arguments passed to v2's `deriveSavings` return `0` without throwing, so the badge stayed lit while the figure silently vanished. Now handled by capability probing (`attributeByMode` / `readModeLog`) with both call shapes covered by tests that stand in for each version. See ADR 0066. |
 | Caveman upgrade moves the hooks directory | Path is discovered, never hardcoded: `$CAVEMAN_HOOKS_DIR`, then `marketplaces/`, then newest `cache/` checkout by mtime. Same globbing the script already uses. |
 | Transcript grows to tens of MB | Incremental byte-offset cache; warm renders parse only the tail. |
 | Cache corruption | Every read is `try`-wrapped and validated; a bad file is ignored, a bad cache entry forces a full reparse. |
