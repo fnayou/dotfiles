@@ -1,8 +1,9 @@
 # Plan 0024 — Implement caveman session-scoped savings
 
-**Status:** Approved
+**Status:** Complete — implementation review [0061](../reviews/0061-caveman-session-scoped-savings-implementation-review.md), no blocking issues
 **PRD:** `docs/prd/0021-caveman-session-scoped-savings.md`
 **Architecture:** `docs/architecture/0020-caveman-session-scoped-savings-architecture.md`
+**Later amended by:** ADR [0066](../decisions/0066-caveman-seam-detected-by-capability-not-version.md) — caveman 2.0 changed the `deriveSavings` signature; the seam is now selected by capability probe. Does not reopen this plan.
 
 ---
 
