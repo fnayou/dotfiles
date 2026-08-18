@@ -22,6 +22,11 @@
 //
 // Token estimation is caveman's, reused verbatim via its exported deriveSavings.
 // We never re-implement the algorithm; see ADR 0057.
+//
+// deriveSavings changed shape in caveman 2.0. v1 took a single mode for the
+// whole session; v2 takes tokens already bucketed per mode, because a session
+// can switch modes partway through and crediting all of it to the current flag
+// invents savings. Both shapes are supported — see deriveSessionSavings.
 
 'use strict';
 
@@ -39,6 +44,16 @@ const PICK = '⛏'; // U+26CF pick, escaped so this file stays pure ASCII
 // Ledger entries older than this are pruned opportunistically, so a long-lived
 // cache cannot grow without bound.
 const LEDGER_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
+
+// caveman 2.x attributes tokens per message, so the session cache has to carry
+// one record per assistant turn. Past this count we stop caching them rather
+// than let a single session's cache file grow without bound; the next render
+// then takes the cold path, which is slower but still correct.
+const MAX_CACHED_MESSAGES = 20000;
+
+// Where caveman 2.x records mode transitions. Read from caveman's own
+// MODE_LOG_BASENAME when it exports one; this is only the fallback.
+const MODE_LOG_BASENAME = '.caveman-mode-log.jsonl';
 
 function claudeDir() {
   return process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
@@ -87,7 +102,12 @@ function findHooksDir() {
 // parseSession directly, and tests/statusline-caveman.test.js asserts the two
 // agree over a real transcript — so this stays a performance detail, not a fork
 // of the parser.
+//
+// `messages` mirrors the per-turn array caveman 2.x's parseSession returns; it
+// is what attributeByMode slices by mode. Built unconditionally so the cache
+// shape does not depend on which caveman is installed at write time.
 function accumulate(raw, acc) {
+  if (!Array.isArray(acc.messages)) acc.messages = [];
   for (const line of raw.split('\n')) {
     if (!line.trim()) continue;
     let entry;
@@ -102,6 +122,11 @@ function accumulate(raw, acc) {
     acc.cacheReadTokens += usage.cache_read_input_tokens || 0;
     acc.turns++;
     if (!acc.model && entry.message.model) acc.model = entry.message.model;
+    const ts = entry.timestamp ? Date.parse(entry.timestamp) : NaN;
+    acc.messages.push({
+      ts: Number.isFinite(ts) ? ts : null,
+      outputTokens: usage.output_tokens || 0,
+    });
   }
   return acc;
 }
@@ -120,6 +145,10 @@ function readSessionCache(file) {
     if (!c || typeof c !== 'object') return null;
     if (!Number.isFinite(c.offset) || c.offset < 0) return null;
     if (!Number.isFinite(c.outputTokens) || !Number.isFinite(c.turns)) return null;
+    // A cache written before per-message records existed, or one whose messages
+    // were dropped for exceeding MAX_CACHED_MESSAGES, cannot be resumed without
+    // losing the attribution input. Treat it as cold.
+    if (!Array.isArray(c.messages)) return null;
     return c;
   } catch { return null; }
 }
@@ -151,6 +180,7 @@ function sessionTotals(transcript, sessionId, parseSession) {
       cacheReadTokens: cached.cacheReadTokens || 0,
       turns: cached.turns,
       model: cached.model || null,
+      messages: cached.messages,
     };
     if (cached.offset < size) {
       let buf;
@@ -181,6 +211,14 @@ function sessionTotals(transcript, sessionId, parseSession) {
     acc = { ...parsed };
     let buf;
     try { buf = fs.readFileSync(transcript); } catch { return null; }
+    // caveman 1.x parseSession has no `messages`; rebuild it here so the v2
+    // attribution path gets the same input regardless of installed version.
+    if (!Array.isArray(acc.messages)) {
+      const rebuilt = accumulate(buf.toString('utf8'), {
+        outputTokens: 0, cacheReadTokens: 0, turns: 0, model: null, messages: [],
+      });
+      acc.messages = rebuilt.messages;
+    }
     acc.offset = lastCompleteOffset(buf, 0);
   }
 
@@ -190,8 +228,59 @@ function sessionTotals(transcript, sessionId, parseSession) {
     cacheReadTokens: acc.cacheReadTokens,
     turns: acc.turns,
     model: acc.model,
+    // Omitted past the cap — readSessionCache then rejects the entry and the
+    // next render reparses in full rather than resuming with partial messages.
+    messages: acc.messages.length <= MAX_CACHED_MESSAGES ? acc.messages : undefined,
   });
   return acc;
+}
+
+// ---------------------------------------------------------------------------
+// Savings
+// ---------------------------------------------------------------------------
+
+// Call caveman's deriveSavings through whichever contract the installed copy
+// exposes, and return estimated saved tokens (0 when there is nothing to claim).
+//
+// Detection is by capability, not by version string: caveman ships no version to
+// the hooks, and `typeof deriveSavings === 'function'` is true for both shapes —
+// so passing v1 arguments to v2 silently yields 0 rather than throwing. That
+// silent zero is exactly the failure this function exists to prevent, which is
+// why the probe keys on attributeByMode/readModeLog, added alongside the new
+// signature in caveman 2.0.
+function deriveSessionSavings({ cav, mode, totals, modeLogPath, flagMtimeMs }) {
+  if (!cav || typeof cav.deriveSavings !== 'function') return 0;
+
+  const positive = (result) => {
+    const n = result && result.estSavedTokens;
+    return Number.isFinite(n) && n > 0 ? n : 0;
+  };
+
+  const v2 = typeof cav.attributeByMode === 'function' && typeof cav.readModeLog === 'function';
+
+  try {
+    if (v2) {
+      // Tokens are credited to the mode that was active when each message was
+      // written, so a session that switched modes partway does not report the
+      // current mode's ratio over its whole history.
+      let modeLog = [];
+      try { modeLog = cav.readModeLog(modeLogPath) || []; } catch { modeLog = []; }
+      const attribution = cav.attributeByMode({
+        messages: totals.messages || [],
+        modeLog,
+        mode,
+        flagMtimeMs,
+        outputTokens: totals.outputTokens,
+      });
+      const byMode = (attribution && attribution.byMode) || {};
+      return positive(cav.deriveSavings({ byMode, model: totals.model }));
+    }
+    return positive(cav.deriveSavings({
+      outputTokens: totals.outputTokens, mode, model: totals.model,
+    }));
+  } catch {
+    return 0; // a moved seam renders a bare badge, never a wrong number
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -332,11 +421,15 @@ function main() {
   const hooks = findHooksDir();
   if (!hooks) return; // caveman not installed — render nothing, as before
 
-  let readFlag, parseSession, deriveSavings, humanizeTokens;
+  // Whole modules, not destructured functions: deriveSessionSavings probes for
+  // members that only exist in caveman 2.x, so it needs the namespace.
+  let cfg, cav;
   try {
-    ({ readFlag } = require(path.join(hooks, 'caveman-config.js')));
-    ({ parseSession, deriveSavings, humanizeTokens } = require(path.join(hooks, 'caveman-stats.js')));
+    cfg = require(path.join(hooks, 'caveman-config.js'));
+    cav = require(path.join(hooks, 'caveman-stats.js'));
   } catch { return; }
+  const { readFlag } = cfg;
+  const { parseSession, deriveSavings, humanizeTokens } = cav;
   if (typeof readFlag !== 'function' || typeof parseSession !== 'function' ||
       typeof deriveSavings !== 'function' || typeof humanizeTokens !== 'function') {
     return; // upstream moved the seam — degrade to silence, never to a wrong number
@@ -344,7 +437,8 @@ function main() {
 
   // readFlag enforces caveman's own symlink refusal, 64-byte cap and mode
   // whitelist. Never re-implement that check; never echo the raw file.
-  const mode = readFlag(path.join(claudeDir(), '.caveman-active'));
+  const flagPath = path.join(claudeDir(), '.caveman-active');
+  const mode = readFlag(flagPath);
   if (!mode || mode === 'off') {
     process.stdout.write(`${COLOR}[CAVEMAN:OFF]${RESET}`);
     return;
@@ -364,12 +458,17 @@ function main() {
   if (transcript && sessionId) {
     const totals = sessionTotals(transcript, sessionId, parseSession);
     if (totals && totals.turns > 0) {
+      // caveman 2.x dates mode changes against the flag file's mtime when it has
+      // no transition log to work from, so this has to be the real flag's mtime.
+      let flagMtimeMs = null;
+      try { flagMtimeMs = fs.statSync(flagPath).mtimeMs; } catch { /* flag gone */ }
+
       // deriveSavings has benchmark data for 'full' only; every other mode
       // legitimately yields 0 and renders as a bare badge.
-      const { estSavedTokens } = deriveSavings({
-        outputTokens: totals.outputTokens, mode, model: totals.model,
+      sessionSaved = deriveSessionSavings({
+        cav, mode, totals, flagMtimeMs,
+        modeLogPath: path.join(claudeDir(), cfg.MODE_LOG_BASENAME || MODE_LOG_BASENAME),
       });
-      if (Number.isFinite(estSavedTokens) && estSavedTokens > 0) sessionSaved = estSavedTokens;
     }
   }
 
@@ -389,4 +488,5 @@ if (require.main === module) {
 module.exports = {
   accumulate, lastCompleteOffset, normalizeRemote, projectIdentity,
   updateLedger, sessionTotals, render, badge, cacheRoot, findHooksDir,
+  deriveSessionSavings, MAX_CACHED_MESSAGES, MODE_LOG_BASENAME,
 };

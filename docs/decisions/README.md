@@ -125,7 +125,7 @@ Use numbered filenames in sequence:
 | [0054](0054-example-templates-excluded-from-stow.md) | `local.zsh.example` and `zshrc.example` excluded from stow | Accepted |
 | [0055](0055-git-cliff-changelog-generation.md) | Changelog generated from Conventional Commits via git-cliff (CalVer) | Accepted |
 | [0056](0056-caveman-segment-lives-in-dotfiles-not-in-the-plugin.md) | The caveman status line segment lives in dotfiles, not in the plugin | Accepted |
-| [0057](0057-session-savings-derived-from-transcript-path.md) | Session savings derived from `transcript_path`, not from caveman's history | Accepted |
+| [0057](0057-session-savings-derived-from-transcript-path.md) | Session savings derived from `transcript_path`, not from caveman's history | Accepted (amended by 0066) |
 | [0058](0058-repository-savings-use-a-statusline-owned-ledger.md) | Repository savings use a status-line-owned ledger | Accepted |
 | [0059](0059-project-identity-prefers-git-remote-over-path.md) | Project identity prefers the git remote, falling back to canonical paths | Accepted |
 | [0060](0060-caveman-global-mode-flag-limitation-accepted.md) | Caveman's global mode flag is a known limitation, accepted as-is | Accepted |
@@ -134,3 +134,4 @@ Use numbered filenames in sequence:
 | [0063](0063-machine-health-check-is-a-read-only-offline-task.md) | Machine health verification is a read-only, offline `task doctor` | Accepted |
 | [0064](0064-local-zsh-example-exists-and-agents-never-create-local-zsh.md) | `local.zsh.example` exists for humans; agents never create `local.zsh` | Accepted |
 | [0065](0065-provisioning-runs-lift-the-agents-md-section-8-stow-ban.md) | Operator-initiated provisioning runs lift the `AGENTS.md` §8 stow ban | Accepted |
+| [0066](0066-caveman-seam-detected-by-capability-not-version.md) | The caveman seam is detected by capability, not by version | Accepted |

@@ -44,10 +44,16 @@ function caveman() {
   try { return require(path.join(hooks, 'caveman-stats.js')); } catch { return null; }
 }
 
+// Timestamps are real: caveman 2.x slices a session by them to attribute tokens
+// to the mode that was active at the time, so a transcript without them would
+// exercise only the degraded path.
+const T0 = Date.parse('2026-01-01T00:00:00.000Z');
+
 function transcript(dir, turns) {
   const file = path.join(dir, 'session.jsonl');
-  const lines = turns.map(t => JSON.stringify({
+  const lines = turns.map((t, i) => JSON.stringify({
     type: 'assistant',
+    timestamp: new Date(t.ts != null ? t.ts : T0 + i * 60000).toISOString(),
     message: { model: t.model || 'claude-opus-5', usage: { output_tokens: t.out, cache_read_input_tokens: 0 } },
   }));
   // Interleave non-assistant noise — the parser must ignore it.
@@ -78,6 +84,26 @@ describe('accumulate', () => {
     const acc = seg.accumulate('{\n{"type":\nnull\n[]\n', { outputTokens: 0, cacheReadTokens: 0, turns: 0, model: null });
     assert.equal(acc.outputTokens, 0);
     assert.equal(acc.turns, 0);
+    assert.deepEqual(acc.messages, []);
+  });
+
+  test('records one dated message per turn for mode attribution', () => {
+    const seg = require(SEGMENT);
+    const raw = [
+      JSON.stringify({ type: 'assistant', timestamp: '2026-01-01T00:00:00.000Z', message: { usage: { output_tokens: 10 } } }),
+      JSON.stringify({ type: 'user', message: { content: 'x' } }),
+      JSON.stringify({ type: 'assistant', message: { usage: { output_tokens: 5 } } }),
+      JSON.stringify({ type: 'assistant', timestamp: 'not a date', message: { usage: { output_tokens: 1 } } }),
+    ].join('\n');
+    const acc = seg.accumulate(raw, { outputTokens: 0, cacheReadTokens: 0, turns: 0, model: null });
+    assert.deepEqual(acc.messages, [
+      { ts: Date.parse('2026-01-01T00:00:00.000Z'), outputTokens: 10 },
+      { ts: null, outputTokens: 5 },
+      { ts: null, outputTokens: 1 },
+    ]);
+    // The per-message tokens must reconcile with the total, or attribution
+    // would credit a different number than the badge reports.
+    assert.equal(acc.messages.reduce((s, m) => s + m.outputTokens, 0), acc.outputTokens);
   });
 });
 
@@ -110,6 +136,59 @@ describe('incremental parse equivalence', () => {
       assert.equal(warm.turns, truth.turns, 'turn count diverged');
       assert.equal(warm.model, truth.model, 'model diverged');
       assert.equal(warm.outputTokens, 360);
+
+      // caveman 2.x only: the per-message array feeds attributeByMode, so it has
+      // to match upstream exactly, not merely sum to the same total.
+      if (Array.isArray(truth.messages)) {
+        assert.deepEqual(warm.messages, truth.messages, 'per-message records diverged');
+      }
+    });
+  });
+
+  test('per-message records survive the warm path and reconcile', (t) => {
+    const cav = caveman();
+    if (!cav) return t.skip('caveman plugin not installed');
+
+    withCache((seg, cacheDir) => {
+      const dir = fs.mkdtempSync(path.join(cacheDir, 'tx-'));
+      const file = transcript(dir, [{ out: 100 }, { out: 250 }]);
+      const sid = 'sess-messages';
+
+      const cold = seg.sessionTotals(file, sid, cav.parseSession);
+      assert.equal(cold.messages.length, 2);
+
+      fs.appendFileSync(file, JSON.stringify({
+        type: 'assistant',
+        timestamp: '2026-01-01T01:00:00.000Z',
+        message: { model: 'claude-opus-5', usage: { output_tokens: 40 } },
+      }) + '\n');
+
+      const warm = seg.sessionTotals(file, sid, cav.parseSession);
+      assert.equal(warm.messages.length, 3, 'warm path lost or duplicated messages');
+      assert.equal(warm.messages.reduce((s, m) => s + m.outputTokens, 0), warm.outputTokens);
+      assert.equal(warm.messages[2].ts, Date.parse('2026-01-01T01:00:00.000Z'));
+    });
+  });
+
+  test('a cache without per-message records is treated as cold', (t) => {
+    const cav = caveman();
+    if (!cav) return t.skip('caveman plugin not installed');
+
+    withCache((seg, cacheDir) => {
+      const dir = fs.mkdtempSync(path.join(cacheDir, 'tx-'));
+      const file = transcript(dir, [{ out: 100 }, { out: 250 }]);
+      const sid = 'sess-legacy-cache';
+      seg.sessionTotals(file, sid, cav.parseSession);
+
+      // A cache file written by the pre-shim version of this script.
+      const cacheFile = path.join(seg.cacheRoot(), 'sessions', `${sid}.json`);
+      const legacy = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+      delete legacy.messages;
+      fs.writeFileSync(cacheFile, JSON.stringify(legacy));
+
+      const out = seg.sessionTotals(file, sid, cav.parseSession);
+      assert.equal(out.outputTokens, 350, 'totals must survive the reparse');
+      assert.equal(out.messages.length, 2, 'messages must be rebuilt, not left empty');
     });
   });
 
@@ -175,6 +254,143 @@ describe('incremental parse equivalence', () => {
       fs.writeFileSync(cacheFile, 'this is not json {{{');
       assert.equal(seg.sessionTotals(file, sid, cav.parseSession).outputTokens, 100);
     });
+  });
+});
+
+describe('deriveSavings compatibility', () => {
+  const seg = () => require(SEGMENT);
+  const COMPRESSION = { full: 0.65 };
+  const saved = (tokens) => Math.round(tokens / (1 - COMPRESSION.full)) - tokens;
+
+  // Faithful stand-ins for the two upstream contracts, copied from caveman's
+  // own implementations. Stubs rather than the installed plugin, because only
+  // one version can be installed at a time and both paths must stay covered.
+  function v1Caveman() {
+    return {
+      deriveSavings({ outputTokens, mode, model }) {
+        const ratio = COMPRESSION[mode];
+        if (ratio == null) return { estSavedTokens: 0, estSavedUsd: 0 };
+        return { estSavedTokens: Math.round(outputTokens / (1 - ratio)) - outputTokens, estSavedUsd: 0, model };
+      },
+    };
+  }
+
+  function v2Caveman({ modeLog = [], attributionCalls = [] } = {}) {
+    return {
+      // Note the shape: v1 arguments produce 0 here, silently. That is the
+      // regression this suite exists to catch.
+      deriveSavings({ byMode }) {
+        let estSavedTokens = 0;
+        for (const [key, tokens] of Object.entries(byMode || {})) {
+          const ratio = COMPRESSION[key];
+          if (ratio == null || tokens <= 0) continue;
+          estSavedTokens += Math.round(tokens / (1 - ratio)) - tokens;
+        }
+        return { estSavedTokens, estSavedUsd: 0 };
+      },
+      readModeLog: () => modeLog,
+      attributeByMode(args) {
+        attributionCalls.push(args);
+        const events = args.modeLog || [];
+        if (events.length === 0) {
+          return { byMode: { [args.mode || 'none']: args.outputTokens || 0 }, unknownTokens: 0, basis: 'whole-session' };
+        }
+        // Upstream credits the span before the first transition to that
+        // transition's `prev`, not to the mode active now.
+        const prefixMode = events[0].prev;
+        const byMode = {};
+        for (const m of args.messages || []) {
+          let active;
+          for (const ev of events) { if (ev.ts <= m.ts) active = ev; else break; }
+          const key = (active ? active.mode : prefixMode) || 'none';
+          byMode[key] = (byMode[key] || 0) + m.outputTokens;
+        }
+        return { byMode, unknownTokens: 0, basis: 'log' };
+      },
+      attributionCalls,
+    };
+  }
+
+  const totals = {
+    outputTokens: 1000, cacheReadTokens: 0, turns: 2, model: 'claude-opus-5',
+    messages: [{ ts: 1000, outputTokens: 400 }, { ts: 2000, outputTokens: 600 }],
+  };
+
+  test('caveman 1.x is driven through its flat-mode signature', () => {
+    const out = seg().deriveSessionSavings({ cav: v1Caveman(), mode: 'full', totals, modeLogPath: '/nope' });
+    assert.equal(out, saved(1000));
+  });
+
+  test('caveman 2.x is driven through byMode, not the 1.x signature', () => {
+    const cav = v2Caveman();
+    const out = seg().deriveSessionSavings({ cav, mode: 'full', totals, modeLogPath: '/nope' });
+    // The load-bearing assertion: a nonzero figure proves the v1 call shape was
+    // not used, because v2's deriveSavings returns 0 for it.
+    assert.equal(out, saved(1000));
+    assert.equal(cav.attributionCalls.length, 1, 'attributeByMode was not consulted');
+  });
+
+  test('a mid-session mode switch is credited per mode, not wholesale', () => {
+    // First turn ran under a mode with no benchmark data, second under full.
+    const cav = v2Caveman({ modeLog: [{ ts: 1500, mode: 'full', prev: 'ultra' }] });
+    const out = seg().deriveSessionSavings({
+      cav, mode: 'full', totals, modeLogPath: '/nope',
+    });
+    assert.equal(out, saved(600), 'tokens from before the switch must not earn full-mode credit');
+    assert.notEqual(out, saved(1000), 'whole session was credited to the current mode');
+  });
+
+  test('the mode log path and flag mtime reach caveman 2.x', () => {
+    const cav = v2Caveman();
+    seg().deriveSessionSavings({
+      cav, mode: 'full', totals, modeLogPath: '/some/.caveman-mode-log.jsonl', flagMtimeMs: 4242,
+    });
+    assert.equal(cav.attributionCalls[0].flagMtimeMs, 4242);
+    assert.equal(cav.attributionCalls[0].outputTokens, 1000);
+  });
+
+  test('a mode without benchmark data yields nothing under either version', () => {
+    for (const cav of [v1Caveman(), v2Caveman()]) {
+      assert.equal(seg().deriveSessionSavings({ cav, mode: 'ultra', totals, modeLogPath: '/nope' }), 0);
+    }
+  });
+
+  test('a throwing or absent seam degrades to zero, never a wrong number', () => {
+    const s = seg();
+    const boom = () => { throw new Error('upstream moved'); };
+    assert.equal(s.deriveSessionSavings({ cav: null, mode: 'full', totals }), 0);
+    assert.equal(s.deriveSessionSavings({ cav: {}, mode: 'full', totals }), 0);
+    assert.equal(s.deriveSessionSavings({
+      cav: { deriveSavings: boom }, mode: 'full', totals, modeLogPath: '/nope',
+    }), 0);
+    assert.equal(s.deriveSessionSavings({
+      cav: { deriveSavings: () => ({ estSavedTokens: 5 }), readModeLog: () => [], attributeByMode: boom },
+      mode: 'full', totals, modeLogPath: '/nope',
+    }), 0);
+    assert.equal(s.deriveSessionSavings({
+      cav: { ...v2Caveman(), readModeLog: boom }, mode: 'full', totals, modeLogPath: '/nope',
+    }), saved(1000), 'an unreadable mode log must still attribute by the live flag');
+  });
+
+  test('nonsense return values are rejected', () => {
+    const s = seg();
+    for (const value of [{ estSavedTokens: NaN }, { estSavedTokens: -5 }, { estSavedTokens: '900' }, null]) {
+      assert.equal(s.deriveSessionSavings({
+        cav: { deriveSavings: () => value }, mode: 'full', totals, modeLogPath: '/nope',
+      }), 0, `expected 0 for ${JSON.stringify(value)}`);
+    }
+  });
+
+  test('the installed caveman, whichever it is, still yields a figure', (t) => {
+    const cav = caveman();
+    if (!cav) return t.skip('caveman plugin not installed');
+    const claude = process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
+    const out = seg().deriveSessionSavings({
+      cav, mode: 'full', totals,
+      modeLogPath: path.join(claude, require(SEGMENT).MODE_LOG_BASENAME),
+      flagMtimeMs: null,
+    });
+    assert.ok(out > 0, 'installed caveman produced no savings for a full-mode session');
   });
 });
 
