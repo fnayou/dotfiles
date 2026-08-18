@@ -1,8 +1,13 @@
 # ADR 0057 — Session savings are derived from `transcript_path`, not from caveman's history
 
-**Status:** Accepted
+**Status:** Accepted (amended by 0066)
 **Date:** 2026-07-31
 **Context:** PRD 0021, Architecture 0020
+
+> **Amendment (2026-08-18, ADR 0066).** The `deriveSavings` signature quoted
+> below is caveman 1.x's. Caveman 2.0 changed it to `{ byMode, model }`. Both are
+> supported and selected by capability probe. The decision recorded here — derive
+> from `transcript_path`, never from `.caveman-history.jsonl` — is unchanged.
 
 ## Context
 
@@ -31,7 +36,7 @@ Session savings are computed on every render from `transcript_path` alone:
 
 ```
 parseSession(transcript_path) → { outputTokens, model, turns }
-deriveSavings({ outputTokens, mode, model }) → estSavedTokens
+deriveSavings({ outputTokens, mode, model }) → estSavedTokens   # caveman 1.x; see ADR 0066
 ```
 
 Both functions are caveman's own exports, used unmodified.

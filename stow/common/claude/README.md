@@ -102,6 +102,12 @@ session, so no other session can contribute. Caveman's own `parseSession` and
 reimplementation. Warm renders parse only the bytes appended since the last one,
 via a byte-offset cache.
 
+`deriveSavings` changed shape in caveman 2.0 — v1 takes one mode for the whole
+session, v2 takes tokens already bucketed per mode so that a session which
+switched modes partway is not credited wholesale. Both are supported, selected by
+probing for `attributeByMode`/`readModeLog` rather than by any version string,
+because passing v1 arguments to v2 returns 0 without throwing. See ADR 0066.
+
 **Repository** — the sum of a small ledger this script maintains, one file per
 session, so a session can never be counted twice:
 
@@ -126,6 +132,10 @@ top level, then `project_dir`, then `current_dir`. Nothing requires a remote.
 - **The ledger is a cache.** Deleting
   `${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline/caveman/` loses repository
   history and nothing else; the session figure is recomputed regardless.
+- **Upgrading caveman is safe, but changes the number.** Under v2, tokens
+  produced before the mode flag was last written are no longer credited, so the
+  same session can report less than it did under v1. That is upstream being
+  stricter, not a regression here.
 - **Caveman's mode flag is global** (`~/.claude/.caveman-active`, one file for the
   whole machine). Two concurrent sessions cannot run different modes, and
   `/caveman off` in one session disables caveman in the other. That is upstream
