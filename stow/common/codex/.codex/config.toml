@@ -1,0 +1,20 @@
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
+
+[features]
+hooks = true
+
+[tui]
+theme = "catppuccin-macchiato"
+status_line_use_colors = true
+
+status_line = [
+  "model-with-reasoning",
+  "current-dir",
+  "git-branch",
+  "pull-request-number",
+  "branch-changes",
+  "context-used",
+  "five-hour-limit",
+  "weekly-limit",
+]

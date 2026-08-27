@@ -44,8 +44,10 @@ Use numbered filenames in sequence:
 
 - **Draft** — in progress, not yet approved.
 - **Approved** — approved by the user, ready for Builder.
-- **In Progress** — Builder is currently implementing.
-- **Done** — all tasks completed and reviewed.
+- **Complete** — all tasks completed and reviewed.
+- **Superseded by: docs/plans/NNNN-title.md** — replaced by a newer plan.
+
+These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical lifecycle reference.
 
 ---
 
@@ -60,3 +62,4 @@ Use numbered filenames in sequence:
 | [0005](0005-implement-dotfiles-foundation.md) | Implement dotfiles foundation | Done |
 | [0006](0006-implement-git-package.md) | Implement Git package | Done |
 | [0007](0007-implement-zsh-configuration-foundation.md) | Implement Zsh configuration foundation | Approved |
+| [0028](0028-implement-codex-customization.md) | Implement Codex customization package | Complete |
