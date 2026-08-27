@@ -10,7 +10,7 @@ This repository uses GNU Stow with a package-based layout to manage dotfile syml
 stow/
 ├── common/          # Config that works on macOS, Arch, and Debian without modification
 │   ├── alacritty/   # Alacritty terminal emulator config and Catppuccin theme
-│   ├── codex/       # Codex CLI config and Catppuccin TUI/status line preferences
+│   ├── codex/       # Codex CLI config, custom syntax theme, and status line preferences
 │   ├── git/         # Git config templates
 │   ├── herdr/       # Herdr terminal multiplexer config and Catppuccin theme overrides
 │   └── zsh/         # Zsh config (shared + macOS + Arch, runtime OS detection)
@@ -32,7 +32,7 @@ Otherwise it belongs in `macos/`, `arch/`, or `debian/`.
 
 `stow/macos/`, `stow/arch/`, and `stow/debian/` currently contain only `.gitkeep` marker files. They are platform areas, not stowable packages. A valid `task dry-run` requires a real package directory under an area — for example `stow/common/git/`.
 
-The only valid dry-run in this phase is:
+Example dry-run:
 
 ```bash
 task dry-run AREA=common PACKAGE=git
@@ -134,9 +134,10 @@ risking any real home directory change. Always remove `$TEST_HOME` after validat
 ## Adding a new package
 
 1. Determine the correct platform directory:
-   - `stow/common/<name>/` — works on both platforms unchanged (see criteria above).
+   - `stow/common/<name>/` — works on macOS, Arch / EndeavourOS, and Debian unchanged (see criteria above).
    - `stow/macos/<name>/` — macOS-specific only.
    - `stow/arch/<name>/` — Arch / EndeavourOS-specific only.
+   - `stow/debian/<name>/` — Debian-specific only.
 
 2. Create the package directory and add config files. Use `.example` files for any config containing identity, credentials, or sensitive values (see ADR-0003).
 
@@ -171,8 +172,9 @@ stow --dir=stow/common --target="$HOME" --no-folding --restow <package>
 Notes:
 
 - `--restow` re-links the package, picking up new files while leaving existing links intact.
-- Drop `--no-folding` for packages that do not require it — only `zsh`, `alacritty`, and
-  `herdr` use it (the zsh requirement is ADR-0024). `git` and `omp` do not.
+- Drop `--no-folding` for packages that do not require it. Packages whose target directories must
+  remain real directories include `zsh`, `alacritty`, `herdr`, `codex`, `claude`, `bat`, `btop`,
+  `eza`, `git`, and `nvim`. `omp` does not require it.
 - Until you re-stow, the new file lives in the repo but is **not** linked into `$HOME`. To
   test it before re-stowing, source it by its full repository path.
 

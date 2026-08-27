@@ -33,8 +33,8 @@ so **`mauve`, `peach` and `surface_dim` were inherited from Tokyo Night**.
 when the value changed. Review 0057 accepted the `tokyo-night` divergence without noticing the
 comment contradicted it.
 
-Resolved by setting the base to `catppuccin` and filling all eight slots with Macchiato values, on
-the user's choice from three presented options.
+Resolved by setting the base to `catppuccin` and filling the then-exposed full custom slot set with
+Macchiato values, on the user's choice from three presented options.
 
 ---
 
@@ -57,9 +57,10 @@ peach       = "#f5a97f"    # Peach      (new)
 
 Every hex value is from the official Catppuccin Macchiato palette. Herdr has no `macchiato`
 built-in — it ships `catppuccin`, `catppuccin-latte` and `catppuccin-mocha` — which is why Plan 0016
-described `catppuccin` as "closest" and layered overrides on top. With all eight slots set, the base
-choice now only affects colours Herdr does not expose, and those stay in the Catppuccin family
-rather than falling back to Tokyo Night.
+described `catppuccin` as "closest" and layered overrides on top. With the then-exposed custom slot
+set filled, the base choice only affected colours Herdr did not expose, and those stayed in the
+Catppuccin family rather than falling back to Tokyo Night. This was superseded by ADR 0068 after
+Herdr exposed more custom tokens.
 
 Validated: `herdr config check` → `config: ok` (rc=0); `tomllib` parses; 8/8 slots present.
 
@@ -99,10 +100,11 @@ None.
 
 ## Documentation Verdict
 
-**PASS** — The guide's configuration table now lists the base theme accurately, names all eight
-overridden slots, and explains why `catppuccin` rather than a macchiato variant. The misleading
-comment in `config.toml` is replaced with one that matches the value beneath it and states what the
-base still governs.
+**PASS** — At the time of this review, the guide's configuration table listed the base theme
+accurately, named the then-exposed overridden slots, and explained why `catppuccin` rather than a
+macchiato variant. The misleading comment in `config.toml` was replaced with one that matched the
+value beneath it and stated what the base still governed. ADR 0068 supersedes the token-count
+assumption.
 
 ---
 

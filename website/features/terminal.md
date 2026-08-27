@@ -40,8 +40,8 @@ stow --dir=stow/common --target="$HOME" --no-folding alacritty
 
 ## Herdr
 
-The `stow/common/herdr/` package manages a single file, `~/.config/herdr/config.toml` — theme,
-terminal, UI, and toast settings. Herdr is an agent-oriented multiplexer; it loads
+The `stow/common/herdr/` package manages a single file, `~/.config/herdr/config.toml` — Catppuccin
+Macchiato blue UI tokens, terminal, UI, and toast settings. Herdr is an agent-oriented multiplexer; it loads
 `~/.config/herdr/config.toml` automatically on startup, so there's no activation step beyond stowing.
 The default shell is `zsh` and new panes follow the active pane's working directory.
 

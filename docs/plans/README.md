@@ -67,3 +67,4 @@ These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical 
 | [0006](0006-implement-git-package.md) | Implement Git package | Done |
 | [0007](0007-implement-zsh-configuration-foundation.md) | Implement Zsh configuration foundation | Approved |
 | [0028](0028-implement-codex-customization.md) | Implement Codex customization package | Complete |
+| [0029](0029-implement-macchiato-blue-palette-alignment.md) | Implement Macchiato blue palette alignment | Complete |

@@ -4,7 +4,7 @@ A handful of small CLI tools, each in its own Stow package, that make daily term
 share the Catppuccin Macchiato (blue) look. Install only the ones you want — every package is
 independent.
 
-Curated from the bat, eza, claude, and omp setup guides / READMEs.
+Curated from the bat, eza, btop, Claude, Codex, and OMP setup guides / READMEs.
 
 ## bat — a better `cat`
 
@@ -91,6 +91,28 @@ guarded, so a missing tool renders nothing (no error, no placeholder):
     tracked. This package requires `--no-folding`, and on most machines the dry-run reports a conflict
     (Claude Code already wrote a real script there) — resolve it manually, never with `--adopt`. See
     the repository's `docs/guides/claude-setup.md` for the wiring step in `~/.claude/settings.json`.
+
+## Codex CLI
+
+`stow/common/codex/` manages portable [Codex CLI](https://developers.openai.com/codex/) preferences:
+model defaults, hooks enablement, built-in status line item order, and a repo-owned Catppuccin
+Macchiato blue TextMate syntax theme.
+
+The managed config sets:
+
+```toml
+[tui]
+theme = "catppuccin-macchiato-blue"
+```
+
+The theme file is stowed to `~/.codex/themes/catppuccin-macchiato-blue.tmTheme`. Codex theming is
+syntax highlighting, not terminal ANSI colors; Alacritty owns terminal colors and Herdr owns its UI
+token mapping. Use `--no-folding` so `~/.codex` remains a real directory for auth and runtime state.
+Auth, transcripts, project trust entries, caches, plugins, and databases are never committed.
+
+![OpenAI Codex with the customized theme and status line](../assets/images/codex.png)
+*Codex with the repo-owned Macchiato blue theme and built-in status line segments. `rtk` and caveman
+savings are intentionally deferred until Codex supports a documented custom status-line interface.*
 
 ## Oh My Posh prompt
 

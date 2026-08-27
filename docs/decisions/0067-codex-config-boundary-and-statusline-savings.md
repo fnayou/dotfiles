@@ -38,7 +38,9 @@ Document `rtk` and caveman status line savings as deferred:
 ## Consequences
 
 - The package captures useful Codex customization today without committing machine-specific paths.
-- Stowing the package requires an operator to preserve or re-add local project trust entries.
+- Stowing the package requires an operator to preserve or re-add local project trust entries. Codex
+  can also append them later through trust prompts or config repair because the managed config is a
+  per-file symlink; repository diffs must be checked before commit.
 - The status line remains built from Codex's supported built-in items.
 - A future PRD can add custom `rtk`/caveman segments when Codex documents a stable custom segment
   interface.

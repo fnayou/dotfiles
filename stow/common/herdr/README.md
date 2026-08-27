@@ -9,6 +9,7 @@ Herdr loads `~/.config/herdr/config.toml` automatically on startup — no activa
 ## What it configures
 
 - Theme, terminal, UI, and toast settings.
+- Catppuccin Macchiato blue overrides for Herdr's current custom color tokens.
 
 ## Files
 
