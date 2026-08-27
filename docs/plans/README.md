@@ -30,13 +30,17 @@ Use numbered filenames in sequence:
 ## Workflow
 
 1. Read the related PRD and architecture document.
-2. Use the Planner agent or `create-plan` skill to produce a plan.
-3. Review and approve the plan before Builder starts.
-4. Reference the plan number in review reports.
+2. Confirm the PRD and architecture have explicit user approval.
+3. Use the Planner agent or `create-plan` skill to produce a Draft plan.
+4. Review the plan.
+5. Stop and wait for explicit user approval before Builder starts.
+6. Reference the plan number in review reports.
 
 ## Rules
 
 - Plans must be **approved by the user** before Builder begins implementation.
+- Plan approval must be an explicit user response after the plan exists; it cannot be inferred from
+  the original request.
 - Builder implements **only** the approved plan — no improvisation.
 - Plans must be updated if scope changes mid-implementation.
 

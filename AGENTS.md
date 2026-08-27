@@ -221,12 +221,20 @@ PASS / FAIL — [reason]
 **Rules:**
 
 - Builder must not start without a plan whose `**Status:** Approved`.
+- Builder must stop and wait at PRD, architecture, and plan approval gates; approval must be an
+  explicit user response after the artifact exists.
+- Reviewer may recommend approval, but may not approve a PRD, architecture, or plan on the user's
+  behalf.
+- Approval must not be inferred from the original request, urgency, or broad instructions such as
+  "do the work", "end to end", or "follow the workflow".
 - Builder must not change the Plan status — only the Reviewer may mark a Plan Complete.
 - Reviewer marks the Plan Complete only after implementation review passes with no blocking issues.
 - Reviewer must name the completed Plan in the review report Summary.
 - Reviewer must be strict — blocking issues prevent commit.
 - Architect must not ignore cross-platform concerns.
 - Planner must include validation steps and rollback strategy.
+- New PRDs, architectures, and plans start as Draft. Change them to Approved only after explicit user
+  approval.
 - No agent may perform destructive operations or modify files outside the repository.
 
 See `docs/claude/DOCUMENT-LIFECYCLE.md` for the full lifecycle rules.

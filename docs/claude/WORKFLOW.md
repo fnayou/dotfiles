@@ -52,7 +52,8 @@ Use the `create-prd` skill to produce a formal PRD under `docs/prd/`.
 
 The PRD defines goals, non-goals, scope, safety requirements, and acceptance criteria.
 
-**No significant work starts without an approved PRD.**
+**Stop here.** The PRD starts as Draft. No significant work starts until the user explicitly approves
+the PRD after reviewing it.
 
 ### 3. Create or update architecture
 
@@ -60,7 +61,8 @@ Use the Architect agent or `create-architecture` skill to produce an architectur
 
 The architecture defines structure, decisions, tradeoffs, and risks.
 
-**No plan is created without an approved architecture when the change is structural.**
+**Stop here for structural changes.** The architecture starts as Draft. No plan is created until the
+user explicitly approves the architecture after review.
 
 ### 4. Review (PRD + architecture)
 
@@ -68,7 +70,8 @@ Use the Reviewer agent or `review-change` skill to validate the PRD and architec
 
 The Reviewer checks safety, privacy, scope, and cross-platform correctness.
 
-**No plan is created until the PRD and architecture pass review.**
+**No plan is created until the PRD and architecture pass review and the user approval gates above
+have been satisfied.**
 
 ### 5. Create plan
 
@@ -76,7 +79,8 @@ Use the Planner agent or `create-plan` skill to produce an implementation plan u
 
 The plan defines ordered tasks, affected files, safety checks, validation commands, and rollback strategy.
 
-**Builder must not start without an approved plan.**
+**Stop here.** The plan starts as Draft. Builder must not start until the plan passes review and the
+user explicitly approves the plan for build.
 
 ### 6. Review (plan)
 
@@ -84,7 +88,7 @@ Use the Reviewer agent to validate the plan before implementation begins.
 
 The Reviewer checks that tasks are safe, ordered correctly, and include validation and rollback steps.
 
-**Builder must not start until the plan passes review.**
+**Builder must not start until the plan passes review and the user explicitly says to proceed.**
 
 ### 7. Implement
 
@@ -111,10 +115,16 @@ After all verdicts pass, the Reviewer must:
 
 After Reviewer approval:
 
+- Confirm the PRD was explicitly approved by the user.
+- Confirm the architecture was explicitly approved by the user when structural.
+- Confirm the plan was explicitly approved by the user before build.
 - Run `git diff --staged` to confirm what will be committed.
 - Verify no secrets are staged.
 - Write a commit message that explains intent, not just what changed.
 - Commit.
+
+User approval to commit is separate from Reviewer approval unless the user already requested the
+commit after seeing the implementation review.
 
 ### 10. Iterate
 

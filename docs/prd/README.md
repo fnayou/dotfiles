@@ -27,8 +27,10 @@ Use numbered filenames in sequence:
 ## Workflow
 
 1. Use the `create-prd` skill to produce a new PRD.
-2. Review and approve the PRD before architecture begins.
-3. Reference the PRD number in architecture documents and plans.
+2. Write the PRD as `**Status:** Draft`.
+3. Review the PRD.
+4. Stop and wait for explicit user approval before architecture begins.
+5. Reference the PRD number in architecture documents and plans.
 
 ## Status values
 

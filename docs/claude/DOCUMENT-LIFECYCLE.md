@@ -41,13 +41,13 @@ Review
 
 | Transition       | Who           | Trigger                                       |
 |------------------|---------------|-----------------------------------------------|
-| Draft → Approved | User/Reviewer | Review passes; user confirms ready to proceed |
+| Draft → Approved | User only     | Review passes; user explicitly approves       |
 
 ### Plan
 
 | Transition            | Who      | Trigger                                                         |
 |-----------------------|----------|-----------------------------------------------------------------|
-| Draft → Approved      | User     | Plan review passes; user confirms ready to build                |
+| Draft → Approved      | User only | Plan review passes; user explicitly confirms ready to build     |
 | Approved → Complete   | Reviewer | Implementation review passes with no blocking issues            |
 | Approved → Draft      | Planner  | Blocking issue requires the plan itself to be rewritten         |
 | Approved → Superseded | Planner  | A replacement plan is created; reference it in the status line  |
@@ -69,6 +69,14 @@ Review
 5. If implementation has blocking issues, the Plan remains Approved.
 6. A Superseded plan must include `Superseded by: docs/plans/NNNN-title.md` in its status line.
 7. No document whose work is accepted or completed may remain Draft.
+8. A Reviewer may recommend approval, but cannot approve a PRD, architecture, or plan on the user's
+   behalf.
+9. Approval cannot be inferred from the original request, urgency, or broad wording such as "do the
+   work", "end to end", or "follow the workflow".
+10. Valid approval is an explicit user response after reviewing the artifact, such as "Approve PRD
+    0025", "Approve Architecture 0023", "Approve the plan", or "Proceed to build".
+11. New PRDs, architectures, and plans start as `**Status:** Draft`. Change them to Approved only
+    after valid user approval.
 
 ---
 
