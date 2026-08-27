@@ -5,21 +5,30 @@ channel = "stable"
 
 [theme]
 # Built-in base: catppuccin — closest to Macchiato; Herdr ships catppuccin,
-# catppuccin-latte and catppuccin-mocha, but no macchiato variant. The base
-# only shows through for colours Herdr does not expose as overrides below.
+# catppuccin-latte and catppuccin-mocha, but no macchiato variant.
 name = "catppuccin"
 
-# Catppuccin Macchiato overrides — all eight slots Herdr exposes, so no
-# colour is inherited from the base theme by accident.
+# Catppuccin Macchiato blue overrides for Herdr's current custom token surface.
 [theme.custom]
-panel_bg    = "#24273a"  # Base
-surface_dim = "#1e2030"  # Mantle
-accent      = "#8aadf4"  # Blue
-mauve       = "#c6a0f6"  # Mauve
-green       = "#a6da95"  # Green
-yellow      = "#eed49f"  # Yellow
-red         = "#ed8796"  # Red
-peach       = "#f5a97f"  # Peach
+panel_bg      = "#24273a"  # Base
+sidebar_bg    = "#1e2030"  # Mantle
+active_row_bg = "#363a4f"  # Surface0
+selection_bg  = "#494d64"  # Surface1
+surface0      = "#363a4f"  # Surface0
+surface1      = "#494d64"  # Surface1
+surface_dim   = "#1e2030"  # Mantle
+overlay0      = "#6e738d"  # Overlay0
+overlay1      = "#8087a2"  # Overlay1
+text          = "#cad3f5"  # Text
+subtext0      = "#a5adcb"  # Subtext0
+accent        = "#8aadf4"  # Blue
+mauve         = "#c6a0f6"  # Mauve
+green         = "#a6da95"  # Green
+yellow        = "#eed49f"  # Yellow
+red           = "#ed8796"  # Red
+blue          = "#8aadf4"  # Blue
+teal          = "#8bd5ca"  # Teal
+peach         = "#f5a97f"  # Peach
 
 [terminal]
 default_shell = "zsh"  # Matches shell preference on both macOS and Arch

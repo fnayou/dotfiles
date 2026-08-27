@@ -22,12 +22,11 @@ never automatically.
 Claude Code operating layer:    complete
 GNU Stow scaffold:              created
 Managed packages:               see stow/common/
-Home directory:                 stowed — all pre-codex packages linked; codex pending manual stow
+Home directory:                 stowed — all common packages linked
 ```
 
-`stow/common/` is the source of truth for which packages exist. All pre-codex packages are stowed:
-live symlinks point from `$HOME` into the repo. The new `codex` package is added but not yet stowed.
-Stow is still always a deliberate, manual step.
+`stow/common/` is the source of truth for which packages exist. All common packages are stowed:
+live symlinks point from `$HOME` into the repo. Stow is still always a deliberate, manual step.
 
 ## What's included
 
@@ -40,7 +39,7 @@ Each package is self-contained and carries its own README. `stow/macos/`, `stow/
 | **bat** | bat pager — style, wrap, paging, Catppuccin Macchiato theme | [README](stow/common/bat/README.md) | [guide](docs/guides/bat-setup.md) |
 | **btop** | btop resource monitor — theme, background, truecolor, vim keys, Catppuccin Macchiato theme | [README](stow/common/btop/README.md) | [guide](docs/guides/btop-setup.md) |
 | **claude** | Claude Code status line — OS · model · path · git · PR/MR · context % · rtk savings segments, mirrors the Catppuccin Macchiato prompt | [README](stow/common/claude/README.md) | [guide](docs/guides/claude-setup.md) |
-| **codex** | Codex CLI config — model defaults, Catppuccin Macchiato TUI theme, built-in status line | [README](stow/common/codex/README.md) | — |
+| **codex** | Codex CLI config — model defaults, Catppuccin Macchiato blue syntax theme, built-in status line | [README](stow/common/codex/README.md) | [guide](docs/guides/codex-setup.md) |
 | **eza** | eza `ls` replacement — Catppuccin Macchiato (Blue) color theme | [README](stow/common/eza/README.md) | [guide](docs/guides/eza-setup.md) |
 | **git** | Portable Git config — settings, aliases, global ignore (no secrets) | [README](stow/common/git/README.md) | [guide](docs/guides/git-setup.md) |
 | **herdr** | Herdr agent multiplexer — theme, terminal, UI, toast | [README](stow/common/herdr/README.md) | [guide](docs/guides/herdr-setup.md) |
@@ -58,7 +57,7 @@ Setup guides are written for a human operator, not for agents.
 - [Doctor](docs/guides/doctor.md) — `task doctor`, a read-only health check answering "is this machine set up the way the repo intends?".
 - [Packages setup](docs/guides/packages-setup.md) — install the tools every package depends on (`git`, `stow`, `go-task`, …).
 - [GNU Stow usage](docs/stow-usage.md) — dry-run workflow, install steps, conflict handling, adding packages.
-- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [bat](docs/guides/bat-setup.md) · [btop](docs/guides/btop-setup.md) · [claude](docs/guides/claude-setup.md) · [eza](docs/guides/eza-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [zsh](docs/guides/zsh-setup.md).
+- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [bat](docs/guides/bat-setup.md) · [btop](docs/guides/btop-setup.md) · [claude](docs/guides/claude-setup.md) · [codex](docs/guides/codex-setup.md) · [eza](docs/guides/eza-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [zsh](docs/guides/zsh-setup.md).
 - [Speed test setup](docs/guides/speedtest-setup.md) — optional `cloudflare-speed-cli` helpers (`speed`, `speed-json`, `speed-log`, `speed-history`) shipped by the zsh package.
 - [Shell dependencies](docs/shell-dependencies.md) · [Zsh migration notes](docs/zsh-migration.md).
 
@@ -82,7 +81,7 @@ overwrites existing files. See the [Stow usage guide](docs/stow-usage.md) for fu
 
 ## Safety
 
-- All pre-codex `stow/common/` packages are stowed; symlinks point from `$HOME` into the repo. The `codex` package is intentionally pending manual stow.
+- All `stow/common/` packages are stowed; symlinks point from `$HOME` into the repo.
 - Stow and symlink operations happen only with explicit per-session approval and a reviewed plan.
 - No secrets, credentials, or private hostnames are committed.
 - Local-only and sensitive values live in unstowed `.example` templates that you copy and fill in.

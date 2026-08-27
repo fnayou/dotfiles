@@ -16,6 +16,7 @@ repository. Edit the file in the repo, and the change is live in `$HOME` immedia
 stow/
 ├── common/          # Config that works on macOS, Arch, and Debian without modification
 │   ├── alacritty/   # Alacritty terminal config + Catppuccin theme
+│   ├── codex/       # Codex CLI config + custom Catppuccin syntax theme
 │   ├── git/         # Git config templates
 │   ├── herdr/       # Herdr multiplexer config + Catppuccin overrides
 │   └── zsh/         # Zsh config (shared + macOS / Arch per-OS layer, runtime OS detection)
@@ -30,12 +31,12 @@ A package belongs in `common/` only if all three hold:
 2. The config values work unmodified on all platforms.
 3. No platform-specific tool or behavior is referenced.
 
-Otherwise it belongs in `macos/` or `arch/`.
+Otherwise it belongs in `macos/`, `arch/`, or `debian/`.
 
 !!! note "Platform directories are not packages"
-    `stow/macos/` and `stow/arch/` currently contain only `.gitkeep` markers. They are platform
-    *areas*, not stowable packages. A valid dry-run needs a real package directory under an area, e.g.
-    `stow/common/git/`.
+    `stow/macos/`, `stow/arch/`, and `stow/debian/` currently contain only `.gitkeep` markers. They
+    are platform *areas*, not stowable packages. A valid dry-run needs a real package directory under
+    an area, e.g. `stow/common/git/`.
 
 ## Dry-run before anything
 
@@ -109,8 +110,9 @@ stow --dir=stow/common --target="$HOME" --no-folding --restow <package>
 ```
 
 !!! info "`--no-folding` only where needed"
-    Only `zsh`, `alacritty`, and `herdr` require `--no-folding`. `git` and `omp` do not — drop the
-    flag for those.
+    Use `--no-folding` for packages whose target directories must stay real directories, including
+    `zsh`, `alacritty`, `herdr`, `codex`, `claude`, `bat`, `btop`, `eza`, `git`, and `nvim`. `omp`
+    does not require it.
 
 ## Forbidden
 

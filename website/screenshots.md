@@ -20,6 +20,10 @@ pages; this page collects them in one place.
 ![Claude Code status line showing OS, model, path, git, PR/MR, context, and rtk savings segments](assets/images/claude-statusline.png)
 *Claude Code status line integrated into the terminal workflow.*
 
+![OpenAI Codex with a Catppuccin Macchiato blue theme and customized status line](assets/images/codex.png)
+*Codex CLI with the repo-owned blue syntax theme and built-in status line segments for model,
+directory, Git, context, and usage limits. `rtk` and caveman savings are intentionally not shown yet.*
+
 ![Herdr multiplexer session with panes and agent labels](assets/images/herdr-session.png)
 *Herdr session layout for agent-oriented terminal work.*
 

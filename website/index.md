@@ -40,7 +40,7 @@ is installed automatically — every change to your home directory is a manual, 
 | **Terminal** | Alacritty, Herdr multiplexer |
 | **Editor** | Neovim (Lua, Catppuccin Macchiato) |
 | **Git** | Portable config, aliases, global ignore — no secrets |
-| **CLI tools** | bat, eza, btop, fzf, zoxide, and a Claude Code status line |
+| **CLI tools** | bat, eza, btop, fzf, zoxide, Claude Code status line, and Codex CLI config |
 
 See [Features](features/index.md) for the per-tool detail.
 

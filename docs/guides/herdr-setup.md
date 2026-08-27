@@ -23,7 +23,7 @@ Herdr loads `~/.config/herdr/config.toml` automatically on startup. No manual ac
 | Setting | Value | Notes |
 |---|---|---|
 | `theme.name` | `catppuccin` | Base theme. Herdr ships `catppuccin`, `catppuccin-latte` and `catppuccin-mocha` — there is no `macchiato` variant, so the overrides below supply it |
-| `theme.custom` | Catppuccin Macchiato palette | All eight slots Herdr exposes: `panel_bg`, `surface_dim`, `accent`, `mauve`, `green`, `yellow`, `red`, `peach`. Setting every one means no colour is inherited from the base by accident |
+| `theme.custom` | Catppuccin Macchiato blue palette | Current Herdr custom tokens are set explicitly: panel/sidebar backgrounds, active and selected rows, surfaces, overlays, text, subtext, and semantic accents. Blue `#8aadf4` is both `accent` and `blue` |
 | `terminal.default_shell` | `zsh` | Consistent with shell setup on all three platforms |
 | `terminal.new_cwd` | `follow` | New panes inherit the active pane's working directory |
 | `ui.show_agent_labels_on_pane_borders` | `true` | Labels visible on pane borders |
@@ -200,7 +200,7 @@ herdr
 ```
 
 Confirm visually:
-- Catppuccin Macchiato colors (dark blue base `#24273a`)
+- Catppuccin Macchiato blue colors (dark base `#24273a`, blue accent `#8aadf4`)
 - Agent labels visible on pane borders
 - Sidebar roughly 25 columns wide
 - New panes inherit the working directory of the active pane

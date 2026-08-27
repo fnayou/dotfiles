@@ -41,16 +41,17 @@ task deps:arch    # Arch
 
 ## Install
 
-This package uses the standard Stow workflow (no `--no-folding` needed):
+This package uses `--no-folding` so `~/.config/nvim` remains a real directory with per-file
+symlinks:
 
 ```bash
-stow --dir=stow/common --target="$HOME" --simulate nvim
+stow --dir=stow/common --target="$HOME" --no-folding --simulate nvim
 ```
 
 ⚠️  MANUAL STEP — review dry-run output before running
 
 ```bash
-stow --dir=stow/common --target="$HOME" nvim
+stow --dir=stow/common --target="$HOME" --no-folding nvim
 ```
 
 ## Related

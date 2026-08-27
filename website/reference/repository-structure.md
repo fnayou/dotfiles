@@ -40,8 +40,8 @@ dotfiles/
 
 !!! note "`stow/` is the source of truth"
     The `stow/common/` directory defines which packages exist. Each package is self-contained and
-    carries its own `README.md`. `stow/macos/` and `stow/arch/` are reserved for platform-specific
-    packages and are currently empty.
+    carries its own `README.md`. `stow/macos/`, `stow/arch/`, and `stow/debian/` are reserved for
+    platform-specific packages and are currently empty.
 
 ![Tree view of the stow directory showing one folder per package](../assets/images/repo-tree.png)
 *Package-based repository layout under stow/.*

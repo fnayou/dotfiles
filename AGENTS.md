@@ -14,7 +14,7 @@ Key context:
 - **EndeavourOS / Arch Linux** is also used.
 - **Debian** (stable, trixie / 13+) runs on all servers.
 - **GNU Stow** is the symlink manager (package-based layout under `stow/`).
-- Dotfiles are **stowed** — all pre-`codex` `stow/common/` packages are symlinked into `$HOME`.
+- Dotfiles are **stowed** — all `stow/common/` packages are symlinked into `$HOME`.
 - The Claude Code operating layer (agents, rules, skills, documentation workflow) is complete and active.
 
 ---
@@ -22,10 +22,10 @@ Key context:
 ## 2. Repository Status
 
 ```
-Current status:          Claude Code operating layer complete; common packages mostly stowed.
-Dotfiles implementation: stowed — all pre-codex stow/common/ packages symlinked into $HOME; codex package added but not yet stowed.
+Current status:          Claude Code operating layer complete; common packages stowed.
+Dotfiles implementation: stowed — all stow/common/ packages symlinked into $HOME.
 GNU Stow packages:       see stow/common/ (source of truth; macos/, arch/, debian/ empty).
-Stowed to $HOME:         all pre-codex stow/common/ packages — live symlinks into the repo; codex pending manual stow.
+Stowed to $HOME:         all stow/common/ packages — live symlinks into the repo.
 Home directory:          modified by these symlinks; further modifications forbidden unless explicitly requested.
 ```
 
