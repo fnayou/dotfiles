@@ -8,27 +8,29 @@ This repository uses GNU Stow with a package-based layout to manage dotfile syml
 
 ```
 stow/
-├── common/          # Config that works on both macOS and Arch without modification
+├── common/          # Config that works on macOS, Arch, and Debian without modification
 │   ├── alacritty/   # Alacritty terminal emulator config and Catppuccin theme
+│   ├── codex/       # Codex CLI config and Catppuccin TUI/status line preferences
 │   ├── git/         # Git config templates
 │   ├── herdr/       # Herdr terminal multiplexer config and Catppuccin theme overrides
 │   └── zsh/         # Zsh config (shared + macOS + Arch, runtime OS detection)
 ├── macos/           # macOS-specific config only
-└── arch/            # EndeavourOS / Arch-specific config only
+├── arch/            # EndeavourOS / Arch-specific config only
+└── debian/          # Debian-specific config only
 ```
 
 A package belongs in `common/` only if all three hold:
-1. The config file path is identical on macOS and Arch.
-2. The config values work unmodified on both platforms.
+1. The config file path is identical on macOS, Arch / EndeavourOS, and Debian.
+2. The config values work unmodified on all three platforms.
 3. No platform-specific tool or behavior is referenced.
 
-Otherwise it belongs in `macos/` or `arch/`.
+Otherwise it belongs in `macos/`, `arch/`, or `debian/`.
 
 ---
 
 ## Platform directories are not packages
 
-`stow/macos/` and `stow/arch/` currently contain only `.gitkeep` marker files. They are platform areas, not stowable packages. A valid `task dry-run` requires a real package directory under an area — for example `stow/common/git/`.
+`stow/macos/`, `stow/arch/`, and `stow/debian/` currently contain only `.gitkeep` marker files. They are platform areas, not stowable packages. A valid `task dry-run` requires a real package directory under an area — for example `stow/common/git/`.
 
 The only valid dry-run in this phase is:
 

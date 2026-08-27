@@ -135,3 +135,4 @@ Use numbered filenames in sequence:
 | [0064](0064-local-zsh-example-exists-and-agents-never-create-local-zsh.md) | `local.zsh.example` exists for humans; agents never create `local.zsh` | Accepted |
 | [0065](0065-provisioning-runs-lift-the-agents-md-section-8-stow-ban.md) | Operator-initiated provisioning runs lift the `AGENTS.md` §8 stow ban | Accepted |
 | [0066](0066-caveman-seam-detected-by-capability-not-version.md) | The caveman seam is detected by capability, not by version | Accepted |
+| [0067](0067-codex-config-boundary-and-statusline-savings.md) | Codex config boundary and status line savings | Accepted |

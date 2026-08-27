@@ -1,0 +1,5 @@
+README.md
+\.stow-local-ignore
+\.DS_Store
+.*\.bak
+.*\.orig
