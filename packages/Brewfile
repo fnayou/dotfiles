@@ -52,3 +52,17 @@ brew "cloudflare-speed-cli"
 # macOS, Arch and Debian alike. Arch users may prefer the AUR package instead.
 # See: docs/guides/herdr-setup.md
 brew "herdr"
+
+# --- AI coding agent token optimizer ---
+# Optional — rewrites common dev commands so agents read less output.
+# Homebrew core formula: no tap required. Some filters shell out to ripgrep,
+# already listed above.
+# ⚠️  Two unrelated projects are named `rtk`. This is rtk-ai/rtk (Rust Token
+# Killer). Verify with `rtk gain`, which only the correct one provides.
+# Activation is a separate per-agent step — brew only installs the binary.
+# See: docs/guides/agent-tooling-setup.md
+brew "rtk"
+
+# Not installable via Homebrew — see docs/guides/agent-tooling-setup.md:
+#   caveman           — installer script (JuliusBrussee/caveman)
+#   mattpocock/skills — `npx skills` into the shared ~/.agents/skills/ directory

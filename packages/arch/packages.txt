@@ -41,3 +41,13 @@
 # --- AUR packages (requires yay or paru) ---
 # yay -S oh-my-posh-bin
 # yay -S herdr            # alternative to `brew install herdr`
+
+# --- AI coding agent token optimizer ---
+# Optional — rewrites common dev commands so agents read less output.
+# Not in the official Arch repos; the AUR carries it (both build from the same
+# 0.50.0 upstream: `rtk` compiles from source, `rtk-bin` ships the release binary).
+# ⚠️  Two unrelated projects are named `rtk`. This is rtk-ai/rtk (Rust Token
+# Killer). Verify with `rtk gain`, which only the correct one provides.
+# Activation is a separate per-agent step — the package only installs the binary.
+# See: docs/guides/agent-tooling-setup.md
+# yay -S rtk-bin          # or: yay -S rtk   (source build)
