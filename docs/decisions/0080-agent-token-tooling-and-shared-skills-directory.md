@@ -122,9 +122,17 @@ Verified on this machine rather than taken on trust:
 - **Codex CLI** enumerates the Pocock and caveman skills alongside its own system skills.
 - **opencode** documents `~/.agents/skills/` among its global skill roots and reports them loaded.
 
-So a single install covers Codex and opencode with no per-agent duplication. Because opencode also
-reads `~/.claude/skills/`, installing the same set for `claude-code` puts a second copy on opencode's
-search path; the tooling resolves by skill name, so this is redundancy rather than breakage.
+So a single install covers Codex and opencode with no per-agent duplication. For `claude-code` the
+installer additionally copies into `~/.claude/skills/`, which opencode also reads; resolution is by
+skill name, so this is redundancy rather than breakage — opencode's reported skill count did not rise
+by 38 afterwards.
+
+**Skill names are a flat namespace shared with the host's built-ins, and the host wins.** Installing
+38 third-party skills into it means some become unreachable. `code-review` collides with Claude Code's
+own `/code-review`; the built-in is what runs, and the upstream skill — a two-axis standards-plus-spec
+review, which the built-in is not — is silently shadowed. Accepted rather than worked around, because
+renaming upstream skills locally forfeits `npx skills update`. The guide documents how to spot it and
+how to rename deliberately if a shadowed skill is wanted.
 
 ### 7. None of this becomes a Stow package, and the status blocks do not change
 
