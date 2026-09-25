@@ -180,6 +180,37 @@ The mode flag is **global** — one file for the whole machine, so two concurren
 cannot run different modes. That is upstream behaviour; see
 [ADR-0060](../decisions/0060-caveman-global-mode-flag-limitation-accepted.md).
 
+### Known issue — the caveman status line badge is dark on caveman 2.7.0
+
+**caveman 2.7.0 removed `deriveSavings`** from `src/hooks/caveman-stats.js`. It is not renamed; it is
+absent from `src/` entirely. The `claude` package's segment is built on it (ADR-0057, ADR-0066), so the
+badge renders nothing on this version. `parseSession`, `readModeLog` and `attributeByMode` all survive;
+`parseSession`'s output shape also changed enough to break the warm incremental path.
+
+Upstream changed measurement models — from *estimating* tokens saved per mode to *measuring* byte
+reduction over compressed pairs:
+
+```js
+findCompressedPairs(dirs)   // scans *.original.md / compressed file pairs
+summarizeCompressed(pairs)  // → { count, totalOriginal, totalCompressed, bytesReduced }
+```
+
+Bytes, not tokens, so this is a rework of the segment rather than a patch.
+
+Nothing is broken for daily use: the segment degrades as designed — renders nothing, exit 0, no
+stderr, rest of the status line intact, `rtk` segment unaffected. The cost is only the missing badge.
+
+Two consequences for the test suite on a machine where caveman **is** installed:
+
+```bash
+task test:statusline    # 2 failures: parseSession warm path, deriveSavings compatibility
+task check:statusline   # fails: no session figure, no [CAVEMAN:OFF]
+```
+
+CI stays green because it runs without caveman, where those assertions skip. The failing guard is named
+*"the installed caveman, whichever it is, still yields a figure"* — it exists for exactly this class of
+upstream break, and it worked.
+
 ---
 
 ## 5. Install the Matt Pocock skills
@@ -208,8 +239,27 @@ npx skills@latest ls -g          # lists each skill and the agents that see it
 ls -1 ~/.agents/skills | wc -l   # 58 = 38 Pocock + 20 caveman
 ```
 
-Because opencode also reads `~/.claude/skills/`, installing for `claude-code` puts a second copy on
-opencode's search path. Resolution is by skill name, so this is redundancy, not breakage.
+For `claude-code` the installer copies into `~/.claude/skills/` as well. Because opencode reads both
+that directory and `~/.agents/skills/`, it then sees the same 38 twice — resolution is by skill name,
+so this is redundancy, not breakage (verified: opencode's skill count did not rise by 38).
+
+### Name collisions shadow the installed skill
+
+Skill names are a flat namespace shared with the host's built-ins, and the host wins.
+`code-review` collides with Claude Code's own `/code-review` command, so **Matt's `code-review` is
+unreachable by name** — `/code-review` runs the built-in. His is a two-axis review (repo standards
+plus originating spec, in parallel sub-agents), which is not what the built-in does, so the
+substitution is silent and easy to miss.
+
+Check what actually loaded, rather than assuming all 38 are reachable:
+
+```bash
+ls -1 ~/.claude/skills            # what is installed
+```
+
+Then compare against the skills the agent reports available in a fresh session. Anything installed but
+absent there lost a collision. Rename the directory (and its `name:` in `SKILL.md`) to recover it —
+`pocock-code-review`, say. This repository's own `review-change` skill is a third thing again.
 
 ### Per-repository setup
 
