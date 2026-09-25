@@ -60,3 +60,14 @@
 #   cargo install cloudflare-speed-cli   # if a Rust toolchain is present
 #   # or download a release binary from
 #   #   https://github.com/kavehtehrani/cloudflare-speed-cli/releases
+#
+# rtk — optional AI coding agent token optimizer; rewrites common dev commands
+# so agents read less output. Absent from the Debian archive (it is in the AUR
+# and Homebrew core, but has no apt package).
+# ⚠️  Two unrelated projects are named `rtk`. This is rtk-ai/rtk (Rust Token
+# Killer). Verify with `rtk gain`, which only the correct one provides.
+# Activation is a separate per-agent step — installing only provides the binary.
+# See: docs/guides/agent-tooling-setup.md
+#   brew install rtk                              # Homebrew on Linux
+#   # or, with a Rust toolchain present:
+#   cargo install --git https://github.com/rtk-ai/rtk
