@@ -137,3 +137,4 @@ Use numbered filenames in sequence:
 | [0066](0066-caveman-seam-detected-by-capability-not-version.md) | The caveman seam is detected by capability, not by version | Accepted |
 | [0067](0067-codex-config-boundary-and-statusline-savings.md) | Codex config boundary and status line savings | Accepted |
 | [0068](0068-macchiato-blue-palette-source-of-truth.md) | Macchiato blue palette source of truth | Accepted |
+| [0080](0080-agent-token-tooling-and-shared-skills-directory.md) | Agent token tooling installed per-tool; skills through the shared `~/.agents` directory | Accepted |
