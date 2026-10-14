@@ -277,7 +277,30 @@ repeated** — these skills run with full agent permissions.
 
 ---
 
-## 6. caveman's license is not uniformly open source
+## 6. Maintenance with the Taskfile
+
+The repository provides read-only Taskfile tasks for day-to-day maintenance:
+
+```bash
+# Show what is installed and which agents are hooked up
+task agents:status
+
+# Print the exact update commands for this OS — they are not executed automatically
+task agents:update
+
+# Verify the three tools are present, correctly hooked, and that the Claude Code
+# status line still points to the repo-owned script
+task agents:verify
+```
+
+`task agents:update` only prints commands. The commands it prints still require
+manual review because they modify tools outside this repository (`rtk` via the
+system package manager, `caveman` via its own installer, and Pocock skills via
+`npx`).
+
+---
+
+## 7. caveman's license is not uniformly open source
 
 caveman is split-licensed, and it matters if anything caveman-derived is ever redistributed:
 
@@ -292,7 +315,7 @@ workstation is inside the grant. Upstream's `LICENSING.md` is the per-directory 
 
 ---
 
-## 7. What is now injected into every session
+## 8. What is now injected into every session
 
 These files add instructions to every agent session on this machine and **none is in version
 control**. If an agent behaves oddly in a way that survives reverting this repository, look here
@@ -308,7 +331,7 @@ first:
 
 ---
 
-## 8. Validation
+## 9. Validation
 
 ```bash
 rtk --version && rtk gain           # correct rtk installed and tracking
@@ -326,7 +349,7 @@ directory — it is scoped with `rtk gain --project`, not a lifetime total.
 
 ---
 
-## 9. Rollback
+## 10. Rollback
 
 Each tool uninstalls itself. Take them one at a time.
 

@@ -397,3 +397,21 @@ tasks:
         echo "  exec zsh         # reload current shell"
         echo "  zsh -n ~/.zshrc  # syntax check"
         echo ""
+
+  agents:status:
+    desc: "Show installed status of rtk, caveman and Matt Pocock skills — read-only"
+    silent: true
+    cmds:
+      - bash scripts/agents-status.sh
+
+  agents:update:
+    desc: "Print per-OS update commands for rtk, caveman and Matt Pocock skills — does not run them"
+    silent: true
+    cmds:
+      - bash scripts/agents-update-commands.sh
+
+  agents:verify:
+    desc: "Verify rtk, caveman and Matt Pocock skills are installed and active — read-only"
+    silent: true
+    cmds:
+      - bash scripts/agents-verify.sh
