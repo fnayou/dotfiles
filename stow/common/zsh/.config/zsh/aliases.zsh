@@ -25,6 +25,9 @@ fi
 # --- Functions ---
 sizeof(){ du -sh ./*; }
 
+# List the directory after every `cd`, but only at a real terminal. Coding
+# agents inherit this hook and run `cd` with their output captured; there the
+# eza listing has hung their shell for minutes, so skip it for them.
 chpwd() {
-  ll
+  [[ -t 1 ]] && ll
 }
