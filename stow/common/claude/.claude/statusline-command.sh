@@ -174,7 +174,7 @@ if command -v rtk >/dev/null 2>&1; then
 fi
 
 # --- Caveman badge (orange 256-color 172; optional) ---
-# Mode badge + tokens saved, scoped to THIS session and THIS repository.
+# Active mode + actual session output tokens, scoped to THIS session.
 #
 # We deliberately do not call caveman's own caveman-statusline.sh here. That
 # script renders ~/.claude/.caveman-statusline-suffix, which is the sum of every
@@ -182,8 +182,9 @@ fi
 # machine-wide lifetime total sitting in a project-scoped status line, right next
 # to the project-scoped rtk figure. See docs/prd/0021-caveman-session-scoped-savings.md.
 #
-# statusline-caveman.js recomputes the figure from this session's own
-# transcript_path, reusing caveman's exported estimator rather than forking it.
+# statusline-caveman.js renders caveman:<mode> ⛏ <count> session from this
+# session's own transcript_path. It shows measured output tokens, not an
+# estimated saving, because Caveman has no observed non-caveman counterfactual.
 # It is handed the payload we already captured in $input — stdin is read exactly
 # once, at the top of this script, and never re-read by a segment.
 # Plugin source: https://github.com/JuliusBrussee/caveman
