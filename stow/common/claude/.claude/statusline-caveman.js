@@ -14,46 +14,36 @@
 // docs/prd/0021-caveman-session-scoped-savings.md.
 //
 // What it renders instead:
-//   [CAVEMAN] ⛏ 68.3k                    session only
-//   [CAVEMAN] ⛏ 68.3k sess · 844.7k repo   session + repository
-//   [CAVEMAN:ULTRA]                       mode without benchmark data
-//   [CAVEMAN:OFF]                         installed, no mode active
-//   (nothing)                             not installed, or anything went wrong
+//   caveman:full ⛏ 68.3k session          active mode + actual session output
+//   caveman:off ⛏ 0 session               caveman installed but disabled
+//   caveman:ultra ⛏ 12.5k session         any other active mode
 //
-// Token estimation is caveman's, reused verbatim via its exported deriveSavings.
-// We never re-implement the algorithm; see ADR 0057.
+// We show actual measured output tokens for this session, not an estimated
+// saving. Caveman has no observed non-caveman counterfactual for a session, so
+// any fixed-ratio "saved" figure would be a guess dressed up as a measurement.
 //
-// deriveSavings changed shape in caveman 2.0. v1 took a single mode for the
-// whole session; v2 takes tokens already bucketed per mode, because a session
-// can switch modes partway through and crediting all of it to the current flag
-// invents savings. Both shapes are supported — see deriveSessionSavings.
+// Future: if Caveman ever exposes measured counterfactual savings (for example
+// A/B identical runs or provider-reported baseline-vs-caveman usage), reintroduce
+// an exact savings figure here instead of raw output tokens. Until then, output
+// tokens are honest and comparable across modes. See ADR 0057 and the upstream
+// discussion in the caveman repo about retiring numeric statusline savings.
 
 'use strict';
 
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const crypto = require('crypto');
-const { execFileSync } = require('child_process');
 
 // 256-colour 172 (orange) — matches caveman's own badge and the rtk segment.
 const COLOR = '\u001b[38;5;172m';
 const RESET = '\u001b[0m';
 const PICK = '⛏'; // U+26CF pick, escaped so this file stays pure ASCII
 
-// Ledger entries older than this are pruned opportunistically, so a long-lived
-// cache cannot grow without bound.
-const LEDGER_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
-
 // caveman 2.x attributes tokens per message, so the session cache has to carry
 // one record per assistant turn. Past this count we stop caching them rather
 // than let a single session's cache file grow without bound; the next render
 // then takes the cold path, which is slower but still correct.
 const MAX_CACHED_MESSAGES = 20000;
-
-// Where caveman 2.x records mode transitions. Read from caveman's own
-// MODE_LOG_BASENAME when it exports one; this is only the fallback.
-const MODE_LOG_BASENAME = '.caveman-mode-log.jsonl';
 
 function claudeDir() {
   return process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
@@ -93,12 +83,43 @@ function findHooksDir() {
 }
 
 // ---------------------------------------------------------------------------
+// Mode reading
+// ---------------------------------------------------------------------------
+
+// Prefer caveman's own readFlag so we reuse its symlink refusal, 64-byte cap and
+// mode whitelist. Degrade to a direct read only when the plugin is not installed.
+function readMode() {
+  const flagPath = path.join(claudeDir(), '.caveman-active');
+
+  const hooks = findHooksDir();
+  if (hooks) {
+    try {
+      const cfg = require(path.join(hooks, 'caveman-config.js'));
+      if (typeof cfg.readFlag === 'function') {
+        const mode = cfg.readFlag(flagPath);
+        if (mode) return mode;
+      }
+    } catch { /* fall through to direct read */ }
+  }
+
+  try {
+    const st = fs.lstatSync(flagPath);
+    if (!st.isSymbolicLink() && st.isFile()) {
+      const raw = fs.readFileSync(flagPath, 'utf8').trim().toLowerCase();
+      if (raw.length > 0 && raw.length <= 64 && /^[a-z0-9_-]+$/.test(raw)) return raw;
+    }
+  } catch { /* missing or unreadable flag */ }
+
+  return 'off';
+}
+
+// ---------------------------------------------------------------------------
 // Session totals
 // ---------------------------------------------------------------------------
 
 // Accumulate assistant-message usage from raw JSONL text. This mirrors caveman's
 // parseSession line-for-line, and exists only so the warm path can parse the
-// appended tail instead of the whole file. The cold path calls caveman's
+// appended tail instead of the whole file. The cold path calls caveman's own
 // parseSession directly, and tests/statusline-caveman.test.js asserts the two
 // agree over a real transcript — so this stays a performance detail, not a fork
 // of the parser.
@@ -126,6 +147,7 @@ function accumulate(raw, acc) {
     acc.messages.push({
       ts: Number.isFinite(ts) ? ts : null,
       outputTokens: usage.output_tokens || 0,
+      cacheReadTokens: usage.cache_read_input_tokens || 0,
     });
   }
   return acc;
@@ -160,6 +182,15 @@ function writeJsonAtomic(file, value) {
     fs.writeFileSync(tmp, JSON.stringify(value), { mode: 0o600 });
     fs.renameSync(tmp, file);
   } catch { /* cache is best-effort */ }
+}
+
+function fallbackParseSession(transcript) {
+  try {
+    const buf = fs.readFileSync(transcript);
+    return accumulate(buf.toString('utf8'), {
+      outputTokens: 0, cacheReadTokens: 0, turns: 0, model: null, messages: [],
+    });
+  } catch { return null; }
 }
 
 // Parse the current session's transcript, reusing the cached prefix when the
@@ -202,17 +233,18 @@ function sessionTotals(transcript, sessionId, parseSession) {
       acc.offset = cached.offset;
     }
   } else {
-    // Cold path: caveman's own parser, verbatim. Guarded because it dereferences
-    // every parsed line without a null check and so throws on a transcript
-    // containing a bare `null` record.
+    // Cold path: caveman's own parser when available, otherwise a local parse.
     let parsed;
-    try { parsed = parseSession(transcript); } catch { parsed = null; }
+    if (typeof parseSession === 'function') {
+      try { parsed = parseSession(transcript); } catch { parsed = null; }
+    }
+    if (!parsed) parsed = fallbackParseSession(transcript);
     if (!parsed) return null;
     acc = { ...parsed };
     let buf;
     try { buf = fs.readFileSync(transcript); } catch { return null; }
-    // caveman 1.x parseSession has no `messages`; rebuild it here so the v2
-    // attribution path gets the same input regardless of installed version.
+    // caveman 1.x parseSession has no `messages`; rebuild it here so later
+    // code gets the same shape regardless of installed version.
     if (!Array.isArray(acc.messages)) {
       const rebuilt = accumulate(buf.toString('utf8'), {
         outputTokens: 0, cacheReadTokens: 0, turns: 0, model: null, messages: [],
@@ -236,181 +268,20 @@ function sessionTotals(transcript, sessionId, parseSession) {
 }
 
 // ---------------------------------------------------------------------------
-// Savings
-// ---------------------------------------------------------------------------
-
-// Call caveman's deriveSavings through whichever contract the installed copy
-// exposes, and return estimated saved tokens (0 when there is nothing to claim).
-//
-// Detection is by capability, not by version string: caveman ships no version to
-// the hooks, and `typeof deriveSavings === 'function'` is true for both shapes —
-// so passing v1 arguments to v2 silently yields 0 rather than throwing. That
-// silent zero is exactly the failure this function exists to prevent, which is
-// why the probe keys on attributeByMode/readModeLog, added alongside the new
-// signature in caveman 2.0.
-function deriveSessionSavings({ cav, mode, totals, modeLogPath, flagMtimeMs }) {
-  if (!cav || typeof cav.deriveSavings !== 'function') return 0;
-
-  const positive = (result) => {
-    const n = result && result.estSavedTokens;
-    return Number.isFinite(n) && n > 0 ? n : 0;
-  };
-
-  const v2 = typeof cav.attributeByMode === 'function' && typeof cav.readModeLog === 'function';
-
-  try {
-    if (v2) {
-      // Tokens are credited to the mode that was active when each message was
-      // written, so a session that switched modes partway does not report the
-      // current mode's ratio over its whole history.
-      let modeLog = [];
-      try { modeLog = cav.readModeLog(modeLogPath) || []; } catch { modeLog = []; }
-      const attribution = cav.attributeByMode({
-        messages: totals.messages || [],
-        modeLog,
-        mode,
-        flagMtimeMs,
-        outputTokens: totals.outputTokens,
-      });
-      const byMode = (attribution && attribution.byMode) || {};
-      return positive(cav.deriveSavings({ byMode, model: totals.model }));
-    }
-    return positive(cav.deriveSavings({
-      outputTokens: totals.outputTokens, mode, model: totals.model,
-    }));
-  } catch {
-    return 0; // a moved seam renders a bare badge, never a wrong number
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Project identity
-// ---------------------------------------------------------------------------
-
-function canonical(dir) {
-  if (!dir) return null;
-  try { return fs.realpathSync(dir); } catch { /* deleted or moved */ }
-  try { return path.resolve(dir); } catch { return null; }
-}
-
-// git@host:owner/name.git and https://host/owner/name.git both normalise to
-// host/owner/name, so a repository has one identity regardless of clone URL.
-function normalizeRemote(url) {
-  if (typeof url !== 'string' || !url) return null;
-  let m = /^[a-z+]+:\/\/(?:[^@/]*@)?([^/:]+)(?::\d+)?\/(.+?)(?:\.git)?\/?$/i.exec(url.trim());
-  if (!m) m = /^(?:[^@]+@)?([^:/]+):(.+?)(?:\.git)?\/?$/.exec(url.trim());
-  if (!m) return null;
-  const host = m[1].toLowerCase();
-  const repoPath = m[2].replace(/^\/+/, '').toLowerCase();
-  if (!host || !repoPath) return null;
-  return `${host}/${repoPath}`;
-}
-
-function git(cwd, args) {
-  try {
-    return execFileSync('git', ['-C', cwd, ...args], {
-      encoding: 'utf8', timeout: 1500, stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
-  } catch { return null; }
-}
-
-// Identity resolution, in preference order. Remote-derived identity wins so two
-// clones or two worktrees of one repository aggregate together — which is what
-// "savings for this repository" should mean. It is never required: the path
-// chain keeps the feature working outside git and in remote-less repositories.
-function projectIdentity(payload) {
-  const ws = payload.workspace || {};
-  const cwd = ws.current_dir || payload.cwd || null;
-
-  const repo = ws.repo;
-  if (repo && repo.host && repo.owner && repo.name) {
-    return `${repo.host}/${repo.owner}/${repo.name}`.toLowerCase();
-  }
-
-  if (cwd) {
-    const remote = normalizeRemote(git(cwd, ['remote', 'get-url', 'origin']));
-    if (remote) return remote;
-
-    const top = git(cwd, ['rev-parse', '--show-toplevel']);
-    const topReal = canonical(top);
-    if (topReal) return `path:${topReal}`;
-  }
-
-  const project = canonical(ws.project_dir);
-  if (project) return `path:${project}`;
-
-  const current = canonical(cwd);
-  if (current) return `path:${current}`;
-
-  return null;
-}
-
-// ---------------------------------------------------------------------------
-// Repository ledger
-// ---------------------------------------------------------------------------
-
-// One file per session, rewritten in place. Double-counting is structurally
-// impossible: a session owns exactly one file, so there is no snapshot-versus-
-// final ambiguity and no latest-per-session reduction to get wrong. See ADR 0058.
-function updateLedger(identity, sessionId, estSavedTokens) {
-  if (!identity || !sessionId) return null;
-  const hash = crypto.createHash('sha1').update(identity).digest('hex').slice(0, 16);
-  const dir = path.join(cacheRoot(), 'repos', hash);
-  const self = path.join(dir, `${sessionId}.json`);
-
-  // Skip the write when nothing changed — most renders do not move the number.
-  const prev = (() => {
-    try { return JSON.parse(fs.readFileSync(self, 'utf8')); } catch { return null; }
-  })();
-  if (!prev || prev.est_saved_tokens !== estSavedTokens) {
-    writeJsonAtomic(self, {
-      ts: Date.now(),
-      session_id: sessionId,
-      project: identity,
-      est_saved_tokens: estSavedTokens,
-    });
-  }
-
-  let total = 0;
-  const cutoff = Date.now() - LEDGER_MAX_AGE_MS;
-  let names;
-  try { names = fs.readdirSync(dir); } catch { return null; }
-  for (const name of names) {
-    if (!name.endsWith('.json')) continue;
-    const file = path.join(dir, name);
-    let entry;
-    try { entry = JSON.parse(fs.readFileSync(file, 'utf8')); } catch { continue; }
-    if (!entry || typeof entry !== 'object') continue;
-    const ts = Number(entry.ts);
-    if (Number.isFinite(ts) && ts < cutoff && name !== `${sessionId}.json`) {
-      try { fs.unlinkSync(file); } catch { /* best-effort prune */ }
-      continue;
-    }
-    const saved = Number(entry.est_saved_tokens);
-    if (Number.isFinite(saved) && saved > 0) total += saved;
-  }
-  return total;
-}
-
-// ---------------------------------------------------------------------------
 // Render
 // ---------------------------------------------------------------------------
 
-function badge(mode) {
-  if (mode === 'full') return '[CAVEMAN]';
-  return `[CAVEMAN:${mode.toUpperCase()}]`;
+function humanizeTokensFallback(n) {
+  if (!Number.isFinite(n) || n < 0) n = 0;
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 10_000) return `${Math.round(n / 1_000)}k`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
+  return String(n);
 }
 
-function render({ mode, sessionSaved, repoSaved, humanizeTokens }) {
-  let out = badge(mode);
-  if (sessionSaved > 0) {
-    if (repoSaved > sessionSaved) {
-      out += ` ${PICK} ${humanizeTokens(sessionSaved)} sess · ${humanizeTokens(repoSaved)} repo`;
-    } else {
-      out += ` ${PICK} ${humanizeTokens(sessionSaved)}`;
-    }
-  }
-  return COLOR + out + RESET;
+function render({ mode, outputTokens, humanizeTokens }) {
+  const fmt = typeof humanizeTokens === 'function' ? humanizeTokens : humanizeTokensFallback;
+  return `${COLOR}caveman:${mode} ${PICK} ${fmt(outputTokens)} session${RESET}`;
 }
 
 function readStdin() {
@@ -418,67 +289,33 @@ function readStdin() {
 }
 
 function main() {
-  const hooks = findHooksDir();
-  if (!hooks) return; // caveman not installed — render nothing, as before
-
-  // Whole modules, not destructured functions: deriveSessionSavings probes for
-  // members that only exist in caveman 2.x, so it needs the namespace.
-  let cfg, cav;
-  try {
-    cfg = require(path.join(hooks, 'caveman-config.js'));
-    cav = require(path.join(hooks, 'caveman-stats.js'));
-  } catch { return; }
-  const { readFlag } = cfg;
-  const { parseSession, deriveSavings, humanizeTokens } = cav;
-  if (typeof readFlag !== 'function' || typeof parseSession !== 'function' ||
-      typeof deriveSavings !== 'function' || typeof humanizeTokens !== 'function') {
-    return; // upstream moved the seam — degrade to silence, never to a wrong number
-  }
-
-  // readFlag enforces caveman's own symlink refusal, 64-byte cap and mode
-  // whitelist. Never re-implement that check; never echo the raw file.
-  const flagPath = path.join(claudeDir(), '.caveman-active');
-  const mode = readFlag(flagPath);
-  if (!mode || mode === 'off') {
-    process.stdout.write(`${COLOR}[CAVEMAN:OFF]${RESET}`);
-    return;
-  }
+  const mode = readMode();
 
   let payload;
   try { payload = JSON.parse(readStdin()); } catch { payload = null; }
-  if (!payload || typeof payload !== 'object') {
-    process.stdout.write(`${COLOR}${badge(mode)}${RESET}`);
-    return;
-  }
 
-  const sessionId = typeof payload.session_id === 'string' ? payload.session_id : null;
-  const transcript = typeof payload.transcript_path === 'string' ? payload.transcript_path : null;
-
-  let sessionSaved = 0;
-  if (transcript && sessionId) {
-    const totals = sessionTotals(transcript, sessionId, parseSession);
-    if (totals && totals.turns > 0) {
-      // caveman 2.x dates mode changes against the flag file's mtime when it has
-      // no transition log to work from, so this has to be the real flag's mtime.
-      let flagMtimeMs = null;
-      try { flagMtimeMs = fs.statSync(flagPath).mtimeMs; } catch { /* flag gone */ }
-
-      // deriveSavings has benchmark data for 'full' only; every other mode
-      // legitimately yields 0 and renders as a bare badge.
-      sessionSaved = deriveSessionSavings({
-        cav, mode, totals, flagMtimeMs,
-        modeLogPath: path.join(claudeDir(), cfg.MODE_LOG_BASENAME || MODE_LOG_BASENAME),
-      });
+  let outputTokens = 0;
+  if (payload && typeof payload === 'object') {
+    const sessionId = typeof payload.session_id === 'string' ? payload.session_id : null;
+    const transcript = typeof payload.transcript_path === 'string' ? payload.transcript_path : null;
+    if (transcript && sessionId) {
+      const hooks = findHooksDir();
+      let parseSession;
+      if (hooks) {
+        try { parseSession = require(path.join(hooks, 'caveman-stats.js')).parseSession; } catch { /* ignore */ }
+      }
+      const totals = sessionTotals(transcript, sessionId, parseSession || fallbackParseSession);
+      if (totals) outputTokens = totals.outputTokens || 0;
     }
   }
 
-  let repoSaved = 0;
-  if (sessionSaved > 0) {
-    const total = updateLedger(projectIdentity(payload), sessionId, sessionSaved);
-    if (Number.isFinite(total) && total > 0) repoSaved = total;
+  const hooks = findHooksDir();
+  let humanizeTokens;
+  if (hooks) {
+    try { humanizeTokens = require(path.join(hooks, 'caveman-stats.js')).humanizeTokens; } catch { /* ignore */ }
   }
 
-  process.stdout.write(render({ mode, sessionSaved, repoSaved, humanizeTokens }));
+  process.stdout.write(render({ mode, outputTokens, humanizeTokens }));
 }
 
 if (require.main === module) {
@@ -486,7 +323,7 @@ if (require.main === module) {
 }
 
 module.exports = {
-  accumulate, lastCompleteOffset, normalizeRemote, projectIdentity,
-  updateLedger, sessionTotals, render, badge, cacheRoot, findHooksDir,
-  deriveSessionSavings, MAX_CACHED_MESSAGES, MODE_LOG_BASENAME,
+  accumulate, lastCompleteOffset,
+  sessionTotals, render, readMode, cacheRoot, findHooksDir,
+  fallbackParseSession, humanizeTokensFallback, MAX_CACHED_MESSAGES,
 };
