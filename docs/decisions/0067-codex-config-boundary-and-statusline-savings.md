@@ -44,3 +44,13 @@ Document `rtk` and caveman status line savings as deferred:
 - The status line remains built from Codex's supported built-in items.
 - A future PRD can add custom `rtk`/caveman segments when Codex documents a stable custom segment
   interface.
+
+## Update (2026-10-15)
+
+Implemented differently: `~/.codex/config.toml` is no longer stowed at all. The template lives at
+`stow/common/codex/.codex/config.toml`, listed in `.stow-local-ignore`, and is propagated to the
+live config by the one-directional `scripts/codex-sync.sh` (`task codex:sync`, dry run by default;
+`task codex:sync ARGS='--apply'` writes with a timestamped backup). The template wins for
+repo-owned keys; live-only generated keys (trust paths, hook hashes, onboarding state) are
+preserved and never copied back. The Catppuccin Macchiato blue TextMate theme stays in the same `stow/common/codex` package and IS
+stowed — it is the only Codex piece stowed. See `docs/guides/codex-setup.md`.

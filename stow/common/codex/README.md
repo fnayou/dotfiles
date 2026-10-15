@@ -1,34 +1,60 @@
 # codex
 
-Managed Codex CLI configuration. Stows into `~/.codex/config.toml` and `~/.codex/themes/`.
+Codex CLI configuration template. **This package is never stowed.** Codex writes generated state
+into `~/.codex/config.toml` (project trust paths, onboarding flags, hook hashes), so a Stow symlink
+would land those machine-specific writes in this repository. Instead, the template stays at
+`stow/common/codex/.codex/config.toml` and is propagated to the live config with
+`scripts/codex-sync.sh` (Taskfile: `task codex:inspect`, `task codex:sync`).
 
-This package tracks only portable, non-secret preferences: model defaults, hooks enablement, the
-Catppuccin Macchiato blue Codex CLI syntax theme, colored status line output, and the built-in
-status line item order.
+`.stow-local-ignore` lists `config.toml`, so Stow refuses to link it in either direction. The
+theme file stays in this package and is the only part stowed.
+
+## What it contains
+
+`.codex/config.toml` tracks only portable, non-secret preferences:
+
+- model defaults and reasoning effort
+- hooks enablement
+- the Catppuccin Macchiato blue theme name
+- colored built-in status line output and item order
 
 ## What it deliberately excludes
 
-Never add these to the package:
+Never add these to the template:
 
 - `auth.json` — authentication tokens
 - `*.sqlite`, logs, rollouts, transcripts, app-server state, caches, and model caches
 - plugin checkouts or plugin runtime files
-- `[projects]` trust entries from `config.toml`, because they contain machine-specific absolute paths
+- `[projects]` trust entries — machine-specific absolute paths; they belong in the live config only
+- `[hooks.state]` hashes, `[tui.model_availability_nux]`, and `screen_reader_detection_done` —
+  generated state that the sync script preserves in the live config
 - local profiles that carry work-specific settings or credentials
+
+## Sync workflow
+
+```bash
+task codex:inspect                  # read-only status report; verdict SYNCED or NOT SYNCED
+task codex:sync                     # DRY RUN — reports the diff, writes nothing
+task codex:sync ARGS='--apply'      # real propagation, with a timestamped backup first
+```
+
+The sync is one-directional (repository -> live config):
+
+- repo-owned keys whose live value differs are rewritten to the template value (repository wins)
+- live-only keys (trust paths, hook hashes, onboarding state) are preserved, never listed, never
+  copied back, never deleted
+- before writing, the script backs up the live config to `~/.codex/config.toml.bak-YYYYMMDDHHMMSS`
+
+`.stow-local-ignore` lists `config.toml`, so the template can never be stowed accidentally.
 
 ## Theme
 
-Codex CLI theming is syntax-highlighting theming, not a terminal ANSI palette. Official OpenAI Docs
-define `tui.theme` as a syntax-highlighting theme override, and the CLI looks up either a bundled
-theme name or a custom TextMate `.tmTheme` file from `$CODEX_HOME/themes/`.
+Codex CLI theming is syntax-highlighting theming, not a terminal ANSI palette. The CLI resolves the
+`tui.theme` name against a bundled theme or a custom TextMate `.tmTheme` file under
+`$CODEX_HOME/themes/`.
 
-This package uses a repo-owned custom theme:
-
-| File | Stowed to | Purpose |
-|---|---|---|
-| `.codex/themes/catppuccin-macchiato-blue.tmTheme` | `~/.codex/themes/catppuccin-macchiato-blue.tmTheme` | Codex CLI syntax theme derived from the vendored Catppuccin Macchiato TextMate theme |
-
-The theme name in `config.toml` is therefore:
+The theme file lives in this package under `.codex/themes/` and is the only part of the Codex
+config that is stowed. The template selects it by name:
 
 ```toml
 [tui]
@@ -41,7 +67,7 @@ token mapping.
 
 ## Status line
 
-Codex `0.149.1` supports the built-in status line items configured here:
+The template configures the built-in status line items:
 
 - model with reasoning effort
 - current directory
@@ -52,18 +78,17 @@ Codex `0.149.1` supports the built-in status line items configured here:
 - five-hour limit
 - weekly limit
 
-`rtk` and caveman savings are not configured in this package. The existing Claude Code status line
-shows the correct scoping model: `rtk` uses `rtk gain --project --format json`, and caveman computes
-session savings from the session transcript plus a repository ledger. Codex needs a documented custom
-status line command/payload before those can be added here without relying on unsupported internals.
+`rtk` and caveman savings are not configured here. Codex still lacks a documented external custom
+status line interface, so no custom payload can be rendered without unsupported internals. The
+Claude Code status line (stow/common/claude) shows real session output tokens instead of estimates —
+that is the reference model.
 
 ## Setup
 
-See [Codex Package Setup Guide](../../../docs/guides/codex-setup.md) for the full backup,
-dry-run, install, validation, and rollback workflow.
+Full workflow in [Codex Package Setup Guide](../../../docs/guides/codex-setup.md).
 
-Back up or inspect your live config before stowing. If it contains `[projects]` entries, preserve
-them locally; this package intentionally does not commit them.
+Stow the package (`--no-folding` keeps `~/.codex` a real directory). Stow links the theme only —
+the `.stow-local-ignore` entry keeps `config.toml` out of `$HOME`:
 
 ```bash
 # Dry run first
@@ -76,10 +101,5 @@ stow --dir=stow/common --target="$HOME" --no-folding --simulate codex
 stow --dir=stow/common --target="$HOME" --no-folding codex
 ```
 
-If Stow reports a conflict at `~/.codex/config.toml`, stop and merge manually. Never use
-`stow --adopt`.
-
-After stowing, Codex may write local `[projects]` trust entries when a directory is trusted or when
-the CLI repairs its configuration. Because `~/.codex/config.toml` is a per-file symlink, those
-writes land in this repository. Keep the entries local and remove them from the repository file
-before committing; inspect `git diff -- stow/common/codex/.codex/config.toml` after trust changes.
+Then propagate the template with the sync tasks above. `task codex:inspect` reports `SYNCED` when
+the live config matches the template.

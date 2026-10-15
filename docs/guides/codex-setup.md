@@ -5,21 +5,20 @@ a human user, not for implementation agents.
 
 ---
 
-## 1. What this package manages
+## 1. What is managed
 
-The `stow/common/codex/` package manages portable Codex CLI preferences and one custom syntax theme:
-
-| Repository file | Symlink created at | Purpose |
+| Repository file | Installed as | How |
 |---|---|---|
-| `stow/common/codex/.codex/config.toml` | `~/.codex/config.toml` | Portable Codex CLI config: model defaults, hooks flag, status line, theme name |
-| `stow/common/codex/.codex/themes/catppuccin-macchiato-blue.tmTheme` | `~/.codex/themes/catppuccin-macchiato-blue.tmTheme` | Repo-owned Catppuccin Macchiato blue TextMate syntax theme |
+| `stow/common/codex/.codex/themes/catppuccin-macchiato-blue.tmTheme` | `~/.codex/themes/catppuccin-macchiato-blue.tmTheme` | GNU Stow symlink, package `codex` |
+| `stow/common/codex/.codex/config.toml` | `~/.codex/config.toml` | **Not stowed.** Propagated by `task codex:sync` (see §7) |
 
-Codex reads `~/.codex/config.toml` on startup. The theme file is selected by:
-
-```toml
-[tui]
-theme = "catppuccin-macchiato-blue"
-```
+The config template holds portable Codex CLI preferences only: model defaults, hooks enablement,
+theme name, colored status line output and item order. Stowing the config is prohibited on purpose:
+Codex writes generated state (`[projects]` trust paths, `[hooks.state]` hashes,
+`[tui.model_availability_nux]`, `screen_reader_detection_done`) into the live config, and a symlink
+would deliver those machine-specific absolute paths into this repository.
+`stow/common/codex/.stow-local-ignore` lists `config.toml`, so stowing `codex` links only the theme
+and never the config, in either direction.
 
 Codex CLI theming is syntax highlighting, not terminal ANSI colors. Alacritty owns terminal colors;
 Herdr owns its UI token mapping.
@@ -34,7 +33,8 @@ Never commit or stow these from a live `~/.codex/` directory:
 - `*.sqlite`
 - logs, transcripts, rollouts, caches, model caches, app-server state
 - plugin checkouts or plugin runtime files
-- `[projects]` trust entries from a live `config.toml`
+- `[projects]` trust entries, `[hooks.state]` hashes, and other generated keys in the live
+  `~/.codex/config.toml`
 - local work profiles or credentials
 
 `~/.codex` must remain a real directory. Use `--no-folding` so Stow creates per-file symlinks inside
@@ -42,42 +42,23 @@ that directory instead of turning the whole Codex home into a symlink.
 
 ---
 
-## 3. Conflict resolution for existing `config.toml`
+## 3. Dry-run step
 
-If `~/.codex/config.toml` already exists as a real file, Stow will refuse to replace it. Back it up
-before stowing.
+When Stow encodes which files are linked, `config.toml` never appears: the `.stow-local-ignore`
+excludes it. Always dry-run first:
 
 ```bash
-stamp="$(date +%Y%m%d-%H%M%S)"
-cp -p ~/.codex/config.toml ~/.codex/config.toml.backup-"$stamp"
-mv ~/.codex/config.toml ~/.codex/config.toml.pre-stow-"$stamp"
+stow --dir=stow/common --target="$HOME" --no-folding --simulate codex
 ```
 
-Review the backup and the managed config before applying Stow. If the live file had `[projects]`
-entries, keep them local; do not commit them to the repository.
+Expected: a single `LINK: .codex/themes/catppuccin-macchiato-blue.tmTheme => ...` line and no
+`config.toml` link. No conflict lines. Exit code 0.
+
+If a dry-run shows a `config.toml` link, stop — you are missing the `.stow-local-ignore` entry.
 
 ---
 
-## 4. Dry-run step
-
-Always dry-run first:
-
-```bash
-stow --dir=stow/common --target="$HOME" --no-folding --simulate --verbose codex
-```
-
-Expected output includes links for:
-
-```text
-LINK: .codex/config.toml => ...
-LINK: .codex/themes/catppuccin-macchiato-blue.tmTheme => ...
-```
-
-No conflict lines. Exit code 0.
-
----
-
-## 5. Apply step
+## 4. Apply step
 
 ⚠️  MANUAL STEP — review dry-run output before running
 
@@ -95,6 +76,22 @@ Never use `stow --adopt`.
 
 ---
 
+## 5. First-time config propagation
+
+If `~/.codex/config.toml` already exists as a real file, back it up, then apply the template:
+
+```bash
+stamp="$(date +%Y%m%d-%H%M%S)"
+cp -p ~/.codex/config.toml ~/.codex/config.toml.pre-sync-"$stamp"
+task codex:sync                 # DRY RUN — inspect the reported diff first
+task codex:sync ARGS='--apply'  # real propagation, backup included automatically
+```
+
+`--apply` writes a timestamped backup (`~/.codex/config.toml.bak-YYYYMMDDHHMMSS`) before touching
+the live file. Review the dry-run report before running it.
+
+---
+
 ## 6. Validation
 
 Confirm `~/.codex` is still a real directory:
@@ -103,14 +100,24 @@ Confirm `~/.codex` is still a real directory:
 test ! -L "$HOME/.codex" && echo "OK: ~/.codex is a real directory"
 ```
 
-Confirm the managed symlinks:
+Confirm `config.toml` stays local and only the theme is stowed:
 
 ```bash
-ls -la ~/.codex/config.toml
+test ! -L "$HOME/.codex/config.toml" && echo "OK: config is a real local file, not a symlink"
 ls -la ~/.codex/themes/catppuccin-macchiato-blue.tmTheme
 ```
 
-Both should show `->` arrows into this repository.
+The `ls` should show a `->` arrow into this repository.
+
+Check the sync status:
+
+```bash
+task codex:inspect
+```
+
+The verdict should end with `STATUS: SYNCED`. `ko` rows mean a repo-owned key in the live config
+differs from the template; fix by editing the repository template and re-running
+`task codex:sync ARGS='--apply'`. Live-only keys are preserved and never merged back.
 
 Ask Codex to validate the config:
 
@@ -121,25 +128,31 @@ codex doctor --json
 The overall doctor result may fail for unrelated auth, network, or local-state reasons. For this
 package, check that `config.load` is `ok` and `config.toml parse` is `ok`.
 
-### Check for local trust-entry drift
+### Generated state stays local
 
-Codex may add `[projects]` trust entries after a project trust prompt or a configuration repair.
-Since the managed config is a per-file symlink, those entries are written into the repository.
-They contain machine-specific absolute paths and must remain local.
-
-From the repository root, inspect the managed file after using Codex:
-
-```bash
-git diff -- stow/common/codex/.codex/config.toml
-```
-
-If `[projects]` entries appear, preserve any needed local trust state in the pre-stow backup or
-another local configuration mechanism, then remove those entries from the repository file before
-committing. Never commit absolute project paths.
+Codex adds `[projects]` trust entries, `[hooks.state]` hashes, and onboarding flags while you use
+it. Because the live config is a real local file, those writes never touch the repository, and the
+sync script preserves them: it only rewrites repo-owned keys, and it counts live-only keys without
+listing or deleting them. No manual `git diff` cleanup is needed anymore.
 
 ---
 
-## 7. Rollback
+## 7. Day-to-day sync
+
+After changing the template, run:
+
+```bash
+task codex:inspect                     # see which keys changed
+task codex:sync                        # DRY RUN by default — show the diff, write nothing
+task codex:sync ARGS='--apply'         # propagate: backup, then write repo-owned keys
+```
+
+Sync is one-directional, repository -> live config. The repository template wins for keys it owns;
+live-only generated state is preserved in place and never copied back or deleted.
+
+---
+
+## 8. Rollback
 
 ⚠️  MANUAL STEP — review before running
 
@@ -147,10 +160,9 @@ committing. Never commit absolute project paths.
 stow --dir=stow/common --target="$HOME" --no-folding --delete codex
 ```
 
-Then restore the pre-stow config if needed:
+This removes the theme symlink only; the local `~/.codex/config.toml` is untouched by Stow. Then
+restore the live config from the newest sync backup if needed:
 
-```bash
-cp ~/.codex/config.toml.backup-YYYYMMDD-HHMMSS ~/.codex/config.toml
-```
+    cp ~/.codex/config.toml.bak-YYYYMMDDHHMMSS ~/.codex/config.toml
 
 Keep auth, transcripts, caches, and runtime state untouched.

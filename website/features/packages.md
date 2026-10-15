@@ -94,21 +94,26 @@ guarded, so a missing tool renders nothing (no error, no placeholder):
 
 ## Codex CLI
 
-`stow/common/codex/` manages portable [Codex CLI](https://developers.openai.com/codex/) preferences:
-model defaults, hooks enablement, built-in status line item order, and a repo-owned Catppuccin
-Macchiato blue TextMate syntax theme.
+`stow/common/codex/` holds the [Codex CLI](https://developers.openai.com/codex/) config **template**
+only: model defaults, hooks enablement, colored built-in status line and item order. It is **never
+stowed** — Codex writes generated state (project trust paths, hook hashes, onboarding flags) into
+the live config, so `~/.codex/config.toml` stays a real local file, propagated from the template
+with `task codex:sync` (dry run by default; `task codex:sync ARGS='--apply'` writes, with a
+timestamped backup). The template wins for repo-owned keys; live-only generated state is preserved.
 
-The managed config sets:
+The package stows exactly one piece into `~/.codex`: the repo-owned theme
+`~/.codex/themes/catppuccin-macchiato-blue.tmTheme` (`.stow-local-ignore` keeps `config.toml`
+unlinked). It is selected by:
 
 ```toml
 [tui]
 theme = "catppuccin-macchiato-blue"
 ```
 
-The theme file is stowed to `~/.codex/themes/catppuccin-macchiato-blue.tmTheme`. Codex theming is
-syntax highlighting, not terminal ANSI colors; Alacritty owns terminal colors and Herdr owns its UI
-token mapping. Use `--no-folding` so `~/.codex` remains a real directory for auth and runtime state.
-Auth, transcripts, project trust entries, caches, plugins, and databases are never committed.
+Codex theming is syntax highlighting, not terminal ANSI colors; Alacritty owns terminal colors and
+Herdr owns its UI token mapping. Use `--no-folding` so `~/.codex` remains a real directory for auth
+and runtime state. Auth, transcripts, project trust entries, caches, plugins, and databases are
+never committed.
 
 ![OpenAI Codex with the customized theme and status line](../assets/images/codex.png)
 *Codex with the repo-owned Macchiato blue theme and built-in status line segments. `rtk` and caveman
