@@ -46,6 +46,12 @@ fi
 #     not an ordering requirement.
 [[ -r "$HOME/.config/zsh/speedtest.zsh" ]] && source "$HOME/.config/zsh/speedtest.zsh"
 
+# 6f) lms (LM Studio CLI) completion — guarded; no-op without `lms`.
+[[ -r "$HOME/.config/zsh/lms.zsh" ]] && source "$HOME/.config/zsh/lms.zsh"
+
+# 6g) docker desktop completion shim — guarded; no-op without `docker`.
+[[ -r "$HOME/.config/zsh/docker.zsh" ]] && source "$HOME/.config/zsh/docker.zsh"
+
 # 7) Key bindings.
 [[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
 
