@@ -415,3 +415,18 @@ tasks:
     silent: true
     cmds:
       - bash scripts/agents-verify.sh
+
+  # The Codex config template is never stowed (stow/common/codex/.stow-local-ignore);
+  # the live ~/.codex/config.toml stays a regular file so Codex can write
+  # generated state into it. Sync merges repo-owned keys into that file only.
+  codex:inspect:
+    desc: "Show repo Codex template and live ~/.codex/config.toml, then the merge plan — read-only"
+    silent: true
+    cmds:
+      - bash scripts/codex-sync.sh --inspect
+
+  codex:sync:
+    desc: "Codex config sync — DRY RUN by default (reads, writes nothing). Execute for real with: task codex:sync ARGS='--apply'"
+    silent: true
+    cmds:
+      - bash scripts/codex-sync.sh {{.ARGS}}
