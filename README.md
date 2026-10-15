@@ -39,7 +39,7 @@ Each package is self-contained and carries its own README. `stow/macos/`, `stow/
 | **bat** | bat pager — style, wrap, paging, Catppuccin Macchiato theme | [README](stow/common/bat/README.md) | [guide](docs/guides/bat-setup.md) |
 | **btop** | btop resource monitor — theme, background, truecolor, vim keys, Catppuccin Macchiato theme | [README](stow/common/btop/README.md) | [guide](docs/guides/btop-setup.md) |
 | **claude** | Claude Code status line — OS · model · path · git · PR/MR · context % · rtk savings segments, mirrors the Catppuccin Macchiato prompt | [README](stow/common/claude/README.md) | [guide](docs/guides/claude-setup.md) |
-| **codex** | Codex CLI config — model defaults, Catppuccin Macchiato blue syntax theme, built-in status line | [README](stow/common/codex/README.md) | [guide](docs/guides/codex-setup.md) |
+| **codex** | Codex CLI config — Catppuccin Macchiato blue syntax theme (stowed) plus a config template synced with `task codex:sync`, never stowed itself | [README](stow/common/codex/README.md) | [guide](docs/guides/codex-setup.md) |
 | **eza** | eza `ls` replacement — Catppuccin Macchiato (Blue) color theme | [README](stow/common/eza/README.md) | [guide](docs/guides/eza-setup.md) |
 | **git** | Portable Git config — settings, aliases, global ignore (no secrets) | [README](stow/common/git/README.md) | [guide](docs/guides/git-setup.md) |
 | **herdr** | Herdr agent multiplexer — theme, terminal, UI, toast | [README](stow/common/herdr/README.md) | [guide](docs/guides/herdr-setup.md) |

@@ -10,7 +10,7 @@ This repository uses GNU Stow with a package-based layout to manage dotfile syml
 stow/
 ├── common/          # Config that works on macOS, Arch, and Debian without modification
 │   ├── alacritty/   # Alacritty terminal emulator config and Catppuccin theme
-│   ├── codex/       # Codex CLI config, custom syntax theme, and status line preferences
+│   ├── codex/       # Codex CLI TextMate theme (stowed) + config TEMPLATE never stowed, synced via task codex:sync
 │   ├── git/         # Git config templates
 │   ├── herdr/       # Herdr terminal multiplexer config and Catppuccin theme overrides
 │   └── zsh/         # Zsh config (shared + macOS + Arch, runtime OS detection)
@@ -174,7 +174,8 @@ Notes:
 - `--restow` re-links the package, picking up new files while leaving existing links intact.
 - Drop `--no-folding` for packages that do not require it. Packages whose target directories must
   remain real directories include `zsh`, `alacritty`, `herdr`, `codex`, `claude`, `bat`, `btop`,
-  `eza`, `git`, and `nvim`. `omp` does not require it.
+  `eza`, `git`, and `nvim`. `omp` does not require it. For `codex`, `.stow-local-ignore` keeps
+  `config.toml` out of `$HOME`; the template is propagated with `task codex:sync` instead.
 - Until you re-stow, the new file lives in the repo but is **not** linked into `$HOME`. To
   test it before re-stowing, source it by its full repository path.
 

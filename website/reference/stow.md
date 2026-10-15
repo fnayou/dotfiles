@@ -16,7 +16,7 @@ repository. Edit the file in the repo, and the change is live in `$HOME` immedia
 stow/
 ├── common/          # Config that works on macOS, Arch, and Debian without modification
 │   ├── alacritty/   # Alacritty terminal config + Catppuccin theme
-│   ├── codex/       # Codex CLI config + custom Catppuccin syntax theme
+│   ├── codex/       # Codex CLI custom Catppuccin theme + config TEMPLATE (never stowed, synced via task codex:sync)
 │   ├── git/         # Git config templates
 │   ├── herdr/       # Herdr multiplexer config + Catppuccin overrides
 │   └── zsh/         # Zsh config (shared + macOS / Arch per-OS layer, runtime OS detection)
@@ -112,7 +112,8 @@ stow --dir=stow/common --target="$HOME" --no-folding --restow <package>
 !!! info "`--no-folding` only where needed"
     Use `--no-folding` for packages whose target directories must stay real directories, including
     `zsh`, `alacritty`, `herdr`, `codex`, `claude`, `bat`, `btop`, `eza`, `git`, and `nvim`. `omp`
-    does not require it.
+    does not require it. For `codex`, `.stow-local-ignore` excludes `config.toml` from Stow; that
+    template is propagated with `task codex:sync`.
 
 ## Forbidden
 

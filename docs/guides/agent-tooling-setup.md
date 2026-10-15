@@ -91,8 +91,9 @@ Then **restart each agent** — hooks and plugins are read once at session start
 
 Two things worth knowing:
 
-- The Codex integration writes `~/.codex/hooks.json`, **not** `config.toml`. The repository-managed
-  `~/.codex/config.toml` is untouched, so ADR-0067's boundary needs no special handling here.
+- The Codex integration writes `~/.codex/hooks.json`, **not** `config.toml`. The live
+  `~/.codex/config.toml` — a real local file kept in sync from the `stow/common/codex` template — is
+  untouched, so ADR-0067's boundary needs no special handling here.
 - The hook only intercepts shell/Bash tool calls. Claude Code's built-in `Read`, `Grep`, and `Glob`
   bypass it.
 
