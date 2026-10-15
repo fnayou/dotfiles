@@ -59,12 +59,32 @@ These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical 
 
 | Number | Title | Status |
 |---|---|---|
-| [0001](0001-initial-repository-scaffold.md) | Initial repository scaffold | Done |
-| [0002](0002-root-project-hygiene-files.md) | Root project hygiene files | Done |
-| [0003](0003-add-initial-prd.md) | Add initial PRD | Done |
-| [0004](0004-add-github-actions-ci.md) | Add GitHub Actions CI | Done |
-| [0005](0005-implement-dotfiles-foundation.md) | Implement dotfiles foundation | Done |
-| [0006](0006-implement-git-package.md) | Implement Git package | Done |
-| [0007](0007-implement-zsh-configuration-foundation.md) | Implement Zsh configuration foundation | Approved |
-| [0028](0028-implement-codex-customization.md) | Implement Codex customization package | Complete |
-| [0029](0029-implement-macchiato-blue-palette-alignment.md) | Implement Macchiato blue palette alignment | Complete |
+| [0001](0001-initial-repository-scaffold.md) | Initial Repository Scaffold | Approved |
+| [0002](0002-root-project-hygiene-files.md) | Root Project Hygiene Files | Approved |
+| [0003](0003-add-initial-prd.md) | Add Initial PRD for Claude Operating Layer | Approved |
+| [0004](0004-add-github-actions-ci.md) | Add Minimal GitHub Actions CI | Approved |
+| [0005](0005-implement-dotfiles-foundation.md) | Implement Dotfiles Foundation | Complete |
+| [0006](0006-implement-git-package.md) | Implement Git Configuration Stow Package | Complete |
+| [0007](0007-implement-zsh-configuration-foundation.md) | Implement Zsh Configuration Foundation | Complete |
+| [0008](0008-implement-oh-my-posh-support.md) | Implement Oh My Posh Support | Complete |
+| [0009](0009-corrective-stow-conflict-and-fake-home-validation.md) | Corrective — Stow Directory Conflict and Fake-Home Validation | Complete |
+| [0010](0010-zsh-omp-optional-integration.md) | Zsh — Reference Oh My Posh as Optional Integration | Complete |
+| [0011](0011-implement-shell-dependencies.md) | Implement Shell Dependency Management | Complete |
+| [0012](0012-implement-zsh-activation-migration.md) | Implement Zsh Activation & Migration (Model 4 → Model 3) | Complete |
+| [0013](0013-implement-zsh-managed-layer-activation.md) | Implement Zsh Managed-Layer Activation (--no-folding) | Complete |
+| [0014](0014-real-zsh-configuration-plan.md) | Real Zsh Configuration Adoption | Complete |
+| [0015](0015-implement-alacritty-configuration.md) | Implement Alacritty Configuration Package | Complete |
+| [0016](0016-implement-herdr-configuration.md) | Implement Herdr Configuration Package | Complete — implementation review [0057](../reviews/0057-herdr-configuration-implementation-review.md), no blocking issues. Two accepted divergences (`theme.name`, `[scrollback]`) are recorded there; the config block below is a historical record, not the current file. |
+| [0017](0017-implement-bat-configuration.md) | Implement bat Configuration Package | Complete — implementation review [0042](../reviews/0042-bat-configuration-implementation-review.md), no blocking issues |
+| [0018](0018-implement-eza-configuration.md) | Implement eza Configuration Package | Complete — implementation review [0044](../reviews/0044-eza-configuration-implementation-review.md), no blocking issues |
+| [0019](0019-implement-taskfile-completion.md) | Implement Native Taskfile Completion (go-task + fzf-tab) | Complete |
+| [0020](0020-implement-claude-statusline.md) | Implement Claude Code Statusline Package | Complete — implementation review [0058](../reviews/0058-claude-statusline-implementation-review.md). One blocking issue (non-portable `stat` call breaking the PR/MR segment on Linux) was found during review and fixed in the same change. |
+| [0021](0021-implement-os-maintenance.md) | Implement OS Maintenance Helper | Complete |
+| [0022](0022-implement-herdr-completion.md) | Implement Herdr Session Completion (herdr + fzf-tab) | Complete |
+| [0023](0023-implement-btop-configuration.md) | Implement btop Configuration | Complete — implementation review [0053](../reviews/0053-btop-implementation-review.md), no blocking issues |
+| [0024](0024-implement-caveman-session-scoped-savings.md) | 0024 — Implement caveman session-scoped savings | Complete — implementation review [0061](../reviews/0061-caveman-session-scoped-savings-implementation-review.md), no blocking issues |
+| [0025](0025-real-zsh-git-configuration-plan.md) | Real Zsh and Git Configuration Adoption | Complete |
+| [0026](0026-implement-neovim-configuration.md) | Implement Neovim Configuration Package | Complete |
+| [0027](0027-implement-cli-speed-test-tool.md) | Implement CLI Speed Test Tool | Complete |
+| [0028](0028-implement-codex-customization.md) | Implement Codex Customization Package | Complete |
+| [0029](0029-implement-macchiato-blue-palette-alignment.md) | Implement Macchiato Blue Palette Alignment | Complete |
