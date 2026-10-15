@@ -23,6 +23,8 @@ Layered design: `index.zsh` is the entry point and sources each layer in order. 
 | `.config/zsh/herdr.zsh` | Herdr session completion — guarded, no-op without `herdr` |
 | `.config/zsh/ssh.zsh` | SSH host completion from `~/.ssh/config` — guarded, no-op without `ssh`/config |
 | `.config/zsh/speedtest.zsh` | `speed` / `speed-json` / `speed-log` / `speed-history` helpers — guarded, no-op without `cloudflare-speed-cli` |
+| `.config/zsh/lms.zsh` | LM Studio CLI completion (authored) — guarded, no-op without `lms` |
+| `.config/zsh/docker.zsh` | Docker completion shim adding `docker desktop` — guarded, no-op without `docker` |
 | `.config/zsh/macos.zsh`, `arch.zsh` | Per-platform layers |
 | `.config/zsh/local.zsh.example` | Template for local-only overrides |
 
@@ -90,6 +92,35 @@ The tool ships **no config file** — every knob is a flag — so this layer hol
 shell startup, and only `speed-log` writes anything.
 
 See [Speed Test Setup Guide](../../../docs/guides/speedtest-setup.md).
+
+## LM Studio CLI completion (lms)
+
+`lms <Tab>` opens fzf-tab with the subcommands (`chat get load unload ls ps import
+server log link runtime clone push dev login logout whoami`) and nested levels
+(`lms server <Tab>` offers `start`/`stop`/`status`; `log`, `link`, and `runtime`
+do the same). `lms load <Tab>` completes locally installed models and
+`lms unload <Tab>` completes the identifiers of loaded models. Previews show the
+highlighted subcommand's `--help` or the matching model — read-only: completion
+never loads or unloads anything and never queries the LM Studio Hub.
+
+LM Studio ships no native completion, so `lms.zsh` authors `_lms` and registers it
+with `compdef`, following the Herdr pattern. Dynamic candidates come only from
+read-only queries (`lms ls --json`, `lms ps --json`) and need `jq`; without `jq`
+those lists are simply empty. Guarded by `command -v lms`.
+
+## Docker completion shim (docker desktop)
+
+`docker <Tab>` is completed by the package-shipped `_docker` (Homebrew on macOS).
+`docker desktop <Tab>` used to show nothing: that completion's nested dispatcher
+has no `desktop` branch. `docker.zsh` re-registers `docker` to a small shim that
+completes the Docker Desktop CLI subcommands (`auth kubernetes disable enable
+diagnose logs restart start status stop update version`, with nested levels for
+`auth` and `kubernetes`) and delegates everything else — including `dockerd` —
+to the shipped file unchanged. Homebrew stays authoritative; the shim adds only
+the missing branch and can be removed once upstream gains `desktop`.
+
+The `desktop` tree is static — its completion path runs no subprocesses — and the
+fzf-tab preview reads only `--help` output. Guarded by `command -v docker`.
 
 ## Where machine-specific setup goes
 
