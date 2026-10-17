@@ -89,3 +89,4 @@ These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical 
 | [0028](0028-implement-codex-customization.md) | Implement Codex Customization Package | Complete |
 | [0029](0029-implement-macchiato-blue-palette-alignment.md) | Implement Macchiato Blue Palette Alignment | Complete |
 | [0031](0031-implement-ghostty-configuration.md) | Implement Ghostty Configuration | Complete |
+| [0032](0032-ghostty-follow-ups.md) | Ghostty Follow-ups — Doctor, Task Dry-Run, Palette Wording | Approved |
