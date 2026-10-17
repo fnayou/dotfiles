@@ -1,7 +1,7 @@
 # Plan: Ghostty Follow-ups — Doctor, Task Dry-Run, Palette Wording
 
 **Number:** 0032
-**Status:** Approved
+**Status:** Complete
 **Date:** 2026-10-17
 **PRD:** [0028-ghostty-configuration](../prd/0028-ghostty-configuration.md)
 **Architecture:** [0026-ghostty-configuration-architecture](../architecture/0026-ghostty-configuration-architecture.md)
