@@ -64,7 +64,7 @@ tasks:
       - find stow -mindepth 2 -maxdepth 2 -type d -print | sed 's|^stow/||'
 
   dry-run:
-    desc: "Dry-run a Stow package — usage: task dry-run AREA=<common> PACKAGE=<name> (macos/arch/debian are future areas)"
+    desc: "Dry-run a Stow package — usage: task dry-run AREA=<common|macos|arch|debian> PACKAGE=<name> (packages: task list)"
     silent: true
     preconditions:
       - sh: '[ -n "{{.AREA}}" ]'
