@@ -22,13 +22,12 @@ manual** Stow step — never automatically.
 Claude Code operating layer:    complete
 GNU Stow scaffold:              created
 Managed packages:               see stow/common/ and stow/macos/
-Home directory:                 stowed — all common packages linked except ghostty
+Home directory:                 stowed — all packages linked (stow/macos/ on macOS only)
 ```
 
 `stow/common/` and `stow/macos/` are the source of truth for which packages exist. All common
-packages except `ghostty` are stowed: live symlinks point from `$HOME` into the repo. `ghostty` and
-the macOS-only `stow/macos/ghostty` are added, not yet stowed. Stow is still always a deliberate,
-manual step.
+packages are stowed, and so is the macOS-only `stow/macos/ghostty` on macOS: live symlinks point
+from `$HOME` into the repo. Stow is still always a deliberate, manual step.
 
 ## What's included
 
@@ -85,7 +84,7 @@ overwrites existing files. See the [Stow usage guide](docs/stow-usage.md) for fu
 
 ## Safety
 
-- All `stow/common/` packages except `ghostty` are stowed; symlinks point from `$HOME` into the repo.
+- All `stow/common/` packages, plus `stow/macos/ghostty` on macOS, are stowed; symlinks point from `$HOME` into the repo.
 - Stow and symlink operations happen only with explicit per-session approval and a reviewed plan.
 - No secrets, credentials, or private hostnames are committed.
 - Local-only and sensitive values live in unstowed `.example` templates that you copy and fill in.
