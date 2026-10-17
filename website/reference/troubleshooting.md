@@ -51,16 +51,34 @@ Check:
 ls -ld ~/.config/<package>    # leading "l" = folded symlink
 ```
 
-Fix — unstow, recreate as a real directory, re-stow with `--no-folding`:
+Fix — unstow, recreate as a real directory, re-stow with `--no-folding`. `<area>` is the
+package's directory under `stow/`: `common` for most packages, or the platform area (`macos`,
+`arch`, `debian`) for a platform package:
 
 ⚠️  MANUAL STEP — review each command before running
-
 ```bash
-stow --dir=stow/common --target="$HOME" --delete <package>
+stow --dir=stow/<area> --target="$HOME" --delete <package>
 mkdir -p ~/.config/<package>
-stow --dir=stow/common --target="$HOME" --no-folding <package>
+stow --dir=stow/<area> --target="$HOME" --no-folding <package>
 test ! -L "$HOME/.config/<package>" && echo "OK: real directory"
 ```
+
+A package with both a common and a platform part stows both into the same directory. On macOS,
+`ghostty` is such a package: unstow the macOS part first, re-stow it last, and check `themes/`
+too:
+
+⚠️  MANUAL STEP — review each command before running
+```bash
+# macOS
+stow --dir=stow/macos --target="$HOME" --delete ghostty
+stow --dir=stow/common --target="$HOME" --delete ghostty
+mkdir -p ~/.config/ghostty/themes
+stow --dir=stow/common --target="$HOME" --no-folding ghostty
+stow --dir=stow/macos --target="$HOME" --no-folding ghostty
+test ! -L "$HOME/.config/ghostty" && test ! -L "$HOME/.config/ghostty/themes" && echo "OK: real directories"
+```
+
+Dry-run each stow command first, as in [Terminal → Ghostty](../features/terminal.md).
 
 ## Broken or wrong symlinks
 
