@@ -1,7 +1,7 @@
 # Plan: Implement Ghostty Configuration
 
 **Number:** 0031
-**Status:** Draft
+**Status:** Approved
 **Date:** 2026-10-17
 **PRD:** [0028-ghostty-configuration](../prd/0028-ghostty-configuration.md)
 **Architecture:** [0026-ghostty-configuration-architecture](../architecture/0026-ghostty-configuration-architecture.md)
@@ -91,7 +91,7 @@ Then record the untouched state of the Application Support file and the app bund
 
 ```bash
 # macOS
-wc -c < "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+wc -c < "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty" | tr -d ' '
 codesign --verify --deep --strict /Applications/Ghostty.app; echo "exit=$?"
 ```
 
@@ -697,7 +697,7 @@ untouched (read-only):
 
 ```bash
 # macOS
-wc -c < "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+wc -c < "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty" | tr -d ' '
 codesign --verify --deep --strict /Applications/Ghostty.app; echo "exit=$?"
 ```
 
@@ -994,14 +994,16 @@ Run in Tasks 17, 19, and 21, before each commit.
 
 ```bash
 REPO="$(git rev-parse --show-toplevel)"
-git -C "$REPO" diff --check && echo "PASS: no whitespace errors"
+git -C "$REPO" diff --check && git -C "$REPO" diff --staged --check \
+  && echo "PASS: no whitespace errors"
 task check:decisions; echo "exit=$?"
 git -C "$REPO" status --porcelain
 git -C "$REPO" log --oneline -5
 ```
 
 Expected: `PASS: no whitespace errors`; `exit=0`; only the files of the current task are changed;
-the commits of Tasks 17, 19, and 21 appear in order.
+the commits made so far by Tasks 17, 19, and 21 appear in order (none before the Task 17
+commit, one before the Task 19 commit, two before the Task 21 commit).
 
 ## Rollback Strategy
 
