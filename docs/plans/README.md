@@ -59,10 +59,10 @@ These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical 
 
 | Number | Title | Status |
 |---|---|---|
-| [0001](0001-initial-repository-scaffold.md) | Initial Repository Scaffold | Approved |
-| [0002](0002-root-project-hygiene-files.md) | Root Project Hygiene Files | Approved |
-| [0003](0003-add-initial-prd.md) | Add Initial PRD for Claude Operating Layer | Approved |
-| [0004](0004-add-github-actions-ci.md) | Add Minimal GitHub Actions CI | Approved |
+| [0001](0001-initial-repository-scaffold.md) | Initial Repository Scaffold | Complete — implementation review [0002](../reviews/0002-pre-first-commit-review.md), no blocking issues |
+| [0002](0002-root-project-hygiene-files.md) | Root Project Hygiene Files | Complete — implementation review [0002](../reviews/0002-pre-first-commit-review.md), no blocking issues |
+| [0003](0003-add-initial-prd.md) | Add Initial PRD for Claude Operating Layer | Complete — implementation review [0002](../reviews/0002-pre-first-commit-review.md), no blocking issues |
+| [0004](0004-add-github-actions-ci.md) | Add Minimal GitHub Actions CI | Complete — implementation review [0002](../reviews/0002-pre-first-commit-review.md), no blocking issues |
 | [0005](0005-implement-dotfiles-foundation.md) | Implement Dotfiles Foundation | Complete |
 | [0006](0006-implement-git-package.md) | Implement Git Configuration Stow Package | Complete |
 | [0007](0007-implement-zsh-configuration-foundation.md) | Implement Zsh Configuration Foundation | Complete |
@@ -88,5 +88,6 @@ These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical 
 | [0027](0027-implement-cli-speed-test-tool.md) | Implement CLI Speed Test Tool | Complete |
 | [0028](0028-implement-codex-customization.md) | Implement Codex Customization Package | Complete |
 | [0029](0029-implement-macchiato-blue-palette-alignment.md) | Implement Macchiato Blue Palette Alignment | Complete |
+| [0030](0030-implement-lms-docker-desktop-completions.md) | Interactive CLI Completions for `lms` and `docker desktop` | Complete — implementation review [0089](../reviews/0089-lms-docker-desktop-completions-implementation-review.md), no blocking issues |
 | [0031](0031-implement-ghostty-configuration.md) | Implement Ghostty Configuration | Complete |
 | [0032](0032-ghostty-follow-ups.md) | Ghostty Follow-ups — Doctor, Task Dry-Run, Palette Wording | Complete |
