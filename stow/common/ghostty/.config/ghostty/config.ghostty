@@ -1,0 +1,49 @@
+# Ghostty configuration
+# Mirrors stow/common/alacritty/.config/alacritty/alacritty.toml.
+# Mapping and portability decisions: docs/prd/0028-ghostty-configuration.md
+
+# Theme: repo-managed file at ~/.config/ghostty/themes/catppuccin-macchiato (ADR 0068)
+theme = catppuccin-macchiato
+
+# Terminal type: matches Alacritty; avoids missing xterm-ghostty terminfo over SSH
+term = xterm-256color
+
+# Window
+window-padding-x = 12
+window-padding-y = 12
+window-padding-balance = true
+background-opacity = 0.98
+
+# Scrolling
+# scrollback-limit is not set: Ghostty limits scrollback in bytes, not lines (PRD 0028 Decision 8)
+mouse-scroll-multiplier = 3
+
+# Font
+font-size = 13
+font-family = "JetBrainsMono Nerd Font"
+font-style = "Regular"
+font-family-bold = "JetBrainsMono Nerd Font"
+font-style-bold = "Bold"
+font-family-italic = "JetBrainsMono Nerd Font"
+font-style-italic = "Italic"
+font-family-bold-italic = "JetBrainsMono Nerd Font"
+font-style-bold-italic = "Bold Italic"
+
+# Approximates Alacritty font.offset.y = 1
+adjust-cell-height = 1
+
+# Shell: login zsh. Shell integration stays at Ghostty's default (PRD 0028 Decision 10)
+command = /bin/zsh -l
+
+# Key bindings mirrored from Alacritty
+# Option+N and Option+Shift+L no longer compose characters once Option is Alt
+keybind = alt+n=text:~
+keybind = alt+shift+l=text:|
+# Word navigation; already a Ghostty default on macOS, set explicitly so Arch matches
+keybind = alt+arrow_left=esc:b
+keybind = alt+arrow_right=esc:f
+# Shift+Enter sends a literal LF, as in Alacritty
+keybind = shift+enter=text:\n
+
+# macOS-only settings from stow/macos/ghostty; optional, so Arch skips it
+config-file = ?macos.ghostty

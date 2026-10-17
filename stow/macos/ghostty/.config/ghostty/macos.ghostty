@@ -1,0 +1,6 @@
+# Ghostty macOS-only settings
+# Loaded by config-file = ?macos.ghostty at the end of the common config.ghostty.
+# PRD 0028 Decision 12
+
+# Both Option keys act as Alt (Alacritty option_as_alt = "Both")
+macos-option-as-alt = true
