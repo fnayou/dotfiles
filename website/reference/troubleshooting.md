@@ -42,7 +42,8 @@ Only apply once the dry-run is clean. Full detail in the [GNU Stow Workflow](sto
 
 If `~/.config/<package>` or another managed config directory such as `~/.codex` is itself a symlink
 (leading `l`), Stow folded the directory. Several packages require `--no-folding` (`zsh`,
-`alacritty`, `herdr`, `codex`, `git`, `bat`, `btop`, `eza`, `claude`, `nvim`).
+`alacritty`, `ghostty` (common and macOS), `herdr`, `codex`, `git`, `bat`, `btop`, `eza`, `claude`,
+`nvim`).
 
 Check:
 

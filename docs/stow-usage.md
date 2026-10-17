@@ -11,10 +11,12 @@ stow/
 ├── common/          # Config that works on macOS, Arch, and Debian without modification
 │   ├── alacritty/   # Alacritty terminal emulator config and Catppuccin theme
 │   ├── codex/       # Codex CLI TextMate theme (stowed) + config TEMPLATE never stowed, synced via task codex:sync
+│   ├── ghostty/     # Ghostty terminal emulator config and Catppuccin theme
 │   ├── git/         # Git config templates
 │   ├── herdr/       # Herdr terminal multiplexer config and Catppuccin theme overrides
 │   └── zsh/         # Zsh config (shared + macOS + Arch, runtime OS detection)
 ├── macos/           # macOS-specific config only
+│   └── ghostty/     # Ghostty macOS-only options (macos.ghostty)
 ├── arch/            # EndeavourOS / Arch-specific config only
 └── debian/          # Debian-specific config only
 ```
@@ -30,15 +32,16 @@ Otherwise it belongs in `macos/`, `arch/`, or `debian/`.
 
 ## Platform directories are not packages
 
-`stow/macos/`, `stow/arch/`, and `stow/debian/` currently contain only `.gitkeep` marker files. They are platform areas, not stowable packages. A valid `task dry-run` requires a real package directory under an area — for example `stow/common/git/`.
+`stow/macos/`, `stow/arch/`, and `stow/debian/` are platform areas, not stowable packages. `stow/macos/` holds one real package, `ghostty`, plus its `.gitkeep` marker; `stow/arch/` and `stow/debian/` contain only `.gitkeep` marker files. A valid `task dry-run` requires a real package directory under an area — for example `stow/common/git/` or `stow/macos/ghostty/`.
 
-Example dry-run:
+Example dry-runs:
 
 ```bash
 task dry-run AREA=common PACKAGE=git
+task dry-run AREA=macos PACKAGE=ghostty
 ```
 
-When a real package is added under a platform area (e.g., `stow/macos/zsh/`), run `task dry-run AREA=macos PACKAGE=zsh`.
+`task dry-run` has no `--no-folding`. For `ghostty`, use the explicit `stow -v … --simulate --no-folding` command for the real dry-run (see "Installing the ghostty package" below).
 
 ---
 
@@ -173,8 +176,8 @@ Notes:
 
 - `--restow` re-links the package, picking up new files while leaving existing links intact.
 - Drop `--no-folding` for packages that do not require it. Packages whose target directories must
-  remain real directories include `zsh`, `alacritty`, `herdr`, `codex`, `claude`, `bat`, `btop`,
-  `eza`, `git`, and `nvim`. `omp` does not require it. For `codex`, `.stow-local-ignore` keeps
+  remain real directories include `zsh`, `alacritty`, `ghostty` (common and macOS), `herdr`,
+  `codex`, `claude`, `bat`, `btop`, `eza`, `git`, and `nvim`. `omp` does not require it. For `codex`, `.stow-local-ignore` keeps
   `config.toml` out of `$HOME`; the template is propagated with `task codex:sync` instead.
 - Until you re-stow, the new file lives in the repo but is **not** linked into `$HOME`. To
   test it before re-stowing, source it by its full repository path.
@@ -671,7 +674,6 @@ proceeding (do not use `--adopt`).
 ### Step 2 — Install
 
 ⚠️  MANUAL STEP — run only after reviewing dry-run output
-
 ```bash
 stow --dir=stow/common --target="$HOME" --no-folding alacritty
 ```
@@ -695,9 +697,105 @@ into the repository.
 ### To unlink
 
 ⚠️  MANUAL STEP
-
 ```bash
 stow --dir=stow/common --target="$HOME" --delete alacritty
+```
+
+---
+
+## Installing the ghostty package
+
+Two packages, both named `ghostty`, link files into `~/.config/ghostty/`.
+
+The common `ghostty` package (`stow/common/ghostty/`, macOS and Arch) contains:
+
+- `~/.config/ghostty/config.ghostty` — main Ghostty configuration
+- `~/.config/ghostty/themes/catppuccin-macchiato` — Catppuccin Macchiato color theme
+
+The macOS-only `ghostty` package (`stow/macos/ghostty/`) contains:
+
+- `~/.config/ghostty/macos.ghostty` — macOS-only options (`macos-option-as-alt = true`)
+
+All three files are real managed dotfiles (not `.example` templates). No rename or copy
+step is needed before stowing. The common `config.ghostty` ends with the optional include
+`config-file = ?macos.ghostty`: Ghostty loads `macos.ghostty` when it is linked and skips
+it otherwise. Stow the macOS package on macOS only, after the common package.
+
+Full guide: [docs/guides/ghostty-setup.md](guides/ghostty-setup.md).
+
+### Prerequisites
+
+- Ghostty installed (`brew install --cask ghostty` on macOS or
+  `sudo pacman -S ghostty` on Arch).
+- JetBrainsMono Nerd Font installed (optional — Ghostty falls back to a system font
+  if absent).
+
+### Step 1 — Dry-run
+
+`task dry-run` has no `--no-folding`; use the explicit commands below. `-v` prints the
+`LINK:` lines.
+
+```bash
+stow -v --dir=stow/common --target="$HOME" --simulate --no-folding ghostty
+```
+
+```bash
+# macOS
+stow -v --dir=stow/macos --target="$HOME" --simulate --no-folding ghostty
+```
+
+Expected: two `LINK:` lines for the common package, one for the macOS package, and no
+conflicts reported. If a conflict appears, resolve it manually before proceeding (do not
+use `--adopt`).
+
+### Step 2 — Install
+
+`--no-folding` is required for both packages: they share `~/.config/ghostty/`, which must
+stay a real directory.
+
+⚠️  MANUAL STEP — review before running
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding ghostty
+```
+
+⚠️  MANUAL STEP — review before running
+```bash
+# macOS
+stow --dir=stow/macos --target="$HOME" --no-folding ghostty
+```
+
+This creates two symlinks, plus a third on macOS:
+
+```
+~/.config/ghostty/config.ghostty
+~/.config/ghostty/themes/catppuccin-macchiato
+~/.config/ghostty/macos.ghostty    (macOS only)
+```
+
+Quit Ghostty fully and start it again to apply the configuration.
+
+### Step 3 — Verify
+
+```bash
+ls -la ~/.config/ghostty/ ~/.config/ghostty/themes/
+```
+
+Expected: `config.ghostty` and `themes/catppuccin-macchiato` are symlinks pointing into
+the repository; on macOS, `macos.ghostty` too.
+
+### To unlink
+
+Remove the macOS package first (macOS only), then the common package.
+
+⚠️  MANUAL STEP — review before running
+```bash
+# macOS
+stow --dir=stow/macos --target="$HOME" --delete ghostty
+```
+
+⚠️  MANUAL STEP — review before running
+```bash
+stow --dir=stow/common --target="$HOME" --delete ghostty
 ```
 
 ---
@@ -731,7 +829,6 @@ dry-run. See "Conflict handling" above for full detail.
 ### Step 2 — Install
 
 ⚠️  MANUAL STEP — run only after reviewing dry-run output
-
 ```bash
 stow --dir=stow/common --target="$HOME" --no-folding herdr
 ```
@@ -753,7 +850,6 @@ Expected: `config.toml` is a symlink pointing into the repository.
 ### To unlink
 
 ⚠️  MANUAL STEP
-
 ```bash
 stow --dir=stow/common --target="$HOME" --delete herdr
 ```

@@ -5,8 +5,8 @@ the parts that suit you.
 
 ## Open a terminal
 
-Alacritty starts with `zsh` and the Oh My Posh prompt, which shows the current path and Git status. If
-you use Herdr, panes inherit the working directory of the active pane, so new panes open where you are.
+Alacritty starts with `zsh` and the Oh My Posh prompt, which shows the current path and Git status.
+Ghostty starts the same login `zsh` (`/bin/zsh -l`), so the prompt looks the same. If you use Herdr, panes inherit the working directory of the active pane, so new panes open where you are.
 
 ## Navigate
 

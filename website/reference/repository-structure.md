@@ -11,7 +11,7 @@ dotfiles/
 ├── mkdocs.yml         # Configuration for this documentation site
 ├── stow/              # The actual dotfiles, as Stow packages (source of truth)
 │   ├── common/        # Works on macOS, Arch, and Debian
-│   ├── macos/         # macOS-specific (currently empty)
+│   ├── macos/         # macOS-specific
 │   ├── arch/          # Arch / EndeavourOS-specific (currently empty)
 │   └── debian/        # Debian-specific (currently empty)
 ├── packages/          # Dependency manifests (Brewfile, arch/packages.txt, debian/packages.txt)
@@ -39,9 +39,10 @@ dotfiles/
     the full project history, read `docs/` directly in the repository.
 
 !!! note "`stow/` is the source of truth"
-    The `stow/common/` directory defines which packages exist. Each package is self-contained and
-    carries its own `README.md`. `stow/macos/`, `stow/arch/`, and `stow/debian/` are reserved for
-    platform-specific packages and are currently empty.
+    `stow/common/` and `stow/macos/` define which packages exist. Each package is self-contained
+    and carries its own `README.md`. `stow/macos/` holds the macOS-only `ghostty` package;
+    `stow/arch/` and `stow/debian/` are reserved for platform-specific packages and are currently
+    empty.
 
 ![Tree view of the stow directory showing one folder per package](../assets/images/repo-tree.png)
 *Package-based repository layout under stow/.*

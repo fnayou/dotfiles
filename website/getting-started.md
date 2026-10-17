@@ -22,7 +22,7 @@ The layout you care about as a visitor:
 ```
 stow/
   common/     # Packages that work on macOS, Arch, and Debian (source of truth)
-  macos/      # macOS-specific packages (currently empty)
+  macos/      # macOS-specific packages
   arch/       # Arch / EndeavourOS-specific packages (currently empty)
   debian/     # Debian-specific packages (currently empty)
 docs/         # Internal project notes (kept as-is; not part of this site)
