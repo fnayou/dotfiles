@@ -1,10 +1,11 @@
 # Terminal
 
-Two packages shape the terminal: **Alacritty** (the emulator) and **Herdr** (an agent-oriented
-multiplexer). Both ship a Catppuccin Macchiato look with a blue accent, consistent with the rest of
-the setup.
+Three tools shape the terminal: **Alacritty** and **Ghostty** (two emulators, configured alike) and
+**Herdr** (an agent-oriented multiplexer). All ship a Catppuccin Macchiato look with a blue accent,
+consistent with the rest of the setup.
 
-Curated from `docs/guides/alacritty-setup.md` and `docs/guides/herdr-setup.md`.
+Curated from `docs/guides/alacritty-setup.md`, `docs/guides/ghostty-setup.md`, and
+`docs/guides/herdr-setup.md`.
 
 ## Alacritty
 
@@ -33,9 +34,59 @@ stow --dir=stow/common --target="$HOME" --no-folding --simulate alacritty
 ```
 
 ⚠️  MANUAL STEP — review dry-run output before running
-
 ```bash
 stow --dir=stow/common --target="$HOME" --no-folding alacritty
+```
+
+## Ghostty
+
+Two packages, both named `ghostty`, manage files in `~/.config/ghostty/`. The common
+`stow/common/ghostty/` package (macOS and Arch) mirrors the Alacritty settings:
+
+| File | Purpose |
+|---|---|
+| `config.ghostty` | Theme selection, terminal type, window, scrolling, font, shell, key bindings |
+| `themes/catppuccin-macchiato` | Catppuccin Macchiato color theme |
+
+[macOS] The macOS-only `stow/macos/ghostty/` package adds one file:
+
+| File | Purpose |
+|---|---|
+| `macos.ghostty` | macOS-only options — `macos-option-as-alt = true` (both Option keys act as Alt) |
+
+Ghostty loads `config.ghostty` on startup — no activation step beyond stowing and a full restart.
+
+!!! note "No macOS-only lines in the common file"
+    The common `config.ghostty` has no `macos-*` option. It ends with the optional include
+    `config-file = ?macos.ghostty`: Ghostty loads `macos.ghostty` when it is linked and skips it,
+    with no error, when it is not. On Arch, stow only the common package. On macOS, stow both —
+    with only the common package, Option is not Alt.
+
+!!! warning "The Application Support file stays empty [macOS]"
+    Ghostty also reads `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty`, and
+    its settings layer over the repository config. It is not managed here and must stay empty.
+    Change settings only in the repository files.
+
+Dry-run, then apply (requires `--no-folding` for both packages). `-v` prints the `LINK:` lines:
+
+```bash
+stow -v --dir=stow/common --target="$HOME" --simulate --no-folding ghostty
+```
+
+```bash
+# macOS
+stow -v --dir=stow/macos --target="$HOME" --simulate --no-folding ghostty
+```
+
+⚠️  MANUAL STEP — review before running
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding ghostty
+```
+
+⚠️  MANUAL STEP — review before running
+```bash
+# macOS
+stow --dir=stow/macos --target="$HOME" --no-folding ghostty
 ```
 
 ## Herdr
@@ -63,7 +114,6 @@ stow --dir=stow/common --target="$HOME" --no-folding --simulate herdr
 ```
 
 ⚠️  MANUAL STEP — review dry-run output before running
-
 ```bash
 stow --dir=stow/common --target="$HOME" --no-folding herdr
 ```

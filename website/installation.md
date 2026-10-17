@@ -16,7 +16,7 @@ package creates symlinks in `$HOME` pointing back into the repository.
 ```
 stow/
   common/     # works on macOS, Arch, and Debian (source of truth)
-  macos/      # macOS-only packages (currently empty)
+  macos/      # macOS-only packages
   arch/       # Arch / EndeavourOS-only packages (currently empty)
   debian/     # Debian-only packages (currently empty)
 ```

@@ -110,8 +110,8 @@ unlinked). It is selected by:
 theme = "catppuccin-macchiato-blue"
 ```
 
-Codex theming is syntax highlighting, not terminal ANSI colors; Alacritty owns terminal colors and
-Herdr owns its UI token mapping. Use `--no-folding` so `~/.codex` remains a real directory for auth
+Codex theming is syntax highlighting, not terminal ANSI colors; Alacritty and Ghostty own terminal
+colors and Herdr owns its UI token mapping. Use `--no-folding` so `~/.codex` remains a real directory for auth
 and runtime state. Auth, transcripts, project trust entries, caches, plugins, and databases are
 never committed.
 

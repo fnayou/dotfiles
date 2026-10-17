@@ -17,10 +17,12 @@ stow/
 ├── common/          # Config that works on macOS, Arch, and Debian without modification
 │   ├── alacritty/   # Alacritty terminal config + Catppuccin theme
 │   ├── codex/       # Codex CLI custom Catppuccin theme + config TEMPLATE (never stowed, synced via task codex:sync)
+│   ├── ghostty/     # Ghostty terminal config + Catppuccin theme
 │   ├── git/         # Git config templates
 │   ├── herdr/       # Herdr multiplexer config + Catppuccin overrides
 │   └── zsh/         # Zsh config (shared + macOS / Arch per-OS layer, runtime OS detection)
 ├── macos/           # macOS-specific config only
+│   └── ghostty/     # Ghostty macOS-only options (macos.ghostty)
 ├── arch/            # EndeavourOS / Arch-specific config only
 └── debian/          # Debian-specific config only
 ```
@@ -34,9 +36,11 @@ A package belongs in `common/` only if all three hold:
 Otherwise it belongs in `macos/`, `arch/`, or `debian/`.
 
 !!! note "Platform directories are not packages"
-    `stow/macos/`, `stow/arch/`, and `stow/debian/` currently contain only `.gitkeep` markers. They
-    are platform *areas*, not stowable packages. A valid dry-run needs a real package directory under
-    an area, e.g. `stow/common/git/`.
+    `stow/macos/`, `stow/arch/`, and `stow/debian/` are platform *areas*, not stowable packages.
+    `stow/macos/` holds one real package, `ghostty`, plus its `.gitkeep` marker; `stow/arch/` and
+    `stow/debian/` contain only `.gitkeep` markers. A valid dry-run needs a real package directory
+    under an area, e.g. `stow/common/git/` or `stow/macos/ghostty/`. `task dry-run` has no
+    `--no-folding`; for `ghostty`, use the explicit `stow -v … --simulate --no-folding` command.
 
 ## Dry-run before anything
 
@@ -111,8 +115,8 @@ stow --dir=stow/common --target="$HOME" --no-folding --restow <package>
 
 !!! info "`--no-folding` only where needed"
     Use `--no-folding` for packages whose target directories must stay real directories, including
-    `zsh`, `alacritty`, `herdr`, `codex`, `claude`, `bat`, `btop`, `eza`, `git`, and `nvim`. `omp`
-    does not require it. For `codex`, `.stow-local-ignore` excludes `config.toml` from Stow; that
+    `zsh`, `alacritty`, `ghostty` (common and macOS), `herdr`, `codex`, `claude`, `bat`, `btop`,
+    `eza`, `git`, and `nvim`. `omp` does not require it. For `codex`, `.stow-local-ignore` excludes `config.toml` from Stow; that
     template is propagated with `task codex:sync`.
 
 ## Forbidden

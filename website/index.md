@@ -37,7 +37,7 @@ is installed automatically — every change to your home directory is a manual, 
 |---|---|
 | **Shell** | Layered Zsh config — path, history, plugins, tools, prompt, per-OS layers |
 | **Prompt** | Oh My Posh, Catppuccin Macchiato palette |
-| **Terminal** | Alacritty, Herdr multiplexer |
+| **Terminal** | Alacritty, Ghostty, Herdr multiplexer |
 | **Editor** | Neovim (Lua, Catppuccin Macchiato) |
 | **Git** | Portable config, aliases, global ignore — no secrets |
 | **CLI tools** | bat, eza, btop, fzf, zoxide, Claude Code status line, and Codex CLI config |
