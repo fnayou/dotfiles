@@ -14,7 +14,7 @@ Key context:
 - **EndeavourOS / Arch Linux** is also used.
 - **Debian** (stable, trixie / 13+) runs on all servers.
 - **GNU Stow** is the symlink manager (package-based layout under `stow/`).
-- Dotfiles are **stowed** — all `stow/common/` packages except `ghostty` are symlinked into `$HOME`; `ghostty` and the macOS-only `stow/macos/ghostty` are added, not yet stowed.
+- Dotfiles are **stowed** — all `stow/common/` packages, plus the macOS-only `stow/macos/ghostty` on macOS, are symlinked into `$HOME`.
 - The Claude Code operating layer (agents, rules, skills, documentation workflow) is complete and active.
 
 ---
@@ -22,10 +22,10 @@ Key context:
 ## 2. Repository Status
 
 ```
-Current status:          Claude Code operating layer complete; common packages stowed (both ghostty packages pending).
-Dotfiles implementation: stowed — all stow/common/ packages symlinked into $HOME except ghostty.
+Current status:          Claude Code operating layer complete; common and macOS packages stowed.
+Dotfiles implementation: stowed — all stow/common/ packages symlinked into $HOME.
 GNU Stow packages:       see stow/common/ and stow/macos/ (source of truth; arch/, debian/ empty).
-Stowed to $HOME:         all stow/common/ packages except ghostty; stow/macos/ghostty not stowed either (both added, not yet stowed) — live symlinks into the repo.
+Stowed to $HOME:         all stow/common/ packages, plus stow/macos/ghostty on macOS — live symlinks into the repo.
 Home directory:          modified by these symlinks; further modifications forbidden unless explicitly requested.
 ```
 
