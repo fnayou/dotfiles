@@ -6,6 +6,15 @@
 **PRD:** [0028-ghostty-configuration](../prd/0028-ghostty-configuration.md)
 **Architecture:** [0026-ghostty-configuration-architecture](../architecture/0026-ghostty-configuration-architecture.md)
 
+## Amendment 2026-10-17
+
+Task 8 and the icon parts of Tasks 9, 10, 12, and 23 were executed and then withdrawn: the custom
+Dock icon is not rendered on macOS 27 with Ghostty 1.3.1 (PRD 0028 Decision 11, withdrawn). Build
+commit `a6a6225` ships `stow/macos/ghostty` with `macos.ghostty` (`macos-option-as-alt = true`),
+`.stow-local-ignore`, and `README.md` only. The remaining Tasks 18, 20, 24, and 25 exclude any icon
+content (no `Ghostty.icns`, no `macos-icon`, no Dock icon check). The implementation review
+(Task 24) records the evidence. The completed tasks below are kept as written, for history.
+
 ## Objective
 
 Add the common Stow package `stow/common/ghostty/` and the macOS-only Stow package
@@ -489,8 +498,11 @@ Files: `docs/guides/ghostty-setup.md` — created.
 Follow Architecture 0026, "Human Setup Guide", sections 1–10 in order, modeled on
 `docs/guides/alacritty-setup.md`. Every install, `stow` install, and `stow --delete` fence has
 `⚠️  MANUAL STEP — review before running` on the line directly above it. Dry-run fences use
-`-v` and state the expected `LINK:` lines. Use placeholders (`/path/to/dotfiles`); no real
-username or path.
+`-v` and state the expected `LINK:` lines (the macOS package dry-run has one, for
+`.config/ghostty/macos.ghostty`). Use placeholders (`/path/to/dotfiles`); no real username or path.
+Write no custom icon content: no `Ghostty.icns`, no `macos-icon`, no Dock icon step. The only icon
+text is the Troubleshooting note from Architecture 0026 that a custom Dock icon is not supported on
+macOS 27 with Ghostty 1.3.1.
 
 ```bash
 grep -c 'MANUAL STEP' docs/guides/ghostty-setup.md
@@ -554,7 +566,9 @@ Files — modified:
 - `website/reference/repository-structure.md:41-44` — "`stow/common/` and `stow/macos/` define
   which packages exist"; only `stow/arch/` and `stow/debian/` are empty.
 
-`website/philosophy.md` is not changed. No page claims Ghostty is stowed. Note: `task dry-run` has
+`website/philosophy.md` is not changed. No page claims Ghostty is stowed. No page mentions a
+custom Ghostty icon, `Ghostty.icns`, or `macos-icon`: `stow/macos/ghostty` holds `macos.ghostty`
+only (PRD 0028 Decision 11 withdrawn). Note: `task dry-run` has
 no `--no-folding`; pages that show it for ghostty say to use the explicit `stow -v … --no-folding`
 command for the real dry-run.
 
@@ -908,7 +922,7 @@ repository and `$HOME`.
   stow --dir=stow/macos --target="${FAKE_HOME:?}" --no-folding ghostty \
     || { echo "FAIL: macOS stow exit $?"; exit 1; }
   if test -L "$CFG"; then echo "FAIL: folded directory"; exit 1; fi
-  if ! test -L "$CFG/Ghostty.icns" || ! test -L "$CFG/macos.ghostty"; then
+  if ! test -L "$CFG/macos.ghostty"; then
     echo "FAIL: macOS file not linked"; exit 1
   fi
   OUT="$(XDG_CONFIG_HOME="${FAKE_HOME:?}/.config" "$GHOSTTY" +validate-config \
@@ -917,8 +931,6 @@ repository and `$HOME`.
   test -z "$OUT" || { echo "FAIL: validate-config printed: $OUT"; exit 1; }
   SHOWN="$(XDG_CONFIG_HOME="${FAKE_HOME:?}/.config" "$GHOSTTY" +show-config)" \
     || { echo "FAIL: show-config"; exit 1; }
-  printf '%s\n' "$SHOWN" | grep -qx 'macos-icon = custom' \
-    || { echo "FAIL: macos-icon not loaded"; exit 1; }
   printf '%s\n' "$SHOWN" | grep -qx 'macos-option-as-alt = true' \
     || { echo "FAIL: macos-option-as-alt not loaded"; exit 1; }
   stow --dir=stow/macos --target="${FAKE_HOME:?}" --delete ghostty \
@@ -965,14 +977,8 @@ Expected: four `PASS:` lines and no match printed.
 ```bash
 (
   set -u
-  ICNS=stow/macos/ghostty/.config/ghostty/Ghostty.icns
   COMMON=stow/common/ghostty/.config/ghostty/config.ghostty
   MACOS=stow/macos/ghostty/.config/ghostty/macos.ghostty
-  SHA=6796c0f423a066009fef4f69ab7800a086627304fc633d3cba69a4ca173632ac
-  [ "$(shasum -a 256 "$ICNS" | cut -d' ' -f1)" = "$SHA" ] && echo "PASS: sha256" || echo "FAIL: sha256"
-  grep -q "$SHA" stow/macos/ghostty/README.md && echo "PASS: README sha256" || echo "FAIL: README sha256"
-  file "$ICNS" | grep -q 'Mac OS X icon' && echo "PASS: file type" || echo "FAIL: file type"
-  [ "$(wc -c < "$ICNS" | tr -d ' ')" = 152344 ] && echo "PASS: size" || echo "FAIL: size"
   diff -q stow/common/ghostty/.stow-local-ignore stow/macos/ghostty/.stow-local-ignore >/dev/null \
     && echo "PASS: ignore files equal" || echo "FAIL: ignore files differ"
   grep -q '^macos-' "$COMMON" && echo "FAIL: macos- in common" || echo "PASS: no macos- in common"
@@ -980,13 +986,10 @@ Expected: four `PASS:` lines and no match printed.
     && echo "PASS: last line" || echo "FAIL: last line"
   [ "$(grep -c '^macos-option-as-alt = true$' "$MACOS")" = 1 ] \
     && echo "PASS: option-as-alt" || echo "FAIL: option-as-alt"
-  [ "$(grep -c '^macos-icon = custom$' "$MACOS")" = 1 ] && echo "PASS: icon option" || echo "FAIL: icon option"
-  grep -rIn '^[[:space:]]*macos-custom-icon' stow/common/ghostty/.config/ stow/macos/ghostty/.config/ \
-    && echo "FAIL: macos-custom-icon set" || echo "PASS: macos-custom-icon not set"
 )
 ```
 
-Expected: ten `PASS:` lines and no `FAIL:` line.
+Expected: four `PASS:` lines and no `FAIL:` line.
 
 ### Repository checks
 
