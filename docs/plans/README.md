@@ -88,3 +88,4 @@ These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical 
 | [0027](0027-implement-cli-speed-test-tool.md) | Implement CLI Speed Test Tool | Complete |
 | [0028](0028-implement-codex-customization.md) | Implement Codex Customization Package | Complete |
 | [0029](0029-implement-macchiato-blue-palette-alignment.md) | Implement Macchiato Blue Palette Alignment | Complete |
+| [0031](0031-implement-ghostty-configuration.md) | Implement Ghostty Configuration | Draft |
