@@ -3,7 +3,7 @@
 **Number:** 0026
 **Status:** Approved
 **Date:** 2026-10-17
-**Amended:** 2026-10-17 — Decision 12 and review 0080 fixes, at operator request
+**Amended:** 2026-10-17 — Decision 12 and review 0080 fixes, at operator request; review 0081 fixes
 **PRD:** [0028-ghostty-configuration](../prd/0028-ghostty-configuration.md)
 
 ---
@@ -127,7 +127,9 @@ where-from).
 | `AGENTS.md` (§1 bullet, §2 block) | Modified | `.claude/rules/status-sync.md` |
 | `CLAUDE.md` (status block) | Modified | `.claude/rules/status-sync.md` |
 | `README.md` (package table row, per-package guide link, status lines) | Modified | Package table lists every `stow/common/` package; the ghostty row names the macOS package (icon and `macos.ghostty`) |
+| `README.md:15-16` (configs are version-controlled "in `stow/common/`") | Modified | Name `stow/macos/` too: "in `stow/common/` and `stow/macos/`" |
 | `README.md:24` (`Managed packages: see stow/common/`) | Modified | ADR 0048: the pointer names `stow/macos/` once it is populated: `see stow/common/ and stow/macos/` |
+| `README.md:28-29` (`stow/common/` is the source of truth … All common packages are stowed …) | Modified | ADR 0048: "`stow/common/` and `stow/macos/` are the source of truth for which packages exist. All common packages except `ghostty` are stowed: live symlinks point from `$HOME` into the repo. `ghostty` and the macOS-only `stow/macos/ghostty` are added, not yet stowed." |
 | `README.md:33-34` (`stow/macos/`, `stow/arch/`, and `stow/debian/` … are currently empty) | Modified | `stow/macos/` now holds `ghostty`; only `stow/arch/` and `stow/debian/` stay empty |
 | `README.md:105` (`macos/          macOS-specific packages (empty)`) | Modified | Drop `(empty)` for `macos/`; `arch/` and `debian/` keep it |
 | `docs/stow-usage.md` and website pages | Modified | See "Documentation and Website Mentions", including the `stow/macos/`-is-empty statements |
@@ -357,6 +359,8 @@ Managed [Ghostty](https://ghostty.org/) terminal configuration. Stows into `~/.c
 ## Setup
 
 See [Ghostty Package Setup Guide](../../../docs/guides/ghostty-setup.md) for the full dry-run → install workflow.
+
+On macOS, also stow `stow/macos/ghostty` for Option-as-Alt and the custom icon (see the setup guide).
 ```
 
 ### `stow/macos/ghostty/.stow-local-ignore`
@@ -540,8 +544,10 @@ Home directory:          modified by these symlinks; further modifications forbi
 ```
 
 `README.md` status lines (`Home directory: stowed — all common packages linked` and the first
-Safety bullet) get the same "except ghostty" wording. The other `README.md` statements that become
-false once `stow/macos/` is populated (`:24`, `:33-34`, `:105`) are listed in "Other files the Build
+Safety bullet) get the same "except ghostty" wording, and so does the source-of-truth paragraph
+(`README.md:28-29`), which also names `stow/macos/` as a source of truth (ADR 0048). The other
+`README.md` statements that become false once `stow/macos/` is populated (`:15-16`, `:24`,
+`:33-34`, `:105`) are listed in "Other files the Build
 creates or modifies" and in "Documentation and Website Mentions".
 
 When the operator first stows the `ghostty` packages, that is a "first stowed" event: a later commit
@@ -565,7 +571,7 @@ Every page under `website/` (the MkDocs `docs_dir`, all pages from the `mkdocs.y
 | `website/features/packages.md` | Yes | Codex note says "Alacritty owns terminal colors"; Ghostty does too |
 | `website/usage/daily-workflow.md` | Yes | "Alacritty starts with zsh"; Ghostty starts the same login zsh |
 | `website/reference/stow.md` | Yes | Package tree (add `ghostty/` under `common/` and under `macos/`), the `--no-folding` package list, and the "Platform directories are not packages" note (`stow/macos/` now holds a real package) |
-| `website/reference/supported-systems.md` | Yes | Portability row "Alacritty, bat, eza, btop, Neovim themes" |
+| `website/reference/supported-systems.md:31` | Yes | Portability row "Alacritty, bat, eza, btop, Neovim themes". When Ghostty joins the row, state that the Ghostty common file has no macOS-only lines (PRD Decision 12), next to "some Alacritty lines are macOS-only but harmless on Linux" |
 | `website/reference/troubleshooting.md` | Yes | `--no-folding` package list |
 | `docs/stow-usage.md` | Yes | Package tree (add `ghostty/` under `common/` and under `macos/`), `--no-folding` package list, the "Platform directories are not packages" section (`stow/macos/` is no longer only a `.gitkeep`; example `task dry-run AREA=macos PACKAGE=ghostty`), and a new "Installing the ghostty package" section after the alacritty one that covers both packages |
 
@@ -574,16 +580,21 @@ Every page under `website/` (the MkDocs `docs_dir`, all pages from the `mkdocs.y
 Adding `stow/macos/ghostty/` makes every "`stow/macos/` is empty" statement false, whether or not the
 page mentions Alacritty. Found by reading `README.md`, `AGENTS.md`, `CLAUDE.md`,
 `docs/stow-usage.md`, and the `website/` pages listed in the `mkdocs.yml` nav for `empty` (and
-"only `.gitkeep`") near `macos`:
+"only `.gitkeep`") near `macos`, and for statements that name `stow/common/` alone as where packages
+are defined or stowed ("source of truth", "defines which packages exist", "in `stow/common/`",
+"All common packages are stowed"):
 
 | Path | Statement | Change |
 |---|---|---|
+| `README.md:15-16` | "Configs are version-controlled in `stow/common/`" | Name `stow/macos/` too |
 | `README.md:24` | `Managed packages:               see stow/common/` | Name `stow/macos/` too (ADR 0048) |
+| `README.md:28-29` | "`stow/common/` is the source of truth for which packages exist. All common packages are stowed: live symlinks point from `$HOME` into the repo." | Name `stow/macos/` as a source of truth too (ADR 0048); "All common packages except `ghostty` are stowed"; `ghostty` and `stow/macos/ghostty` are added, not yet stowed |
 | `README.md:33-34` | "`stow/macos/`, `stow/arch/`, and `stow/debian/` are reserved for platform-specific packages and are currently empty" | `stow/macos/` holds `ghostty`; only `stow/arch/` and `stow/debian/` are empty |
 | `README.md:105` | `macos/          macOS-specific packages (empty)` | Drop `(empty)` for `macos/` |
 | `website/getting-started.md:25` | `macos/      # macOS-specific packages (currently empty)` | Drop "currently empty" |
 | `website/installation.md:19` | `macos/      # macOS-only packages (currently empty)` | Drop "currently empty" |
 | `website/reference/repository-structure.md:14` | `│   ├── macos/         # macOS-specific (currently empty)` | Drop "currently empty" |
+| `website/reference/repository-structure.md:41-42` | "The `stow/common/` directory defines which packages exist" | Name `stow/macos/` too: "`stow/common/` and `stow/macos/` define which packages exist" (ADR 0048, as for `README.md:24`) |
 | `website/reference/repository-structure.md:42-44` | "`stow/macos/`, `stow/arch/`, and `stow/debian/` are reserved for platform-specific packages and are currently empty" | `stow/macos/` holds `ghostty`; only `stow/arch/` and `stow/debian/` are empty |
 | `website/reference/stow.md:37` | "`stow/macos/`, `stow/arch/`, and `stow/debian/` currently contain only `.gitkeep` markers" | Already in the table above (the "Platform directories are not packages" note) |
 | `docs/stow-usage.md:33` | "`stow/macos/`, `stow/arch/`, and `stow/debian/` currently contain only `.gitkeep` marker files" | Already in the table above (the "Platform directories are not packages" section) |
@@ -822,31 +833,39 @@ Expected: no errors (theme files use the same syntax).
 
 ### 3. Fake-home Stow simulation and theme resolution
 
-`FAKE_HOME="$(mktemp -d)" || exit 1` stops before any `stow` or `rm` if `mktemp` fails, and
-`${FAKE_HOME:?}` makes the shell refuse an empty variable, so an empty value never reaches
-`stow --target` or `rm`.
+Each block runs in a subshell `( set -eu; … )`. If `mktemp` or any later command fails, `set -e`
+stops the subshell only; the operator's interactive shell stays open. `set -u` also refuses an
+unset `$GHOSTTY`. `${FAKE_HOME:?}` makes the shell refuse an empty variable, so an empty value never
+reaches `stow --target` or `rm`. A failure after `mktemp` can leave the temporary directory behind;
+it is outside the repository and `$HOME`.
 
 ⚠️  MANUAL STEP — review before running
 ```bash
 # Step 1 — conflict check
-FAKE_HOME="$(mktemp -d)" || exit 1
-stow -v --dir=stow/common --target="${FAKE_HOME:?}" --simulate --no-folding ghostty \
-  && echo "Simulation passed: no conflicts detected"
-rm -rf "${FAKE_HOME:?}"
+(
+  set -eu
+  FAKE_HOME="$(mktemp -d)"
+  stow -v --dir=stow/common --target="${FAKE_HOME:?}" --simulate --no-folding ghostty \
+    && echo "Simulation passed: no conflicts detected"
+  rm -rf "${FAKE_HOME:?}"
+)
 ```
 
 ⚠️  MANUAL STEP — review before running
 ```bash
 # Step 2 — common package only (Arch case): link into a fake home, resolve the theme by name,
 # check that the optional include is skipped, clean up
-FAKE_HOME="$(mktemp -d)" || exit 1
-stow --dir=stow/common --target="${FAKE_HOME:?}" --no-folding ghostty
-test ! -L "$FAKE_HOME/.config/ghostty" && test ! -L "$FAKE_HOME/.config/ghostty/themes" \
-  && echo "OK: real directories"
-XDG_CONFIG_HOME="$FAKE_HOME/.config" "$GHOSTTY" +validate-config \
-  --config-file="$FAKE_HOME/.config/ghostty/config.ghostty"
-stow --dir=stow/common --target="${FAKE_HOME:?}" --delete ghostty
-rm -rf "${FAKE_HOME:?}"
+(
+  set -eu
+  FAKE_HOME="$(mktemp -d)"
+  stow --dir=stow/common --target="${FAKE_HOME:?}" --no-folding ghostty
+  test ! -L "${FAKE_HOME:?}/.config/ghostty" && test ! -L "${FAKE_HOME:?}/.config/ghostty/themes" \
+    && echo "OK: real directories"
+  XDG_CONFIG_HOME="${FAKE_HOME:?}/.config" "$GHOSTTY" +validate-config \
+    --config-file="${FAKE_HOME:?}/.config/ghostty/config.ghostty"
+  stow --dir=stow/common --target="${FAKE_HOME:?}" --delete ghostty
+  rm -rf "${FAKE_HOME:?}"
+)
 ```
 
 Expected: two links, two real directories, `+validate-config` exit 0 with no message (verified: the
@@ -856,20 +875,23 @@ theme resolves from `$XDG_CONFIG_HOME/ghostty/themes/`, and the absent `macos.gh
 ```bash
 # macOS
 # Step 3 — both packages into one fake home
-FAKE_HOME="$(mktemp -d)" || exit 1
-stow --dir=stow/common --target="${FAKE_HOME:?}" --no-folding ghostty
-stow -v --dir=stow/macos --target="${FAKE_HOME:?}" --simulate --no-folding ghostty \
-  && echo "Simulation passed: no conflicts detected"
-stow --dir=stow/macos --target="${FAKE_HOME:?}" --no-folding ghostty
-test ! -L "$FAKE_HOME/.config/ghostty" \
-  && test -L "$FAKE_HOME/.config/ghostty/Ghostty.icns" \
-  && test -L "$FAKE_HOME/.config/ghostty/macos.ghostty" \
-  && echo "OK: macOS files linked into real directory"
-XDG_CONFIG_HOME="$FAKE_HOME/.config" "$GHOSTTY" +validate-config \
-  --config-file="$FAKE_HOME/.config/ghostty/config.ghostty"
-stow --dir=stow/macos --target="${FAKE_HOME:?}" --delete ghostty
-stow --dir=stow/common --target="${FAKE_HOME:?}" --delete ghostty
-rm -rf "${FAKE_HOME:?}"
+(
+  set -eu
+  FAKE_HOME="$(mktemp -d)"
+  stow --dir=stow/common --target="${FAKE_HOME:?}" --no-folding ghostty
+  stow -v --dir=stow/macos --target="${FAKE_HOME:?}" --simulate --no-folding ghostty \
+    && echo "Simulation passed: no conflicts detected"
+  stow --dir=stow/macos --target="${FAKE_HOME:?}" --no-folding ghostty
+  test ! -L "${FAKE_HOME:?}/.config/ghostty" \
+    && test -L "${FAKE_HOME:?}/.config/ghostty/Ghostty.icns" \
+    && test -L "${FAKE_HOME:?}/.config/ghostty/macos.ghostty" \
+    && echo "OK: macOS files linked into real directory"
+  XDG_CONFIG_HOME="${FAKE_HOME:?}/.config" "$GHOSTTY" +validate-config \
+    --config-file="${FAKE_HOME:?}/.config/ghostty/config.ghostty"
+  stow --dir=stow/macos --target="${FAKE_HOME:?}" --delete ghostty
+  stow --dir=stow/common --target="${FAKE_HOME:?}" --delete ghostty
+  rm -rf "${FAKE_HOME:?}"
+)
 ```
 
 Expected: two extra links (`.config/ghostty/Ghostty.icns`, `.config/ghostty/macos.ghostty`),
@@ -1080,7 +1102,8 @@ stow --dir=stow/common --target="$HOME" --delete ghostty
   common-only case.
 - **Finder icon unchanged, by design [macOS].** The custom icon sets `NSApplication.icon` (Dock and
   app switcher) only. The signed bundle is not modified, so Finder and the update dialog keep the
-  official icon. Mitigation: the guide and both READMEs state this so it is not reported as a bug.
+  official icon. Mitigation: the guide and the macOS README state this so it is not reported as a
+  bug.
 - **Folding across two packages.** Stowing either package without `--no-folding` into an empty
   `~/.config/ghostty` could fold the directory into a link to one package and block the other.
   Mitigation: both commands carry `--no-folding`; validation check 3 step 3 stows both into one fake
@@ -1126,8 +1149,9 @@ Planner writes an implementation plan with these tasks:
    result in the implementation review.
 5. Create `docs/guides/ghostty-setup.md`.
 6. Update the `AGENTS.md` (§1, §2) and `CLAUDE.md` status blocks, and the `README.md` package table,
-   guide link, status lines, and the `stow/macos/` statements (`:24`, `:33-34`, `:105`), in the
-   same commit that adds both packages.
+   guide link, status lines, the source-of-truth paragraph (`:28-29`, "except ghostty" wording,
+   naming `stow/macos/` as a source of truth too, ADR 0048), and the `stow/macos/` statements
+   (`:15-16`, `:24`, `:33-34`, `:105`), in the same commit that adds both packages.
 7. Add Ghostty mentions to the documentation and website pages marked "Yes", and fix every
    statement listed under "Statements made false by a populated `stow/macos/`".
 8. Leave stowing to the operator, following the guide; the operator runs validation check 7 and
