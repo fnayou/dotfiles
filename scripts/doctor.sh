@@ -111,57 +111,68 @@ section "Stow linkage"
 PKG_TOTAL=0
 PKG_STOWED=0
 
-for pkg_dir in "$REPO_ROOT"/stow/common/*/; do
-  [[ -d "$pkg_dir" ]] || continue
-  pkg=$(basename -- "$pkg_dir")
-  PKG_TOTAL=$((PKG_TOTAL + 1))
+# common applies everywhere; the platform area (stow/<os>/) only on its own OS.
+# Platform packages are labelled <area>/<pkg>; common ones keep the bare name.
+AREAS=(common)
+case "$OS" in
+  macos | arch | debian) AREAS+=("$OS") ;;
+esac
 
-  missing=0
-  foreign=0
-  linked=0
-  managed=0
+for area in "${AREAS[@]}"; do
+  for pkg_dir in "$REPO_ROOT"/stow/"$area"/*/; do
+    [[ -d "$pkg_dir" ]] || continue
+    pkg=$(basename -- "$pkg_dir")
+    label=$pkg
+    [[ "$area" != "common" ]] && label="$area/$pkg"
+    PKG_TOTAL=$((PKG_TOTAL + 1))
 
-  while IFS= read -r file; do
-    rel=${file#"$pkg_dir"}
-    case "$rel" in
-      README.md | .stow-local-ignore | *.example | tests/*) continue ;;
-    esac
-    managed=$((managed + 1))
-    target="$HOME/$rel"
+    missing=0
+    foreign=0
+    linked=0
+    managed=0
 
-    if [[ -L "$target" ]]; then
-      resolved=$(resolve_link "$target")
-      if [[ "$resolved" == "$REPO_ROOT"/* ]]; then
-        linked=$((linked + 1))
+    while IFS= read -r file; do
+      rel=${file#"$pkg_dir"}
+      case "$rel" in
+        README.md | .stow-local-ignore | *.example | tests/*) continue ;;
+      esac
+      managed=$((managed + 1))
+      target="$HOME/$rel"
+
+      if [[ -L "$target" ]]; then
+        resolved=$(resolve_link "$target")
+        if [[ "$resolved" == "$REPO_ROOT"/* ]]; then
+          linked=$((linked + 1))
+        else
+          foreign=$((foreign + 1))
+          [[ $VERBOSE -eq 1 ]] && note "foreign link: ~/$rel -> ${resolved:-<unresolvable>}"
+        fi
       else
-        foreign=$((foreign + 1))
-        [[ $VERBOSE -eq 1 ]] && note "foreign link: ~/$rel -> ${resolved:-<unresolvable>}"
+        missing=$((missing + 1))
+        [[ $VERBOSE -eq 1 ]] && note "not linked: ~/$rel"
       fi
-    else
-      missing=$((missing + 1))
-      [[ $VERBOSE -eq 1 ]] && note "not linked: ~/$rel"
-    fi
-  done < <(find "$pkg_dir" -type f | sort)
+    done < <(find "$pkg_dir" -type f | sort)
 
-  if [[ $managed -eq 0 ]]; then
-    skip "$pkg (no stowable files)"
-  elif [[ $linked -eq 0 ]]; then
-    skip "$pkg (not stowed — $managed file(s) available)"
-  elif [[ $missing -eq 0 && $foreign -eq 0 ]]; then
-    pass "$pkg ($linked/$managed linked)"
-    PKG_STOWED=$((PKG_STOWED + 1))
-  else
-    PKG_STOWED=$((PKG_STOWED + 1))
-    if [[ $missing -gt 0 ]]; then
-      fail "$pkg — $missing of $managed file(s) not linked into \$HOME"
-      note "→ new files landed since this package was stowed. Dry-run, then re-stow:"
-      note "  stow --dir=stow/common --target=\"\$HOME\" --no-folding --simulate $pkg"
+    if [[ $managed -eq 0 ]]; then
+      skip "$label (no stowable files)"
+    elif [[ $linked -eq 0 ]]; then
+      skip "$label (not stowed — $managed file(s) available)"
+    elif [[ $missing -eq 0 && $foreign -eq 0 ]]; then
+      pass "$label ($linked/$managed linked)"
+      PKG_STOWED=$((PKG_STOWED + 1))
+    else
+      PKG_STOWED=$((PKG_STOWED + 1))
+      if [[ $missing -gt 0 ]]; then
+        fail "$label — $missing of $managed file(s) not linked into \$HOME"
+        note "→ new files landed since this package was stowed. Dry-run, then re-stow:"
+        note "  stow --dir=stow/$area --target=\"\$HOME\" --no-folding --simulate $pkg"
+      fi
+      if [[ $foreign -gt 0 ]]; then
+        fail "$label — $foreign link(s) point outside this repo"
+        note "→ another dotfiles checkout may own them; re-run with --verbose"
+      fi
     fi
-    if [[ $foreign -gt 0 ]]; then
-      fail "$pkg — $foreign link(s) point outside this repo"
-      note "→ another dotfiles checkout may own them; re-run with --verbose"
-    fi
-  fi
+  done
 done
 
 info "$PKG_STOWED of $PKG_TOTAL package(s) stowed"
@@ -177,7 +188,8 @@ folding_checked=0
 for cfg in "$HOME"/.config/*/; do
   [[ -d "$cfg" ]] || continue
   name=$(basename -- "$cfg")
-  [[ -d "$REPO_ROOT/stow/common/$name/.config/$name" ]] || continue
+  [[ -d "$REPO_ROOT/stow/common/$name/.config/$name" ||
+    -d "$REPO_ROOT/stow/$OS/$name/.config/$name" ]] || continue
   folding_checked=$((folding_checked + 1))
   if [[ -L "${cfg%/}" ]]; then
     fail "~/.config/$name is a symlink (stow folded the directory)"

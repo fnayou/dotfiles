@@ -90,23 +90,26 @@ The tell is that `exec zsh` "fixes" it while a new terminal window does not.
 ## Common findings
 
 **`N of M file(s) not linked into $HOME`** — you pulled commits that added new files to a package
-that was stowed earlier. Symlinks are per-file, so new files need a new stow run. Dry-run first:
+that was stowed earlier. Symlinks are per-file, so new files need a new stow run. Platform-area
+packages (`stow/<os>/`) are checked only on their own OS and reported as `<area>/<package>` (for
+example `macos/ghostty`); use the area as `<area>` and the bare package name as `<package>`. Dry-run
+first:
 
 ```bash
-stow --dir=stow/common --target="$HOME" --no-folding --simulate <package>
+stow --dir=stow/<area> --target="$HOME" --no-folding --simulate <package>
 ```
 
 ⚠️  MANUAL STEP — run only after reviewing the dry-run output
-
 ```bash
-stow --dir=stow/common --target="$HOME" --no-folding <package>
+stow --dir=stow/<area> --target="$HOME" --no-folding <package>
 ```
 
 **`~/.config/<pkg> is a symlink`** — stowed without `--no-folding`. See the
 [zsh setup guide](zsh-setup.md) for the unstow/re-stow sequence.
 
 **`link(s) point outside this repo`** — another dotfiles checkout owns those links. Run
-`task doctor:verbose` to see which, and resolve manually. Never use `--adopt`.
+`task doctor:verbose` to see which, and resolve manually. Never use `--adopt`. A package whose links
+all point into another checkout shows `SKIP: <pkg> (not stowed — …)` instead of this finding.
 
 **`zoxide registered N chpwd hooks`** — zoxide was initialised more than once, usually a leftover
 `eval "$(zoxide init …)"` in `local.zsh` duplicating what `tools.zsh` already does. Remove it.
@@ -117,7 +120,6 @@ a `WARN` rather than a `FAIL` because a terminal configured to run zsh directly 
 This repository never changes your login shell (ADR-0027):
 
 ⚠️  MANUAL STEP — changes your login shell; log out and back in afterwards
-
 ```bash
 chsh -s "$(command -v zsh)"
 ```
