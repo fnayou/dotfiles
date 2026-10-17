@@ -3,6 +3,7 @@
 **Number:** 0028
 **Status:** Approved
 **Date:** 2026-10-17
+**Amended:** 2026-10-17 — Decision 11 (custom macOS icon), at operator request
 
 ## Problem Statement
 
@@ -16,6 +17,9 @@ Ghostty uses its own `key = value` config format and option names, so the Alacri
 reused. This PRD defines a new Stow package, `stow/common/ghostty/`, records how each Alacritty
 setting maps to a real Ghostty 1.3.1 option, and states where no equivalent exists.
 
+The operator also wants a custom Ghostty app icon on macOS. Decision 11 adds it through a second,
+macOS-only Stow package, `stow/macos/ghostty/`.
+
 ## Goals
 
 - Add a managed Ghostty configuration to the repository as a Stow package under
@@ -28,6 +32,8 @@ setting maps to a real Ghostty 1.3.1 option, and states where no equivalent exis
 - Document every Alacritty setting that has no Ghostty equivalent, instead of inventing one.
 - Document how the macOS `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty` file
   is handled.
+- Show a custom Ghostty icon in the macOS Dock and app switcher, from a repo-managed
+  `Ghostty.icns` in a macOS-only Stow package, `stow/macos/ghostty/` (Decision 11).
 - Keep the repository safe and private throughout.
 
 ## Non-Goals
@@ -38,7 +44,8 @@ setting maps to a real Ghostty 1.3.1 option, and states where no equivalent exis
 - Writing the Ghostty config files in this PRD phase — that is the Build phase.
 - Changing the Alacritty package or its palette.
 - Using Ghostty features Alacritty does not have (splits, tabs, quick terminal, custom keybinds
-  beyond those mirrored from Alacritty) as part of this PRD.
+  beyond those mirrored from Alacritty) as part of this PRD. The custom macOS icon (Decision 11) is
+  the only exception.
 - Removing Alacritty.
 
 ## User Stories
@@ -55,29 +62,39 @@ setting maps to a real Ghostty 1.3.1 option, and states where no equivalent exis
 
 This PRD covers:
 
-- One Stow package: `stow/common/ghostty/`.
-- Two config files: the main config `config.ghostty` and the theme file
+- Two Stow packages:
+  - `stow/common/ghostty/` — macOS and Arch.
+  - `stow/macos/ghostty/` — macOS only; the first package under `stow/macos/` (Decision 11).
+- Two config files in the common package: the main config `config.ghostty` and the theme file
   `themes/catppuccin-macchiato`.
+- One icon file in the macOS package: `Ghostty.icns`.
 - The Alacritty-to-Ghostty setting map, the portability decisions, and the handling of the macOS
   Application Support config file.
 - Stow dry-run and install commands for future reference (not executed during implementation).
 
 This PRD does not create symlinks in `$HOME` or run Stow install commands.
 
-When the package is added, both status blocks (`AGENTS.md` §2 and `CLAUDE.md`) must be updated in
+When the packages are added, both status blocks (`AGENTS.md` §2 and `CLAUDE.md`) must be updated in
 the same commit, per `.claude/rules/status-sync.md`.
 
 ## Target Structure
 
 ```
 stow/
-└── common/
+├── common/
+│   └── ghostty/
+│       └── .config/
+│           └── ghostty/
+│               ├── config.ghostty
+│               └── themes/
+│                   └── catppuccin-macchiato
+└── macos/
     └── ghostty/
+        ├── .stow-local-ignore
+        ├── README.md
         └── .config/
             └── ghostty/
-                ├── config.ghostty
-                └── themes/
-                    └── catppuccin-macchiato
+                └── Ghostty.icns
 ```
 
 After stowing, this maps to:
@@ -85,22 +102,26 @@ After stowing, this maps to:
 ```
 ~/.config/ghostty/config.ghostty
 ~/.config/ghostty/themes/catppuccin-macchiato
+~/.config/ghostty/Ghostty.icns          (macOS only)
 ```
+
+Both packages stow into the same `~/.config/ghostty/` directory with `--no-folding`.
 
 `~/.config/ghostty` does not exist on the macOS machine at the time of writing, so no conflict is
 expected; the dry run must still confirm this.
 
 ## Cross-Platform Requirements
 
-| Platform | Ghostty installed | Package stowed |
-|---|---|---|
-| macOS | Yes | Yes |
-| Arch / EndeavourOS | Yes | Yes |
-| Debian (servers) | No | No |
+| Platform | Ghostty installed | `stow/common/ghostty` stowed | `stow/macos/ghostty` stowed |
+|---|---|---|---|
+| macOS | Yes | Yes | Yes |
+| Arch / EndeavourOS | Yes | Yes | No |
+| Debian (servers) | No | No | No |
 
-The package is placed under `stow/common/` because the config is portable across macOS and Arch
-with the caveats documented below. Debian servers do not install Ghostty and do not stow this
-package.
+The config package is placed under `stow/common/` because the config is portable across macOS and
+Arch with the caveats documented below. The icon package is placed under `stow/macos/` because the
+icon is used only on macOS (Decision 11). Debian servers do not install Ghostty and do not stow
+either package.
 
 **macOS installation (manual, future phase):**
 
@@ -124,8 +145,9 @@ On macOS the `ghostty` binary is not on `PATH`. CLI actions use the full path:
 ### 1. Package location: `stow/common/ghostty/`
 
 **Decision:** One common package, used on macOS and Arch. Debian servers do not install it.
-macOS-only options (`macos-option-as-alt`) stay in the common file, as `option_as_alt` does in the
-Alacritty package.
+macOS-only options (`macos-option-as-alt`, `macos-icon`) stay in the common file, as
+`option_as_alt` does in the Alacritty package. The icon file itself is a macOS-only asset and lives
+in a separate package, `stow/macos/ghostty/` (Decision 11).
 
 ### 2. Config file name: `config.ghostty`
 
@@ -276,6 +298,7 @@ The future `config.ghostty` encodes these preferences:
 | `window-padding-balance` | `true` | Matches `dynamic_padding` |
 | `background-opacity` | `0.98` | Matches Alacritty |
 | `macos-option-as-alt` | `true` | macOS only |
+| `macos-icon` | `custom` | macOS only; loads `~/.config/ghostty/Ghostty.icns` (default `macos-custom-icon`, not set); Decision 11 |
 | `mouse-scroll-multiplier` | `3` | All devices |
 | `scrollback-limit` | not set | Ghostty default (`10000000` bytes); Decision 8 |
 | `font-family` (+ bold/italic/bold-italic) | `JetBrainsMono Nerd Font` | Fallback if missing |
@@ -304,6 +327,26 @@ stow --dir=stow/common --target="$HOME" --no-folding ghostty
 `--no-folding` keeps `~/.config/ghostty/` and `~/.config/ghostty/themes/` as real directories, so
 files Ghostty or the user create there do not land in the repository.
 
+On macOS only, link the icon package into the same directory:
+
+```bash
+# macOS
+# Step 3 — dry run
+stow --dir=stow/macos --target="$HOME" --simulate --no-folding ghostty
+```
+
+⚠️  MANUAL STEP — run only after reviewing dry-run output
+
+```bash
+# macOS
+# Step 4 — install
+stow --dir=stow/macos --target="$HOME" --no-folding ghostty
+```
+
+`--no-folding` is required here too: without it, Stow could fold `~/.config/ghostty/` into a link
+to one package and the other package could no longer share the directory. Quit Ghostty fully and
+start it again for the icon to take effect.
+
 ## Safety Requirements
 
 - Must not run `stow` install commands automatically.
@@ -314,6 +357,9 @@ files Ghostty or the user create there do not land in the repository.
 - Must not run `rm`, `mv`, or `ln -s` against `$HOME` or any path outside the repo.
 - Must not use `stow --adopt`.
 - Must not install Ghostty or fonts automatically.
+- Must not change the `/Applications/Ghostty.app` bundle. Do not modify the signed app (no icon
+  replacement inside the bundle, no `Info.plist` edits, no re-signing); the icon comes only from
+  `macos-icon = custom`.
 - Must stop and report if the dry run shows a conflict.
 
 ## Privacy Requirements
@@ -322,6 +368,9 @@ files Ghostty or the user create there do not land in the repository.
   hostnames, or work-specific settings.
 - The configuration is personal display and key preferences only, mirrored from the already
   committed Alacritty package.
+- The icon file is a third-party image with an unknown licence. Its source and SHA-256 are recorded
+  in the macOS package README; redistribution rights are the operator's responsibility
+  (Decision 11).
 - The repository is treated as private by default.
 
 ## Acceptance Criteria
@@ -340,8 +389,17 @@ files Ghostty or the user create there do not land in the repository.
 - [ ] The macOS Application Support `config.ghostty` file is left untouched.
 - [ ] Settings with no Ghostty equivalent are listed in this PRD and not invented in the config.
 - [ ] The Stow dry-run and install commands are documented for future reference.
+- [ ] `config.ghostty` sets `macos-icon = custom` and does not set `macos-custom-icon`.
+- [ ] `stow/macos/ghostty/.config/ghostty/Ghostty.icns` exists, and its SHA-256 equals
+  `6796c0f423a066009fef4f69ab7800a086627304fc633d3cba69a4ca173632ac`.
+- [ ] `stow/macos/ghostty/README.md` records the icon source (macosicons.com, "Ghostty Darken"),
+  its SHA-256, and that the licence is unknown.
+- [ ] `stow/macos/ghostty/.stow-local-ignore` has the same entries as the common package's file.
+- [ ] The `/Applications/Ghostty.app` bundle is not modified.
+- [ ] [macOS] After both packages are stowed and Ghostty is fully quit and restarted, the Dock icon
+  shows the custom icon (operator check; recorded in the implementation review).
 - [ ] Both status blocks (`AGENTS.md` §2, `CLAUDE.md`) are updated in the commit that adds the
-  package.
+  packages.
 
 ## Resolved Questions
 
@@ -368,11 +426,47 @@ implementation review.
 `shell-integration-features`. Do not set either option. This is an accepted difference from
 Alacritty.
 
+### 11. Custom macOS app icon
+
+Added on 2026-10-17 by amendment, at operator request.
+
+**Mechanism:** the common `config.ghostty` sets `macos-icon = custom`. It is a macOS-only option,
+kept in the common file like `macos-option-as-alt` (Decision 1); Linux ignores it.
+`macos-custom-icon` is **not** set: Ghostty's documented default for it is
+`~/.config/ghostty/Ghostty.icns`, so no absolute path is needed.
+
+**Package:** the icon lives in a new macOS-only Stow package,
+`stow/macos/ghostty/.config/ghostty/Ghostty.icns`, with its own `README.md` and
+`.stow-local-ignore` (same entries as the common package's file). It stows into the same
+`~/.config/ghostty/` with `--no-folding`: first
+`stow --dir=stow/macos --target="$HOME" --simulate --no-folding ghostty`, then the install under the
+`⚠️  MANUAL STEP` marker. It is the first package under `stow/macos/`. Arch does not stow it.
+
+**Source file:** the Build copies `~/Downloads/ghosty.icns` (the name is misspelled) and renames it
+to `Ghostty.icns`. Facts:
+
+- Type: Mac OS X icon (ICNS).
+- Size: 152344 bytes.
+- SHA-256: `6796c0f423a066009fef4f69ab7800a086627304fc633d3cba69a4ca173632ac`.
+- Origin: downloaded from macosicons.com ("Ghostty Darken").
+- Licence: unknown. The operator chose to commit the file to this public repository and to record
+  its source and SHA-256 in the macOS package README. Redistribution rights are the operator's
+  responsibility.
+- Extended attributes (quarantine, where-from) are not carried by git.
+
+**Effect (Ghostty docs):** the custom icon changes the Dock and app switcher icon only
+(`NSApplication.icon`). It does not change the Finder icon, because the app bundle is signed. The
+update dialog always shows the official icon. Supported formats are PNG, JPEG, and ICNS.
+
 ## Out of Scope
 
 - Installing Ghostty or JetBrainsMono Nerd Font on any platform.
 - Installing or stowing Ghostty on Debian servers.
-- Creating a macOS-specific or Arch-specific Ghostty override package.
+- Creating an Arch-specific Ghostty package, or a macOS Ghostty package that holds anything other
+  than the icon (Decision 11).
+- Changing the Ghostty icon in Finder (the signed app bundle is not modified).
+- Changing the icon in Ghostty's update dialog (always the official icon).
+- A custom Ghostty icon on Arch.
 - Modifying `$HOME` or creating any symlinks during implementation.
 - Editing, deleting, or migrating the macOS Application Support `config.ghostty` file.
 - Running `stow` install (non-simulate) without explicit user approval.
