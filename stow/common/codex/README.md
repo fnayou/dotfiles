@@ -62,7 +62,7 @@ theme = "catppuccin-macchiato-blue"
 ```
 
 This makes the syntax palette repo-owned instead of relying on the bundled Codex
-`catppuccin-macchiato` approximation. Alacritty still owns terminal ANSI colors; Herdr owns its UI
+`catppuccin-macchiato` approximation. Alacritty and Ghostty still own terminal ANSI colors; Herdr owns its UI
 token mapping.
 
 ## Status line
