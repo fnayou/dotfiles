@@ -1,7 +1,7 @@
 # PRD: Ghostty Configuration
 
 **Number:** 0028
-**Status:** Draft
+**Status:** Approved
 **Date:** 2026-10-17
 
 ## Problem Statement
@@ -200,7 +200,7 @@ macOS and on Arch (`usr-merge`).
 
 **Decision:** Set `command = /bin/zsh -l`. Ghostty runs a `command` that contains arguments
 through `/bin/sh -c`. Ghostty's shell integration (enabled by default) is a behavior Alacritty does
-not have; see Open Questions.
+not have; it is kept at its default (Decision 10).
 
 ## Alacritty to Ghostty Mapping
 
@@ -219,7 +219,7 @@ Source: `stow/common/alacritty/.config/alacritty/alacritty.toml`. Ghostty option
 | `window.opacity` | `0.98` | `background-opacity` | `0.98` | Partial | Change needs a full Ghostty restart on macOS; disabled in native fullscreen. Cell backgrounds stay opaque in both (`background-opacity-cells = false` default). |
 | `window.startup_mode` | `Windowed` | `maximize`, `fullscreen` | defaults (`false`) | Equivalent | No setting needed. |
 | `window.option_as_alt` | `Both` | `macos-option-as-alt` | `true` | Equivalent | `true` = both Option keys. macOS only, like Alacritty. Ghostty's unset default depends on keyboard layout. |
-| `scrolling.history` | `10000` (lines) | `scrollback-limit` | see Open Questions | Mismatch | Ghostty limits scrollback in **bytes** per surface (default `10000000`), not lines. No line-count option exists. |
+| `scrolling.history` | `10000` (lines) | `scrollback-limit` | not set (Ghostty default `10000000` bytes) | Mismatch | Ghostty limits scrollback in **bytes** per surface (default `10000000`), not lines. No line-count option exists. |
 | `scrolling.multiplier` | `3` | `mouse-scroll-multiplier` | `3` | Partial | Unprefixed value applies to all devices, like Alacritty. Ghostty default is `precision:1,discrete:3`, so trackpad scrolling becomes 3x the Ghostty default. Feel is not guaranteed identical. |
 | `font.size` | `13.0` | `font-size` | `13` | Equivalent | Ghostty default is also 13. Set explicitly. |
 | `font.normal` | `JetBrainsMono Nerd Font`, `Regular` | `font-family`, `font-style` | `JetBrainsMono Nerd Font`, `Regular` | Equivalent | |
@@ -227,8 +227,8 @@ Source: `stow/common/alacritty/.config/alacritty/alacritty.toml`. Ghostty option
 | `font.italic` | `JetBrainsMono Nerd Font`, `Italic` | `font-family-italic`, `font-style-italic` | `JetBrainsMono Nerd Font`, `Italic` | Equivalent | |
 | `font.bold_italic` | `JetBrainsMono Nerd Font`, `Bold Italic` | `font-family-bold-italic`, `font-style-bold-italic` | `JetBrainsMono Nerd Font`, `Bold Italic` | Equivalent | |
 | `font.offset.y` | `1` | `adjust-cell-height` | `1` | Partial | Both add 1 to cell height. Ghostty centers the glyph vertically in the taller cell; Alacritty keeps it at `glyph_offset` (0). `adjust-font-baseline` is a separate option and is not used. |
-| `terminal.shell` | `/bin/zsh`, `["-l"]` | `command` | `/bin/zsh -l` | Partial | Run through `/bin/sh -c` because it has arguments. Ghostty adds shell integration; see Open Questions. |
-| Numpad bindings | `Numpad0`–`Numpad9`, `NumpadAdd`, `NumpadSubtract`, `NumpadMultiply`, `NumpadDivide`, `NumpadDecimal`, `NumpadEnter` → literal chars | `keybind` | e.g. `numpad_0=text:0`, `numpad_enter=text:\r` | Unverified | Ghostty accepts W3C key codes in snake case. Whether Ghostty needs these bindings at all is unverified; see Open Questions. |
+| `terminal.shell` | `/bin/zsh`, `["-l"]` | `command` | `/bin/zsh -l` | Partial | Run through `/bin/sh -c` because it has arguments. Ghostty adds shell integration, kept at its default (Decision 10). |
+| Numpad bindings | `Numpad0`–`Numpad9`, `NumpadAdd`, `NumpadSubtract`, `NumpadMultiply`, `NumpadDivide`, `NumpadDecimal`, `NumpadEnter` → literal chars | `keybind` | e.g. `numpad_0=text:0`, `numpad_enter=text:\r` | Unverified | Ghostty accepts W3C key codes in snake case. Whether Ghostty needs these bindings at all is verified during Build (Decision 9). |
 | `Alt+N` | `~` | `keybind` | `alt+n=text:~` | Equivalent | Needed because Option is treated as Alt, so Option+N no longer composes `~`. |
 | `Alt+Shift+L` | `\|` | `keybind` | `alt+shift+l=text:\|` | Equivalent | Same reason as `Alt+N`. |
 | `Alt+Left` | `\u001Bb` | `keybind` | `alt+arrow_left=esc:b` | Equivalent | Already a Ghostty default on macOS. Set explicitly so Arch matches. |
@@ -277,7 +277,7 @@ The future `config.ghostty` encodes these preferences:
 | `background-opacity` | `0.98` | Matches Alacritty |
 | `macos-option-as-alt` | `true` | macOS only |
 | `mouse-scroll-multiplier` | `3` | All devices |
-| `scrollback-limit` | Open Question | Bytes, not lines |
+| `scrollback-limit` | not set | Ghostty default (`10000000` bytes); Decision 8 |
 | `font-family` (+ bold/italic/bold-italic) | `JetBrainsMono Nerd Font` | Fallback if missing |
 | `font-style` (+ bold/italic/bold-italic) | `Regular` / `Bold` / `Italic` / `Bold Italic` | Matches Alacritty |
 | `font-size` | `13` | Matches Alacritty |
@@ -327,7 +327,7 @@ files Ghostty or the user create there do not land in the repository.
 ## Acceptance Criteria
 
 - [ ] `stow/common/ghostty/.config/ghostty/config.ghostty` exists and sets every option in the
-  Configuration Summary, with Open Questions resolved.
+  Configuration Summary and follows Decisions 8–10.
 - [ ] `stow/common/ghostty/.config/ghostty/themes/catppuccin-macchiato` exists and every hex value
   in it matches `stow/common/alacritty/.config/alacritty/catppuccin-macchiato.toml`.
 - [ ] `config.ghostty` loads the theme with `theme = catppuccin-macchiato`, not the bundled
@@ -343,18 +343,30 @@ files Ghostty or the user create there do not land in the repository.
 - [ ] Both status blocks (`AGENTS.md` §2, `CLAUDE.md`) are updated in the commit that adds the
   package.
 
-## Open Questions
+## Resolved Questions
 
-1. **Scrollback size.** Alacritty keeps 10000 lines; Ghostty limits scrollback in bytes per
-   surface (default `10000000`). Keep Ghostty's default, or set an explicit byte value chosen to
-   approximate 10000 lines at a typical window width?
-2. **Numpad bindings.** Alacritty needs explicit numpad bindings to send literal characters.
-   Ghostty may already send literal characters for numpad keys. Verify in Ghostty first, and port
-   the bindings only if a numpad key sends the wrong input?
-3. **Shell integration.** Ghostty's default `shell-integration = detect` injects zsh integration
-   (prompt marking, a bar cursor at the prompt, title updates). Alacritty has none of this. Keep
-   the default, limit it with `shell-integration-features`, or set `shell-integration = none` for
-   strict parity with Alacritty?
+Resolved by the operator on 2026-10-17 when approving this PRD.
+
+### 8. Scrollback: keep Ghostty's default
+
+Ghostty limits scrollback in bytes per surface, not lines. **Decision:** do not set
+`scrollback-limit`; keep Ghostty's default (`10000000` bytes). Alacritty's 10000-line value has no
+exact Ghostty equivalent and is not approximated.
+
+### 9. Numpad bindings: verify before porting
+
+Alacritty needs explicit numpad bindings to send literal characters. **Decision:** do not port them
+blindly. During Build, with the new config loaded and no numpad bindings, the operator presses each
+numpad key (`0`–`9`, `+`, `-`, `*`, `/`, `.`, `Enter`) in Ghostty on macOS inside `cat -v`, then
+repeats after `tput smkx` (application keypad mode). Only a key whose output differs from its
+literal character gets a `keybind = numpad_<key>=text:<char>` line. The result is recorded in the
+implementation review.
+
+### 10. Shell integration: keep the default
+
+**Decision:** keep Ghostty's default `shell-integration = detect` and default
+`shell-integration-features`. Do not set either option. This is an accepted difference from
+Alacritty.
 
 ## Out of Scope
 
