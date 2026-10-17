@@ -1,7 +1,7 @@
 # Architecture: Ghostty Configuration Architecture
 
 **Number:** 0026
-**Status:** Draft
+**Status:** Approved
 **Date:** 2026-10-17
 **PRD:** [0028-ghostty-configuration](../prd/0028-ghostty-configuration.md)
 
