@@ -3,7 +3,7 @@
 **Number:** 0028
 **Status:** Approved
 **Date:** 2026-10-17
-**Amended:** 2026-10-17 — Decision 11 (custom macOS icon), at operator request; Decision 12 (optional macOS include) and review 0080 fixes
+**Amended:** 2026-10-17 — Decision 11 (custom macOS icon), at operator request; Decision 12 (optional macOS include) and review 0080 fixes; review 0081 fixes
 
 ## Problem Statement
 
@@ -243,7 +243,7 @@ Alacritty runs `/bin/zsh` with `args = ["-l"]`. PRD 0011 established that `/bin/
 macOS and on Arch (`usr-merge`).
 
 **Decision:** Set `command = /bin/zsh -l`. Ghostty runs a `command` that contains arguments
-through `/bin/sh -c`. Ghostty's shell integration (enabled by default) is a behavior Alacritty does
+through `/bin/sh -c` (per Ghostty docs; verified in Build). Ghostty's shell integration (enabled by default) is a behavior Alacritty does
 not have; it is kept at its default (Decision 10).
 
 ## Alacritty to Ghostty Mapping
@@ -271,7 +271,7 @@ Source: `stow/common/alacritty/.config/alacritty/alacritty.toml`. Ghostty option
 | `font.italic` | `JetBrainsMono Nerd Font`, `Italic` | `font-family-italic`, `font-style-italic` | `JetBrainsMono Nerd Font`, `Italic` | Equivalent | |
 | `font.bold_italic` | `JetBrainsMono Nerd Font`, `Bold Italic` | `font-family-bold-italic`, `font-style-bold-italic` | `JetBrainsMono Nerd Font`, `Bold Italic` | Equivalent | |
 | `font.offset.y` | `1` | `adjust-cell-height` | `1` | Partial | Both add 1 to cell height. Ghostty centers the glyph vertically in the taller cell; Alacritty keeps it at `glyph_offset` (0). `adjust-font-baseline` is a separate option and is not used. |
-| `terminal.shell` | `/bin/zsh`, `["-l"]` | `command` | `/bin/zsh -l` | Partial | Run through `/bin/sh -c` because it has arguments. Ghostty adds shell integration, kept at its default (Decision 10). |
+| `terminal.shell` | `/bin/zsh`, `["-l"]` | `command` | `/bin/zsh -l` | Partial | Run through `/bin/sh -c` because it has arguments (per Ghostty docs; verified in Build). Ghostty adds shell integration, kept at its default (Decision 10). |
 | Numpad bindings | `Numpad0`–`Numpad9`, `NumpadAdd`, `NumpadSubtract`, `NumpadMultiply`, `NumpadDivide`, `NumpadDecimal`, `NumpadEnter` → literal chars | `keybind` | e.g. `numpad_0=text:0`, `numpad_enter=text:\r` | Unverified | Ghostty accepts W3C key codes in snake case. Whether Ghostty needs these bindings at all is verified during Build (Decision 9). |
 | `Alt+N` | `~` | `keybind` | `alt+n=text:~` | Equivalent | Needed because Option is treated as Alt, so Option+N no longer composes `~`. |
 | `Alt+Shift+L` | `\|` | `keybind` | `alt+shift+l=text:\|` | Equivalent | Same reason as `Alt+N`. |
