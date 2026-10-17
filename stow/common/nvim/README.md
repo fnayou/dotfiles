@@ -2,7 +2,7 @@
 
 A [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)-based Neovim
 configuration, themed **Catppuccin Macchiato** (blue accent `#8aadf4`) to match
-the rest of the terminal (alacritty / zsh / oh-my-posh / bat / eza).
+the rest of the terminal (alacritty / ghostty / zsh / oh-my-posh / bat / eza).
 
 It is meant to replace plain `vim` for local quick edits and server
 maintenance/debug, while being a full, learnable setup. Plugins are managed by

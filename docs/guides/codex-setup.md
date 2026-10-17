@@ -20,7 +20,7 @@ would deliver those machine-specific absolute paths into this repository.
 `stow/common/codex/.stow-local-ignore` lists `config.toml`, so stowing `codex` links only the theme
 and never the config, in either direction.
 
-Codex CLI theming is syntax highlighting, not terminal ANSI colors. Alacritty owns terminal colors;
+Codex CLI theming is syntax highlighting, not terminal ANSI colors. Alacritty and Ghostty own terminal colors;
 Herdr owns its UI token mapping.
 
 ---

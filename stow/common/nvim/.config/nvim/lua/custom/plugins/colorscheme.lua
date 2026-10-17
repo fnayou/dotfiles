@@ -1,5 +1,5 @@
 -- Catppuccin Macchiato — matches the repo-wide terminal identity
--- (alacritty / zsh / oh-my-posh / bat / eza). Blue is the accent;
+-- (alacritty / ghostty / zsh / oh-my-posh / bat / eza). Blue is the accent;
 -- macchiato Blue = #8aadf4.
 --
 -- This file overrides kickstart's default Tokyonight colorscheme.
