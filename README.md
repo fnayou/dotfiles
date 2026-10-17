@@ -13,25 +13,27 @@ Private, safe, cross-platform personal dotfiles for **macOS**, **EndeavourOS / A
 
 macOS is the primary environment; Arch is supported from the start, and Debian runs on all servers.
 Configs are version-controlled
-in `stow/common/` and only ever symlinked into `$HOME` by a **deliberate, manual** Stow step —
-never automatically.
+in `stow/common/` and `stow/macos/`, and only ever symlinked into `$HOME` by a **deliberate,
+manual** Stow step — never automatically.
 
 ## Status
 
 ```
 Claude Code operating layer:    complete
 GNU Stow scaffold:              created
-Managed packages:               see stow/common/
-Home directory:                 stowed — all common packages linked
+Managed packages:               see stow/common/ and stow/macos/
+Home directory:                 stowed — all common packages linked except ghostty
 ```
 
-`stow/common/` is the source of truth for which packages exist. All common packages are stowed:
-live symlinks point from `$HOME` into the repo. Stow is still always a deliberate, manual step.
+`stow/common/` and `stow/macos/` are the source of truth for which packages exist. All common
+packages except `ghostty` are stowed: live symlinks point from `$HOME` into the repo. `ghostty` and
+the macOS-only `stow/macos/ghostty` are added, not yet stowed. Stow is still always a deliberate,
+manual step.
 
 ## What's included
 
-Each package is self-contained and carries its own README. `stow/macos/`, `stow/arch/`, and
-`stow/debian/` are reserved for platform-specific packages and are currently empty.
+Each package is self-contained and carries its own README. `stow/macos/` holds `ghostty`;
+`stow/arch/` and `stow/debian/` are reserved for platform-specific packages and are currently empty.
 
 | Package | What it manages | Details | Guide |
 |---|---|---|---|
@@ -41,6 +43,7 @@ Each package is self-contained and carries its own README. `stow/macos/`, `stow/
 | **claude** | Claude Code status line — OS · model · path · git · PR/MR · context % · rtk savings segments, mirrors the Catppuccin Macchiato prompt | [README](stow/common/claude/README.md) | [guide](docs/guides/claude-setup.md) |
 | **codex** | Codex CLI config — Catppuccin Macchiato blue syntax theme (stowed) plus a config template synced with `task codex:sync`, never stowed itself | [README](stow/common/codex/README.md) | [guide](docs/guides/codex-setup.md) |
 | **eza** | eza `ls` replacement — Catppuccin Macchiato (Blue) color theme | [README](stow/common/eza/README.md) | [guide](docs/guides/eza-setup.md) |
+| **ghostty** | Ghostty terminal — window, font, keybinds, Catppuccin Macchiato theme; macOS-only options in `stow/macos/ghostty` | [README](stow/common/ghostty/README.md) · [macOS README](stow/macos/ghostty/README.md) | [guide](docs/guides/ghostty-setup.md) |
 | **git** | Portable Git config — settings, aliases, global ignore (no secrets) | [README](stow/common/git/README.md) | [guide](docs/guides/git-setup.md) |
 | **herdr** | Herdr agent multiplexer — theme, terminal, UI, toast | [README](stow/common/herdr/README.md) | [guide](docs/guides/herdr-setup.md) |
 | **nvim** | Neovim config — Catppuccin Macchiato (Lua), managed plugins | [README](stow/common/nvim/README.md) | — |
@@ -57,7 +60,7 @@ Setup guides are written for a human operator, not for agents.
 - [Doctor](docs/guides/doctor.md) — `task doctor`, a read-only health check answering "is this machine set up the way the repo intends?".
 - [Packages setup](docs/guides/packages-setup.md) — install the tools every package depends on (`git`, `stow`, `go-task`, …).
 - [GNU Stow usage](docs/stow-usage.md) — dry-run workflow, install steps, conflict handling, adding packages.
-- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [bat](docs/guides/bat-setup.md) · [btop](docs/guides/btop-setup.md) · [claude](docs/guides/claude-setup.md) · [codex](docs/guides/codex-setup.md) · [eza](docs/guides/eza-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [zsh](docs/guides/zsh-setup.md).
+- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [bat](docs/guides/bat-setup.md) · [btop](docs/guides/btop-setup.md) · [claude](docs/guides/claude-setup.md) · [codex](docs/guides/codex-setup.md) · [eza](docs/guides/eza-setup.md) · [ghostty](docs/guides/ghostty-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [zsh](docs/guides/zsh-setup.md).
 - [Speed test setup](docs/guides/speedtest-setup.md) — optional `cloudflare-speed-cli` helpers (`speed`, `speed-json`, `speed-log`, `speed-history`) shipped by the zsh package.
 - [Agent tooling setup](docs/guides/agent-tooling-setup.md) — optional `rtk`, `caveman`, and Matt Pocock's skills, and how each is activated in Claude Code, opencode, and Codex CLI. Not Stow packages.
 - [Shell dependencies](docs/shell-dependencies.md) · [Zsh migration notes](docs/zsh-migration.md).
@@ -82,7 +85,7 @@ overwrites existing files. See the [Stow usage guide](docs/stow-usage.md) for fu
 
 ## Safety
 
-- All `stow/common/` packages are stowed; symlinks point from `$HOME` into the repo.
+- All `stow/common/` packages except `ghostty` are stowed; symlinks point from `$HOME` into the repo.
 - Stow and symlink operations happen only with explicit per-session approval and a reviewed plan.
 - No secrets, credentials, or private hostnames are committed.
 - Local-only and sensitive values live in unstowed `.example` templates that you copy and fill in.
@@ -102,7 +105,7 @@ approval and an approved plan.
 .claude/          Claude Code agents, rules, and skills
 stow/
   common/         Packages that work on all platforms (source of truth)
-  macos/          macOS-specific packages (empty)
+  macos/          macOS-specific packages
   arch/           Arch / EndeavourOS-specific packages (empty)
   debian/         Debian-specific packages (empty)
 docs/
