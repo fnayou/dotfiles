@@ -28,6 +28,9 @@ Add the common Stow package `stow/common/ghostty/` and the macOS-only Stow packa
   REPO="$(git rev-parse --show-toplevel)"
   ```
 
+  Every block that uses `$REPO` repeats this line at its top, so it works in a shell that does
+  not keep variables between blocks.
+
 - Ghostty 1.3.1 is installed on macOS at `/Applications/Ghostty.app`. Validation uses
   `/Applications/Ghostty.app/Contents/MacOS/ghostty`. The binary is not on `PATH` on macOS.
 - `$HOME/.config/ghostty` does not exist on the macOS machine. Task 1 confirms this.
@@ -65,6 +68,7 @@ Builder stops at the first result that differs from **Expected** and reports the
 Files: none. Read-only.
 
 ```bash
+# macOS
 REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" branch --show-current
 git -C "$REPO" status --porcelain
@@ -82,6 +86,16 @@ command -v stow >/dev/null && echo "PASS: stow found" || echo "FAIL: stow missin
 
 Expected: branch `feat/ghostty-package`; empty `status --porcelain`; seven `PASS:` lines and no
 `FAIL:` line; Ghostty version line names `1.3.1`.
+
+Then record the untouched state of the Application Support file and the app bundle (read-only):
+
+```bash
+# macOS
+wc -c < "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+codesign --verify --deep --strict /Applications/Ghostty.app; echo "exit=$?"
+```
+
+Expected: `0`; `exit=0`. Both outputs are recorded in the implementation review (Task 24).
 
 Rollback: nothing to undo.
 
@@ -103,11 +117,13 @@ Expected: `config-file = ?macos.ghostty`; `5`; `0`.
 Rollback (uncommitted, new file):
 
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" clean -n -- stow/common/ghostty/.config/ghostty/config.ghostty
 ```
 
 ⚠️  MANUAL STEP — review before running
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" clean -f -- stow/common/ghostty/.config/ghostty/config.ghostty
 ```
 
@@ -198,6 +214,7 @@ The block refuses to run if the target already exists (file or symlink), so noth
 overwritten. `/bin/cp -n` is a second guard.
 
 ```bash
+# macOS
 (
   set -eu
   SRC="$HOME/Downloads/ghosty.icns"
@@ -267,7 +284,13 @@ Files: none in the repository. Launching `Ghostty.app` writes app state under `~
 step does not claim to leave `$HOME` untouched. That is why only the operator runs it.
 
 Before: quit Ghostty fully (Cmd+Q on every window). Confirm `~/.config/ghostty` is still absent
-(Task 1), so a custom icon can come only from the fake home.
+(Task 1), so a custom icon can come only from the fake home. Run the block from Alacritty or
+Terminal.app, not from Ghostty, since Ghostty must be fully quit first.
+
+Launching the GUI by running the bundle binary from a shell is not verified by PRD 0028 or
+Architecture 0026. The block therefore ends with a neutral `DONE:` line, not `PASS:`; the operator
+states explicitly whether a new Ghostty window opened. Do not switch to `open -na Ghostty.app --env
+…`: `open` returns at once, so the `trap` would delete the fake home while Ghostty still reads it.
 
 ⚠️  MANUAL STEP — review before running
 ```bash
@@ -285,12 +308,14 @@ Before: quit Ghostty fully (Cmd+Q on every window). Confirm `~/.config/ghostty` 
   echo "Fake home: ${FAKE_HOME:?}. Do Tasks 12 and 13 in the new window, then quit Ghostty (Cmd+Q)."
   XDG_CONFIG_HOME="${FAKE_HOME:?}/.config" /Applications/Ghostty.app/Contents/MacOS/ghostty \
     || echo "NOTE: ghostty exited with $?"
-  echo "PASS: fake-home launch session ended"
+  echo "DONE: fake-home launch session ended"
 )
 ```
 
 In the new Ghostty window, check and write down:
 
+0. Window: did a new Ghostty window open (yes or no)? If no, stop and record it; answers 1 to 5
+   and Task 13 cannot be given.
 1. Dock and app switcher icon: custom ("Ghostty Darken") or official. Custom means the
    `macos-custom-icon` default follows `XDG_CONFIG_HOME`. Official means it follows the literal
    `~` (or the icon did not load); Task 23 then settles the icon on the real stow.
@@ -300,8 +325,9 @@ In the new Ghostty window, check and write down:
 4. Keys: Option+N types `~`; Option+Shift+L types `|`; Shift+Enter at the prompt sends a newline.
 5. Finder icon of `/Applications/Ghostty.app`: unchanged (expected).
 
-Expected: the block ends with `PASS: fake-home launch session ended`. Each answer above is
-recorded in the implementation review (Task 24) as observed, custom icon or not.
+Expected: the block ends with `DONE: fake-home launch session ended`, and the operator answers
+"yes" to answer 0. Each answer above is recorded in the implementation review (Task 24) as
+observed, custom icon or not.
 
 Rollback: the `trap` removes the fake home after Ghostty quits. Nothing in the repository changes.
 
@@ -350,7 +376,8 @@ misbehaving key.
   mapping row.
 
 After a change, re-run check 1, check 3 steps 2 and 3, and the `tail` and `macos-` lines of check
-6, and ask the operator to repeat Task 13 for the changed keys.
+6, and ask the operator to re-run Task 12, then Task 13 for the changed keys (the Task 12 fake
+home is already removed, so Task 13 cannot be repeated on its own).
 
 Expected: no change, or the added lines pass check 1 (`exit=0`) and check 3, and the last line is
 still `config-file = ?macos.ghostty`.
@@ -374,9 +401,11 @@ grep -n 'macos/, arch/, debian/ empty\|`macos/`, `arch/`, `debian/` empty' AGENT
 
 Expected: the first two commands match in both files; the third prints nothing.
 
-Rollback:
+Rollback (discards uncommitted edits with no recovery):
 
+⚠️  MANUAL STEP — review before running
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" restore -- AGENTS.md CLAUDE.md
 ```
 
@@ -411,9 +440,11 @@ Expected: ghostty appears on the lines for edits 3 to 8; `(empty)` appears only 
 `arch/` and `debian/` lines; `currently empty` (if still present) names only `stow/arch/` and
 `stow/debian/`.
 
-Rollback:
+Rollback (discards uncommitted edits with no recovery):
 
+⚠️  MANUAL STEP — review before running
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" restore -- README.md
 ```
 
@@ -422,27 +453,33 @@ git -C "$REPO" restore -- README.md
 Files: commit only. One commit, per `.claude/rules/status-sync.md`.
 
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" add stow/common/ghostty stow/macos/ghostty AGENTS.md CLAUDE.md README.md
 git -C "$REPO" status --porcelain
 git -C "$REPO" diff --staged --stat
 git -C "$REPO" diff --staged --check && echo "PASS: no whitespace errors"
 ```
 
-Run the privacy checklist (`.claude/rules/privacy.md`) on `git -C "$REPO" diff --staged`, and the
-status-sync self-check. Show the staged stat to the operator. Commit only after the operator
-approves:
+Run **Validation Commands → Repository checks**. Run the privacy checklist
+(`.claude/rules/privacy.md`) on `git -C "$REPO" diff --staged`, and the status-sync self-check.
+Show the staged stat to the operator. Commit only after the operator approves:
 
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" commit -m "feat(ghostty): add common and macOS Ghostty stow packages"
 ```
 
 Expected staged files (11): the 4 common package files, the 4 macOS package files (including the
 binary `Ghostty.icns`), `AGENTS.md`, `CLAUDE.md`, `README.md`. Nothing else.
+`PASS: no whitespace errors` is printed, and the Repository checks give their expected output.
 
-Rollback: before commit, `git -C "$REPO" restore --staged -- <path>`. After commit:
+Rollback: before commit, `git -C "$REPO" restore --staged -- <path>`. After commit, with `<sha>`
+the commit-1 SHA:
 
 ```bash
-git -C "$REPO" revert --no-edit HEAD
+REPO="$(git rev-parse --show-toplevel)"
+git -C "$REPO" revert --no-commit <sha>
+git -C "$REPO" commit -m "revert(ghostty): remove Ghostty stow packages" -m "Refs: <sha>"
 ```
 
 ### Task 18 — Create `docs/guides/ghostty-setup.md` (Builder)
@@ -470,20 +507,29 @@ Rollback: as Task 2, with this file's path.
 ### Task 19 — Commit 2: the setup guide (Builder)
 
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" add docs/guides/ghostty-setup.md
 git -C "$REPO" diff --staged --stat
 ```
 
-Show the staged stat to the operator; commit after approval:
+Run **Validation Commands → Repository checks**. Show the staged stat to the operator; commit
+after approval:
 
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" commit -m "docs(guides): add Ghostty setup guide"
 ```
 
-Expected: one file staged.
+Expected: one file staged; the Repository checks give their expected output.
 
 Rollback: before commit, `git -C "$REPO" restore --staged -- docs/guides/ghostty-setup.md`. After
-commit, `git -C "$REPO" revert --no-edit HEAD`.
+commit, with `<sha>` the commit-2 SHA:
+
+```bash
+REPO="$(git rev-parse --show-toplevel)"
+git -C "$REPO" revert --no-commit <sha>
+git -C "$REPO" commit -m "revert(guides): remove Ghostty setup guide" -m "Refs: <sha>"
+```
 
 ### Task 20 — Update `docs/stow-usage.md` and the website pages (Builder)
 
@@ -495,8 +541,7 @@ Files — modified:
   new "Installing the ghostty package" section after the alacritty one, covering both packages.
 - `website/index.md` — "Terminal" row.
 - `website/features/index.md` — "Terminal" row and the Catppuccin Macchiato tool list.
-- `website/features/terminal.md` — Ghostty section next to Alacritty, with dry-run and install
-  (install fences marked).
+- `website/features/terminal.md` — Ghostty section next to Alacritty, with dry-run and install.
 - `website/features/packages.md` — Codex note: Ghostty owns terminal colors too.
 - `website/usage/daily-workflow.md` — Ghostty starts the same login zsh.
 - `website/reference/stow.md` — package tree, `--no-folding` list, the "Platform directories are
@@ -513,38 +558,60 @@ Files — modified:
 no `--no-folding`; pages that show it for ghostty say to use the explicit `stow -v … --no-folding`
 command for the real dry-run.
 
+In both `docs/stow-usage.md` and `website/features/terminal.md`, every install and `stow --delete`
+fence has `⚠️  MANUAL STEP — review before running` on the line directly above it.
+
 ```bash
 grep -rn 'currently empty\|(empty)\|only `.gitkeep`' docs/stow-usage.md website/
 grep -rln -i 'ghostty' docs/stow-usage.md website/
+grep -B1 -n '^```bash' docs/stow-usage.md website/features/terminal.md
 ```
 
 Expected: the first command matches no line that names `stow/macos/` or `macos/` as empty; the
 second lists `docs/stow-usage.md` and at least the eight pages from `website/index.md` to
-`website/reference/troubleshooting.md` above.
+`website/reference/troubleshooting.md` above; in the third, each install and `stow --delete` fence
+is preceded by the marker line.
 
-Rollback:
+Rollback (discards uncommitted edits with no recovery; the explicit list leaves unrelated edits
+under `website/` alone):
 
+⚠️  MANUAL STEP — review before running
 ```bash
-git -C "$REPO" restore -- docs/stow-usage.md website/
+REPO="$(git rev-parse --show-toplevel)"
+git -C "$REPO" restore -- docs/stow-usage.md website/index.md website/features/index.md \
+  website/features/terminal.md website/features/packages.md website/usage/daily-workflow.md \
+  website/reference/stow.md website/reference/supported-systems.md \
+  website/reference/troubleshooting.md website/reference/repository-structure.md \
+  website/getting-started.md website/installation.md
 ```
 
 ### Task 21 — Commit 3: documentation and website mentions (Builder)
 
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" add docs/stow-usage.md website/
 git -C "$REPO" diff --staged --stat
 ```
 
-Show the staged stat to the operator; commit after approval:
+Run **Validation Commands → Repository checks**. Show the staged stat to the operator; commit
+after approval:
 
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" commit -m "docs: add Ghostty to stow usage and website pages"
 ```
 
-Expected: only the files listed in Task 20 are staged.
+Expected: only the files listed in Task 20 are staged; the Repository checks give their expected
+output.
 
-Rollback: before commit, `git -C "$REPO" restore --staged -- <path>`. After commit,
-`git -C "$REPO" revert --no-edit HEAD`.
+Rollback: before commit, `git -C "$REPO" restore --staged -- <path>`. After commit, with `<sha>`
+the commit-3 SHA:
+
+```bash
+REPO="$(git rev-parse --show-toplevel)"
+git -C "$REPO" revert --no-commit <sha>
+git -C "$REPO" commit -m "revert(docs): remove Ghostty from stow usage and website pages" -m "Refs: <sha>"
+```
 
 ### Task 22 — Real dry-run of both packages (operator)
 
@@ -592,6 +659,7 @@ stow --dir=stow/macos --target="$HOME" --no-folding ghostty; echo "exit=$?"
 Then check (read-only):
 
 ```bash
+# macOS
 test -d "$HOME/.config/ghostty" && test ! -L "$HOME/.config/ghostty" \
   && test ! -L "$HOME/.config/ghostty/themes" && echo "PASS: real directories" || echo "FAIL: real directories"
 readlink "$HOME/.config/ghostty/config.ghostty" "$HOME/.config/ghostty/themes/catppuccin-macchiato" \
@@ -619,16 +687,38 @@ stow --dir=stow/common --target="$HOME" --delete ghostty
 
 ### Task 24 — Implementation review (Reviewer)
 
-Files: `docs/reviews/NNNN-ghostty-configuration-implementation-review.md` — created (next free
-number, expected `0083`); `docs/plans/0031-implement-ghostty-configuration.md` and
-`docs/plans/README.md` — status changed by the Reviewer only.
+Files: `docs/reviews/NNNN-ghostty-configuration-implementation-review.md` — created (the next
+free number under `docs/reviews/`, expected `0085`, since `0084` is taken by the plan confirmation
+review); `docs/plans/0031-implement-ghostty-configuration.md` and `docs/plans/README.md` — status
+changed by the Reviewer only.
+
+Before writing the review, record again that the Application Support file and the app bundle are
+untouched (read-only):
+
+```bash
+# macOS
+wc -c < "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+codesign --verify --deep --strict /Applications/Ghostty.app; echo "exit=$?"
+```
+
+Expected: `0`; `exit=0`.
 
 The review records: raw outputs of Tasks 1, 8, 10, 11, 22, 23; the operator results of Tasks 12,
-13, and 23 (icon and `XDG_CONFIG_HOME` answer, login shell, keys, numpad table, Dock and Finder
-icon); the Task 14 outcome; the three commit SHAs. It sets this plan Complete only with no blocking
-issue.
+13, and 23 (window opened, icon and `XDG_CONFIG_HOME` answer, login shell, keys, numpad table, Dock
+and Finder icon); the Task 14 outcome; the three commit SHAs; the `wc -c` and `codesign` outputs
+from Task 1 and from this task. It sets this plan Complete only with no blocking issue.
 
-Rollback: `git -C "$REPO" revert --no-edit <review commit>`.
+The review also records as a follow-up that `Taskfile.yml:67` describes `task dry-run` as
+"AREA=<common> … (macos/arch/debian are future areas)", which is stale once `stow/macos/ghostty`
+exists (review 0083 suggestion 10). This plan does not change `Taskfile.yml`.
+
+Rollback, with `<sha>` the review commit SHA:
+
+```bash
+REPO="$(git rev-parse --show-toplevel)"
+git -C "$REPO" revert --no-commit <sha>
+git -C "$REPO" commit -m "revert(reviews): remove Ghostty implementation review" -m "Refs: <sha>"
+```
 
 ### Task 25 — Follow-up: status blocks after the first stow (Builder, on operator request)
 
@@ -638,13 +728,31 @@ Only after Task 23 succeeded and the operator asks. This is a "first stowed" eve
 status lines, in one separate commit:
 
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" add AGENTS.md CLAUDE.md README.md
+git -C "$REPO" diff --staged --stat
+git -C "$REPO" diff --staged
+```
+
+Run the privacy checklist (`.claude/rules/privacy.md`) on the staged diff and the status-sync
+self-check (`.claude/rules/status-sync.md`; this is a "first stowed" event, so both status blocks
+change in this commit). Show the staged stat to the operator. Commit only after the operator
+approves:
+
+```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" commit -m "docs: mark Ghostty packages as stowed"
 ```
 
 If the two packages are stowed in separate sessions, each first stow gets its own status commit.
 
-Rollback: `git -C "$REPO" revert --no-edit HEAD`.
+Rollback, with `<sha>` the follow-up commit SHA:
+
+```bash
+REPO="$(git rev-parse --show-toplevel)"
+git -C "$REPO" revert --no-commit <sha>
+git -C "$REPO" commit -m "revert(docs): mark Ghostty packages as not stowed" -m "Refs: <sha>"
+```
 
 ## Commit Grouping
 
@@ -720,6 +828,7 @@ Run from the repository root. Read-only unless stated.
 ### Checks 1 and 2 — `+validate-config` on the repo files
 
 ```bash
+# macOS
 GHOSTTY=/Applications/Ghostty.app/Contents/MacOS/ghostty
 "$GHOSTTY" +validate-config \
   --config-file=stow/common/ghostty/.config/ghostty/config.ghostty; echo "exit=$?"
@@ -753,7 +862,8 @@ repository and `$HOME`.
 
 ⚠️  MANUAL STEP — review before running
 ```bash
-# Step 2 — common package only (Arch case): theme by name, optional include skipped
+# macOS — Step 2: common package only (simulates the Arch layout)
+# Theme by name, optional include skipped
 (
   set -eu
   test -d stow/common/ghostty || { echo "FAIL: run from the repository root"; exit 1; }
@@ -880,7 +990,10 @@ Expected: ten `PASS:` lines and no `FAIL:` line.
 
 ### Repository checks
 
+Run in Tasks 17, 19, and 21, before each commit.
+
 ```bash
+REPO="$(git rev-parse --show-toplevel)"
 git -C "$REPO" diff --check && echo "PASS: no whitespace errors"
 task check:decisions; echo "exit=$?"
 git -C "$REPO" status --porcelain
@@ -897,10 +1010,14 @@ the commits of Tasks 17, 19, and 21 appear in order.
 - **Before commit, new files** (Tasks 2–9, 18): preview with `git -C "$REPO" clean -n -- <path>`,
   then remove with `git -C "$REPO" clean -f -- <path>` (`-fd` for a directory) under the
   `⚠️  MANUAL STEP` marker. Only repository paths.
-- **Before commit, modified files** (Tasks 15, 16, 20): `git -C "$REPO" restore -- <path>`.
-  Staged: `git -C "$REPO" restore --staged -- <path>` first.
-- **After commit** (Tasks 17, 19, 21, 25): `git -C "$REPO" revert --no-edit <sha>`, newest first.
-  Reverting commit 1 reverts the status blocks with the packages, so they stay in sync.
+- **Before commit, modified files** (Tasks 15, 16, 20): `git -C "$REPO" restore -- <path>` under
+  the `⚠️  MANUAL STEP` marker, since it discards uncommitted edits with no recovery; name explicit
+  files, not a directory. Staged: `git -C "$REPO" restore --staged -- <path>` first.
+- **After commit** (Tasks 17, 19, 21, 24, 25): `git -C "$REPO" revert --no-commit <sha>`, then
+  `git -C "$REPO" commit -m "revert(<scope>): <description>" -m "Refs: <sha>"` with the subject
+  given in that task, newest first. Never `revert --no-edit`: its default `Revert "…"` subject
+  breaks Conventional Commits. Reverting commit 1 reverts the status blocks with the packages, so
+  they stay in sync.
 - **Fake-home blocks** (Tasks 11, 12): the `trap` removes the `mktemp -d` directory. A leftover
   directory is outside the repository and `$HOME`; the operator removes it after looking at the
   path.
