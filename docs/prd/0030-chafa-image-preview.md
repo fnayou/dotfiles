@@ -1,7 +1,7 @@
 # PRD: Image Preview in the Terminal with chafa
 
 **Number:** 0030
-**Status:** Draft
+**Status:** Approved
 **Date:** 2026-10-19
 
 ## Problem Statement
