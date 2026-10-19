@@ -5,6 +5,7 @@
 **Date:** 2026-10-19
 **PRD:** [0030-chafa-image-preview](../prd/0030-chafa-image-preview.md) (Approved)
 **Architecture:** none — PRD 0030 adds no package or layout decision (reviews 0090, 0091)
+**Plan review:** [0092](../reviews/0092-chafa-image-preview-plan-review.md)
 
 ## Objective
 
@@ -35,22 +36,33 @@ unchanged, list chafa in the package manifests, and document it.
 
 ### Task 1 — Check Debian's apt chafa (1.14.5) accepts the flags
 
-Debian trixie ships chafa 1.14.5; machines on Homebrew on Linux get 1.18.x. Run in a throwaway
-container (read-only mount, nothing written to the repo):
+Debian trixie ships chafa 1.14.5; machines on Homebrew on Linux get 1.18.x. The check runs in a
+throwaway container: chafa is installed only inside it, the repo images are mounted read-only, and
+nothing is written to the repo. The host does change: Docker pulls the `debian:trixie` image.
 
+⚠️  MANUAL STEP — pulls the debian:trixie image into Docker on this machine (remove later with `docker image rm debian:trixie`)
 ```bash
 # macOS (Docker Desktop)
-docker run --rm -v "$PWD/website/assets/images:/img:ro" debian:trixie sh -c '
-  apt-get update -qq && apt-get install -y -qq chafa >/dev/null &&
-  chafa --version | head -1 &&
-  chafa -f kitty --animate off -s x10 /img/dotfiles-readme-banner.png | head -c 8 | od -c | head -1 &&
-  chafa --animate off -s x10 /img/dotfiles-readme-banner.png | wc -l &&
-  chafa --animate off -s x10 ./--missing.png; echo "exit=$?"'
+docker run --rm -v "$PWD/website/assets/images:/img:ro" debian:trixie bash -c '
+  set -euo pipefail
+  apt-get update -qq
+  apt-get install -y -qq chafa >/dev/null
+  chafa --version | head -1
+  chafa -f kitty --animate off -s x10 /img/dotfiles-readme-banner.png > /tmp/kitty.out
+  head -c 3 /tmp/kitty.out | od -c | head -1
+  chafa --animate off -s x10 /img/dotfiles-readme-banner.png > /tmp/symbols.out
+  wc -l < /tmp/symbols.out
+  if chafa --animate off -s x10 ./--missing.png 2>/dev/null; then
+    echo "missing-file: accepted"; exit 1
+  fi
+  echo "missing-file: rejected"'
+echo "exit=$?"
 ```
 
-Expect: `Chafa version 1.14.5`, kitty output starting with `033 _ G`, 10 lines of symbol output,
-and a non-zero exit for the missing file. **Stop and report** if any flag is rejected; the block in
-Task 2 would then need a version-dependent option list, which this plan does not cover.
+Expect: `Chafa version 1.14.5`, an `od` line starting `033   _   G` (kitty graphics), `10`,
+`missing-file: rejected`, and `exit=0`. Any rejected flag ends the script early with a non-zero
+`exit=`. **Stop and report** in that case: the block in Task 2 would then need a version-dependent
+option list, which this plan does not cover.
 
 ### Task 2 — Add the image preview block to `aliases.zsh`
 
@@ -192,8 +204,20 @@ Add a `## Image preview (chafa)` section to `stow/common/zsh/README.md` before
 
 - `docs/guides/zsh-setup.md:82` — extend the bat row, or add a chafa row: `aliases.zsh` — image
   routing for `cat` and image suffix aliases, guarded by `command -v chafa`.
-- `docs/guides/packages-setup.md` — add a `chafa` row to the optional tools table (after `bat`):
-  "terminal image viewer (`cat` and suffix aliases for images)".
+- `docs/guides/packages-setup.md`:
+  - add a `chafa` row to the optional tools table (after `bat`): "terminal image viewer (`cat`
+    and suffix aliases for images)";
+  - add `chafa` after `bat` in the "This installs all tools in one step" sentence (line 67), in
+    `sudo pacman -S git stow go-task git-cliff fzf zoxide eza bat` (line 99), in
+    `sudo apt install git stow fzf zoxide eza bat` (line 157), and as one line in each of the three
+    "individual tools" lists (`brew install chafa`, `sudo pacman -S chafa`, `sudo apt install chafa`).
+- `Taskfile.yml` — `task deps:arch` and `task deps:debian` print the install line as text. Add
+  `chafa` after `bat` in both:
+  - line 191: `echo "  sudo pacman -S git stow go-task git-cliff fzf zoxide eza bat \\"`
+    → `echo "  sudo pacman -S git stow go-task git-cliff fzf zoxide eza bat chafa \\"`
+  - line 230: `echo "  sudo apt install git stow fzf zoxide eza bat \\"`
+    → `echo "  sudo apt install git stow fzf zoxide eza bat chafa \\"`
+  `task deps:brew` needs no change: it points at `packages/Brewfile`.
 
 ### Task 8 — Update the website
 
@@ -217,33 +241,37 @@ bash -n scripts/check-zsh-deps.sh && bash scripts/check-zsh-deps.sh | grep chafa
 Pipe and redirect safety with the real tools (run in a terminal, `zsh -i`):
 
 ```bash
-cp website/assets/images/dotfiles-readme-banner.png "${TMPDIR:-/tmp}/p.png"
-cd "${TMPDIR:-/tmp}"
-cat p.png | cmp - p.png && echo pipe-ok
-t=$(mktemp) && cat p.png > "$t" && cmp "$t" p.png && echo redirect-ok; rm -f "$t"
+p=website/assets/images/dotfiles-readme-banner.png
+cat "$p" | cmp - "$p" && echo pipe-ok
+t=$(mktemp) && cat "$p" > "$t" && cmp "$t" "$p" && echo redirect-ok
 ```
+
+The redirect target is a `mktemp` file in `$TMPDIR`. The plan does not delete it: `rm` outside the
+repository is forbidden (`.claude/rules/safety.md`), and the OS clears `$TMPDIR`.
 
 Routing with stub commands under a pseudo-terminal (no real image output needed). Create the
 harness in a temporary directory:
 
 ```bash
 D=$(mktemp -d)
-mkdir -p "$D/bin" "$D/nobat" "$D/w"
+mkdir -p "$D/bin" "$D/nobat" "$D/nochafa" "$D/w"
 printf '#!/bin/sh\necho "CHAFA $*"\n' > "$D/bin/chafa"
 printf '#!/bin/sh\necho "BAT $*"\n'   > "$D/bin/bat"
-cp "$D/bin/chafa" "$D/nobat/chafa"
-chmod +x "$D"/bin/* "$D"/nobat/*
-: > "$D/w/a.png"; : > "$D/w/B.JPG"; : > "$D/w/n.md"; : > "$D/w/-x.png"
+/bin/cp "$D/bin/chafa" "$D/nobat/chafa"
+/bin/cp "$D/bin/bat" "$D/nochafa/bat"
+chmod +x "$D"/bin/* "$D"/nobat/* "$D"/nochafa/*
+: > "$D/w/a.png"; : > "$D/w/B.JPG"; : > "$D/w/Photo.Png"; : > "$D/w/n.md"; : > "$D/w/-x.png"
 A="$PWD/stow/common/zsh/.config/zsh/aliases.zsh"
 run() {  # $1 = stub dir, $2 = command line
   printf '%s\n' "PATH=$1:/usr/bin:/bin; LINES=40; alias cat=bat; source $A; cd $D/w" "$2" > "$D/cmd.zsh"
   env -u TERM_PROGRAM script -q /dev/null zsh -f "$D/cmd.zsh" </dev/null | tr -d '\r' | sed 's/\^D//g'
 }
 for c in 'cat n.md' 'cat -l md n.md' 'cat a.png n.md' 'cat -n a.png n.md' 'cat B.JPG' \
-         'TERM_PROGRAM=herdr cat a.png' 'cat -- -x.png' './a.png' './B.JPG'; do
+         'cat Photo.Png' 'TERM_PROGRAM=herdr cat a.png' 'cat -- -x.png' './a.png' './B.JPG'; do
   printf '[%s] => %s\n' "$c" "$(run "$D/bin" "$c" | tr '\n' ';')"
 done
 printf '[no bat] => %s\n' "$(run "$D/nobat" 'cat a.png n.md' | tr '\n' ';')"
+printf '[no chafa] => %s\n' "$(run "$D/nochafa" 'whence -w cat; cat a.png; alias -s | grep -c imgview' | tr '\n' ';')"
 ```
 
 Expected (prototype results):
@@ -255,14 +283,16 @@ Expected (prototype results):
 | `cat a.png n.md` | `CHAFA --animate off -s x36 a.png;BAT n.md` |
 | `cat -n a.png n.md` | `CHAFA --animate off -s x36 a.png;BAT -n n.md` |
 | `cat B.JPG` | `CHAFA --animate off -s x36 B.JPG` |
+| `cat Photo.Png` | `CHAFA --animate off -s x36 Photo.Png` |
 | `TERM_PROGRAM=herdr cat a.png` | `CHAFA -f kitty --animate off -s x36 a.png` |
 | `cat -- -x.png` | `CHAFA --animate off -s x36 ./-x.png` |
 | `./a.png`, `./B.JPG` | `CHAFA --animate off -s x36 ./a.png` (and `./B.JPG`) |
 | no bat: `cat a.png n.md` | `CHAFA … a.png` then the real `cat` of `n.md` (empty) |
+| no chafa | `cat: alias;BAT a.png;0` — the bat alias stays, no image suffix alias |
 
 The `aliases.zsh` file also defines `ls`/`ll` aliases and `chpwd`; the stub `PATH` has no `eza`, so
-those take their fallback branch. Remove the harness afterwards with `rm -r "$D"` (inside
-`$TMPDIR`, never `$HOME`).
+those take their fallback branch. The harness stays in its `mktemp -d` directory under `$TMPDIR`;
+the plan does not delete it (no `rm` outside the repository), and the OS clears `$TMPDIR`.
 
 ### Task 10 — Operator visual checks
 
@@ -287,7 +317,8 @@ Small commits, Conventional Commits, no AI attribution, audit each staged diff f
 2. `feat(zsh): show images with chafa from cat and suffix aliases` — `aliases.zsh`.
 3. `feat(packages): add chafa to the package manifests` — the three manifests.
 4. `feat(deps): report chafa as an optional shell tool` — `scripts/check-zsh-deps.sh`.
-5. `docs: document chafa image preview` — README, `docs/shell-dependencies.md`, guides, website.
+5. `docs: document chafa image preview` — README, `docs/shell-dependencies.md`, guides, website,
+   and the `Taskfile.yml` install lines.
 
 ## Files Affected
 
@@ -302,6 +333,7 @@ Small commits, Conventional Commits, no AI attribution, audit each staged diff f
 - `docs/guides/packages-setup.md` — modified
 - `website/usage/aliases.md` — modified
 - `website/features/shell.md` — modified
+- `Taskfile.yml` — modified (`deps:arch`, `deps:debian` install lines)
 - `docs/plans/README.md` — modified (index row)
 - `docs/plans/0033-implement-chafa-image-preview.md` — created
 
@@ -314,8 +346,9 @@ No file is deleted. No new file outside `docs/plans/`.
 - No `stow` run, no `--adopt`, no `rm`/`mv`/`ln -s` against `$HOME`. `aliases.zsh` is already
   linked into `$HOME` through the stowed `zsh` package, so the edit is live in new shells without
   any stow command.
-- No package is installed by any script or task. Task 1 installs chafa only inside a throwaway
-  container.
+- No package is installed on the host by any script or task. Task 1 installs chafa only inside a
+  throwaway container; it is a marked manual step because Docker pulls `debian:trixie`.
+- No `rm` outside the repository: Task 9 leaves its temporary files to the OS.
 - The block is guarded by `command -v chafa`; without chafa the shell is unchanged.
 - No status-block change: no package is added, removed or first stowed.
 - Every staged diff is checked for hostnames, user paths and secrets.
