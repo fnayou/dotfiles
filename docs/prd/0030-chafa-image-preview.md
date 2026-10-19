@@ -41,8 +41,8 @@ not show images at all. The symbol-art fallback removes that blocker.
 
 ## Non-Goals
 
-- BMP. chafa has no BMP loader of its own; it decodes BMP on macOS only through CoreGraphics, so
-  BMP would fail on Linux.
+- BMP. chafa has no BMP loader of its own; it decodes BMP on macOS only through CoreGraphics. The
+  Linux build's loader list (`AVIF GIF JPEG JXL PNG QOI SVG TIFF WebP XWD`) has no BMP.
 - Video, PDF, SVG or AVIF preview (SVG and AVIF depend on per-distro chafa build options).
 - GIF animation.
 - Image previews in fzf, fzf-tab, Neovim or file managers.
@@ -101,9 +101,13 @@ not show images at all. The symbol-art fallback removes that blocker.
 - Existing suffix aliases (`md`, `txt`, `log`) are unchanged.
 - `alias cat='bat'` must be removed before a `cat` function is defined: zsh expands an alias while
   it parses a function definition of the same name.
-- SSH does not forward `TERM_PROGRAM` by default, so chafa on a server reached from a herdr pane
-  gets symbols (accepted, Resolved Question 5). Remote herdr sessions (`herdr --remote`) are
-  untested; the plan must not claim pixels there.
+- SSH does not forward `TERM_PROGRAM` by default, so chafa on a server reached with plain `ssh`
+  from a herdr pane gets symbols (accepted, Resolved Question 5).
+- Remote herdr sessions (`herdr --remote`) behave like local herdr. Tested 2026-10-19 on a Debian
+  server (herdr 0.9.3 server, chafa 1.18.3 from Homebrew on Linux) viewed from local herdr 0.9.5 in
+  Ghostty: a remote pane has `TERM_PROGRAM=herdr`, chafa auto-detection picks symbols, and
+  `-f kitty` shows real pixels in the local Ghostty. The `TERM_PROGRAM=herdr` rule therefore covers
+  remote sessions too. Timing on a terminal: 0.22 s auto, 0.44 s kitty.
 
 ## Safety Requirements
 
@@ -119,6 +123,7 @@ not show images at all. The symbol-art fallback removes that blocker.
       `packages/debian/packages.txt`, each in that file's existing style.
 - [ ] In an interactive Ghostty shell, `cat photo.png` shows the image as pixels.
 - [ ] In herdr inside Ghostty, `cat photo.png` shows the image as pixels.
+- [ ] In a remote herdr session viewed from Ghostty, `cat photo.png` shows the image as pixels.
 - [ ] A tall image fits within the terminal height and the prompt stays visible after it.
 - [ ] `cat anim.gif` shows one still frame and returns to the prompt without `Ctrl-C`.
 - [ ] In Alacritty, `cat photo.png` shows symbol art and does not print binary noise.
