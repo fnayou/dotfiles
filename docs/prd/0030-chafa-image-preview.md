@@ -21,8 +21,13 @@ not show images at all. The symbol-art fallback removes that blocker.
 
 - chafa is listed for installation on macOS, Arch and Debian in the existing package manifests.
 - `cat` keeps its current `bat` behaviour for every non-image file, and sends image files to chafa.
-- With several files, each file is routed separately, in the order given: images to chafa, other
-  files to `bat`. Example: `cat photo.png notes.md` shows the image, then the Markdown.
+- When no argument is an existing image file, all arguments go to `bat` exactly as given, in one
+  call. This is today's behaviour, so `bat` options with values (`-l md`, `-r 1:20`, `--theme X`)
+  and `bat`'s handling of `--` and names starting with `-` are unchanged.
+- When at least one argument is an existing image file, each file is routed separately, in the order
+  given: images to chafa, other files to `bat`. Example: `cat photo.png notes.md` shows the image,
+  then the Markdown.
+- When `bat` is not on `PATH`, the text path uses the real `cat`, as today.
 - Typing an image file name alone (e.g. `photo.png`) shows it with chafa, like `notes.md` opens in
   `bat` today.
 - Images are capped to the terminal height, leaving the prompt visible, so a large image never
@@ -66,6 +71,11 @@ not show images at all. The symbol-art fallback removes that blocker.
 - `packages/Brewfile`, `packages/arch/packages.txt`, `packages/debian/packages.txt` — add `chafa`.
 - `stow/common/zsh/README.md` and `docs/shell-dependencies.md` — document the behaviour and the new
   optional dependency.
+- `docs/guides/zsh-setup.md`, `docs/guides/packages-setup.md`, `website/usage/aliases.md`,
+  `website/features/shell.md` and `website/features/packages.md` — update where they describe
+  `cat`, the suffix aliases or the package lists.
+- `scripts/check-zsh-deps.sh` (`task deps:check:zsh`) — report chafa as an optional tool, never as
+  a failure.
 - No new stow package, so no status-block change.
 
 ## Constraints
@@ -89,6 +99,11 @@ not show images at all. The symbol-art fallback removes that blocker.
   without passing `bat` options to chafa.
 - `cat` with no file argument (stdin) keeps today's behaviour.
 - Existing suffix aliases (`md`, `txt`, `log`) are unchanged.
+- `alias cat='bat'` must be removed before a `cat` function is defined: zsh expands an alias while
+  it parses a function definition of the same name.
+- SSH does not forward `TERM_PROGRAM` by default, so chafa on a server reached from a herdr pane
+  gets symbols (accepted, Resolved Question 5). Remote herdr sessions (`herdr --remote`) are
+  untested; the plan must not claim pixels there.
 
 ## Safety Requirements
 
@@ -109,13 +124,18 @@ not show images at all. The symbol-art fallback removes that blocker.
 - [ ] In Alacritty, `cat photo.png` shows symbol art and does not print binary noise.
 - [ ] `cat photo.png notes.md` shows the image, then the Markdown rendered by `bat`.
 - [ ] `cat -n notes.md` behaves exactly as `bat -n notes.md` does today.
-- [ ] `cat photo.png | cmp - photo.png` and `cat photo.png > /tmp/x && cmp /tmp/x photo.png` succeed.
+- [ ] `cat -l md notes.txt` behaves exactly as `bat -l md notes.txt` does today.
+- [ ] With `bat` not on `PATH`, `cat notes.md` prints the file as the real `cat` does.
+- [ ] `cat photo.png | cmp - photo.png` succeeds, and
+      `t=$(mktemp) && cat photo.png > "$t" && cmp "$t" photo.png; rm -f "$t"` succeeds.
 - [ ] Typing `photo.png` and `PHOTO.JPG` alone shows the image.
 - [ ] `cat Photo.Png` shows the image (case-insensitive `cat` routing).
 - [ ] With chafa removed from `PATH`, `cat` and the suffix aliases behave exactly as before this
       change.
 - [ ] `zsh -n` passes for `aliases.zsh`, and a fresh `zsh -ic ''` exits `0`.
 - [ ] The zsh README and `docs/shell-dependencies.md` document chafa as an optional dependency.
+- [ ] Every document listed in Scope matches the new behaviour.
+- [ ] `task deps:check:zsh` reports chafa as optional and does not fail without it.
 
 ## Resolved Questions
 
