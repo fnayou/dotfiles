@@ -29,16 +29,20 @@ not show images at all. The symbol-art fallback removes that blocker.
   scrolls off-screen.
 - Animated GIFs show a still frame (`--animate off`).
 - Inside herdr running in Ghostty, images render as pixels, as they do in plain Ghostty.
-- Image extensions, matched case-insensitively: `png`, `jpg`, `jpeg`, `gif`, `tif`, `tiff`, `webp`,
-  `bmp`.
+- Image extensions: `png`, `jpg`, `jpeg`, `gif`, `tif`, `tiff`, `webp`. `cat` matches them
+  case-insensitively. Suffix aliases cover lowercase and uppercase (`photo.png`, `PHOTO.PNG`); mixed
+  case such as `Photo.Png` is not covered, because zsh suffix aliases are case-sensitive.
 - Everything is guarded: a shell without chafa behaves exactly as it does today.
 
 ## Non-Goals
 
+- BMP. chafa has no BMP loader of its own; it decodes BMP on macOS only through CoreGraphics, so
+  BMP would fail on Linux.
 - Video, PDF, SVG or AVIF preview (SVG and AVIF depend on per-distro chafa build options).
 - GIF animation.
 - Image previews in fzf, fzf-tab, Neovim or file managers.
 - Changing Ghostty, Alacritty or herdr configuration.
+- herdr running inside Alacritty. The operator runs herdr only inside Ghostty.
 - Supporting an apt-installed `batcat` on Debian. Debian machines that use Homebrew on Linux get
   `bat` under its normal name from `packages/Brewfile`; the text path uses `bat` wherever it is on
   `PATH`.
@@ -72,8 +76,14 @@ not show images at all. The symbol-art fallback removes that blocker.
 - herdr 0.9.5 renders the kitty graphics protocol itself in compatible outer terminals, on by
   default (`[terminal] kitty_graphics`, herdr.dev/docs/configuration). Inside a herdr pane,
   `TERM=xterm-256color` and `TERM_PROGRAM=herdr`. chafa's `--passthrough` targets only `screen`
-  and `tmux`, so it does not apply; detection inside herdr relies on chafa's terminal probe
-  (`--probe`, default `auto`).
+  and `tmux`, so it does not apply.
+- Tested 2026-10-19 (chafa 1.18.3, herdr 0.9.5, Ghostty on macOS): herdr answers a kitty graphics
+  query (`\e_Gi=31;OK`), but chafa still picks symbols inside herdr with `--probe auto`, `--probe on`
+  and `--probe-mode ctty`. With `TERM_PROGRAM=ghostty` or `-f kitty`, chafa emits kitty graphics and
+  herdr shows real pixels. So inside herdr the routing must force kitty output; a pane cannot tell
+  which outer terminal herdr runs in.
+- When stdout is not a terminal, chafa still writes symbol art with escape sequences, not the input
+  bytes (tested). The raw-bytes safety requirement therefore needs an explicit check in the routing.
 - Shared zsh content stays portable: no OS-specific branches in `aliases.zsh`.
 - Option handling: `bat` options such as `-n` or `-p` keep working for text files. Images are shown
   without passing `bat` options to chafa.
@@ -94,7 +104,6 @@ not show images at all. The symbol-art fallback removes that blocker.
       `packages/debian/packages.txt`, each in that file's existing style.
 - [ ] In an interactive Ghostty shell, `cat photo.png` shows the image as pixels.
 - [ ] In herdr inside Ghostty, `cat photo.png` shows the image as pixels.
-- [ ] In herdr inside Alacritty, `cat photo.png` shows symbol art, not a blank area.
 - [ ] A tall image fits within the terminal height and the prompt stays visible after it.
 - [ ] `cat anim.gif` shows one still frame and returns to the prompt without `Ctrl-C`.
 - [ ] In Alacritty, `cat photo.png` shows symbol art and does not print binary noise.
@@ -102,6 +111,7 @@ not show images at all. The symbol-art fallback removes that blocker.
 - [ ] `cat -n notes.md` behaves exactly as `bat -n notes.md` does today.
 - [ ] `cat photo.png | cmp - photo.png` and `cat photo.png > /tmp/x && cmp /tmp/x photo.png` succeed.
 - [ ] Typing `photo.png` and `PHOTO.JPG` alone shows the image.
+- [ ] `cat Photo.Png` shows the image (case-insensitive `cat` routing).
 - [ ] With chafa removed from `PATH`, `cat` and the suffix aliases behave exactly as before this
       change.
 - [ ] `zsh -n` passes for `aliases.zsh`, and a fresh `zsh -ic ''` exits `0`.
@@ -109,10 +119,10 @@ not show images at all. The symbol-art fallback removes that blocker.
 
 ## Resolved Questions
 
-1. **herdr.** herdr renders kitty graphics by default, so no passthrough is needed. Remaining risk:
-   chafa may not detect kitty support from inside herdr (`TERM_PROGRAM=herdr`). The plan must test
-   chafa's probe in herdr on Ghostty first. If detection fails, it may force `-f kitty` only where
-   that cannot leave herdr on Alacritty with a blank image.
+1. **herdr.** herdr renders kitty graphics by default, so no passthrough is needed. chafa's own
+   detection fails inside herdr (see Constraints), so the routing forces kitty output when
+   `TERM_PROGRAM=herdr`. Forcing kitty was confirmed to show pixels in herdr on Ghostty. herdr inside
+   Alacritty is not supported (Non-Goals).
 2. **Debian `bat`.** Debian servers use Homebrew on Linux and run `bat` under its normal name, so the
    text path is the same `bat` on every platform. Only an apt-installed `batcat` stays unsupported.
 3. **GIF animation.** Still frame (`--animate off`).
@@ -120,6 +130,10 @@ not show images at all. The symbol-art fallback removes that blocker.
    picks the exact `--size` value.
 5. **SSH to Debian servers.** Symbol-art fallback is acceptable when chafa cannot detect Ghostty
    over SSH.
+6. **Suffix alias case.** Lowercase and uppercase are registered; mixed case is not covered.
+7. **BMP.** Dropped: it decodes only on macOS (see Non-Goals).
+8. **Debian apt chafa 1.14.5.** The plan must check on a Debian machine that apt's chafa accepts the
+   chosen flags (`-f kitty`, `-s`, `--animate off`). Machines on Homebrew on Linux get 1.18.x.
 
 ## Out of Scope
 
