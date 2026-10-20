@@ -28,7 +28,7 @@ These never modify your system — they inspect, check, or print:
 | `task check` | Verify prerequisites (`stow`, `git`, `task`) are installed |
 | `task list` | List Stow packages |
 | `task dry-run AREA=<area> PACKAGE=<name>` | Dry-run a Stow package (simulation, no changes) |
-| `task deps:check:zsh` | Check zsh shell-tier deps (fzf, zoxide, eza, bat, oh-my-posh, zinit) |
+| `task deps:check:zsh` | Check zsh shell-tier deps (fzf, zoxide, eza, bat, oh-my-posh, zinit; chafa optional) |
 | `task deps:check:nvim` | Check Neovim-tier deps (nvim, tree-sitter, rg, fd, node) |
 | `task deps:brew` | Print macOS / Homebrew install commands (prints only) |
 | `task deps:arch` | Print Arch / EndeavourOS install commands (prints only) |
