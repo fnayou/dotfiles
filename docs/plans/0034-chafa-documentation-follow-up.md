@@ -11,7 +11,8 @@
 ## Objective
 
 List chafa everywhere the repository names the optional shell tools or prints their install
-commands, then cut the CalVer release `v2026.10` with a git-cliff changelog.
+commands, add a screenshot of the image preview to the website, then cut the CalVer release
+`v2026.10` with a git-cliff changelog.
 
 ## Assumptions
 
@@ -29,6 +30,11 @@ commands, then cut the CalVer release `v2026.10` with a git-cliff changelog.
   `chore/release-<tag>` branch with one `chore(release): <tag>` commit that regenerates
   `CHANGELOG.md`, merged by PR, then a lightweight tag on the merged commit (ADR-0055).
 - `git-cliff` is installed on the macOS machine.
+- The operator took the screenshot in Ghostty: `cat image.png notes.md` in `/tmp/chafa-test`, the
+  image in pixels above the bat-highlighted Markdown. It shows no username, hostname or private
+  path (prompt path `/tmp/chafa-test`). It was converted from JPEG to PNG with `sips`, 1600 px
+  wide (about 2 MB; the artwork compresses poorly), and saved as
+  `website/assets/images/chafa-preview.png`.
 - Work happens on branch `docs/chafa-docs-followup`.
 
 ## Ordered Tasks
@@ -66,7 +72,23 @@ Line 366: add `chafa` after `bat` in
 `for tool in fzf zoxide eza bat oh-my-posh nvim jq herdr task git-cliff cloudflare-speed-cli; do`.
 A missing chafa is then reported as `INFO`, like the other optional tools.
 
-### Task 6 — Validate
+### Task 6 — Screenshot on the website
+
+- `website/features/shell.md` — after the "Aliases and tool integrations" bullet list, add:
+
+  ```markdown
+  ![cat showing an image with chafa, then a Markdown file with bat, in Ghostty](../assets/images/chafa-preview.png)
+  *`cat image.png notes.md` in Ghostty: the image through chafa, the Markdown through bat.*
+  ```
+
+- `website/screenshots.md` — after the bat image, add:
+
+  ```markdown
+  ![cat showing an image with chafa, then a Markdown file with bat, in Ghostty](assets/images/chafa-preview.png)
+  *Image preview in the terminal: chafa for images, bat for text, from one `cat`.*
+  ```
+
+### Task 7 — Validate
 
 ```bash
 bash -n scripts/doctor.sh
@@ -85,18 +107,19 @@ grep -rIl --exclude-dir=.git -wE 'bat' . | grep -vE '^./docs/(reviews|plans|prd|
 
 The website build (`mkdocs`) is checked by CI on the PR.
 
-### Task 7 — Commit, PR, review
+### Task 8 — Commit, PR, review
 
 1. Commits, Conventional Commits, no AI attribution, staged diff audited:
    - `docs(plans): add plan 0034 for chafa documentation follow-up` — this plan, `docs/plans/README.md`.
    - `docs: list chafa with the optional shell tools` — Tasks 1–4.
    - `feat(doctor): report chafa as optional tooling` — Task 5.
+   - `docs(website): add a chafa image preview screenshot` — Task 6 and the image.
 2. Implementation review in `docs/reviews/`, which marks this plan Complete.
 3. Push `docs/chafa-docs-followup`, open the PR; the operator merges it.
 
-### Task 8 — Release `v2026.10`
+### Task 9 — Release `v2026.10`
 
-After the Task 7 PR is merged, on an up-to-date `main`:
+After the Task 8 PR is merged, on an up-to-date `main`:
 
 ```bash
 git switch -c chore/release-v2026.10
@@ -125,10 +148,13 @@ git push origin v2026.10
 - `website/usage/taskfile.md` — modified
 - `website/reference/supported-systems.md` — modified
 - `scripts/doctor.sh` — modified
+- `website/features/shell.md` — modified (screenshot)
+- `website/screenshots.md` — modified
+- `website/assets/images/chafa-preview.png` — created
 - `docs/plans/0034-chafa-documentation-follow-up.md` — created
 - `docs/plans/README.md` — modified (index row)
 - `docs/reviews/<next>-chafa-documentation-follow-up-implementation-review.md` — created
-- `CHANGELOG.md` — regenerated (Task 8, separate PR)
+- `CHANGELOG.md` — regenerated (Task 9, separate PR)
 
 No file is deleted.
 
@@ -152,6 +178,7 @@ No file is deleted.
 - [ ] Every file in Files Affected names chafa as described; no other file changed.
 - [ ] The repeated search returns only the files listed as exclusions.
 - [ ] `bash scripts/doctor.sh` reports chafa under Optional tooling.
+- [ ] The screenshot shows on the Shell features page and in the gallery.
 - [ ] CI passes on the PR.
 - [ ] Implementation review passes with no blocking issue.
 - [ ] `v2026.10` exists on GitHub, on the `chore(release): v2026.10` commit, and `CHANGELOG.md` has

@@ -25,12 +25,15 @@ None.
 | Exclusions are justified | Met | `README.md`, `website/index.md`, `website/features/index.md` list packages; `docs/guides/doctor.md:57` names no tools; the repo description and topics list packages and platforms |
 | Release follows the existing pattern | Met | `v2026.08.1` sits on `chore(release): v2026.08.1` (PR #66), lightweight tag; ADR-0055 CalVer |
 | git-cliff dry run | Met | `git-cliff --config cliff.toml --tag v2026.10 --unreleased` renders `## [2026.10] - 2026-10-20` |
-| Tag on the merged commit | Met | Task 8 tags after `git pull --ff-only` on `main`, since a rebase merge rewrites SHAs |
+| Tag on the merged commit | Met | Task 9 tags after `git pull --ff-only` on `main`, since a rebase merge rewrites SHAs |
 | Commit messages | Met | Conventional Commits; no attribution |
+| Screenshot | Met | `chafa-preview.png` read before adding: prompt path `/tmp/chafa-test` only, no username or hostname; no Spotlight author or source metadata |
 
 ## Non-Blocking Suggestions
 
-1. `git-cliff --tag` dates the section by the run date. Run Task 8 on the day of the release PR.
+1. `git-cliff --tag` dates the section by the run date. Run Task 9 on the day of the release PR.
+2. The screenshot is about 2 MB, larger than the others (144–432 KB). A PNG optimiser could shrink
+   it later; none is installed now.
 
 ## Safety Verdict
 
