@@ -33,10 +33,12 @@ For a step-by-step installation guide see: `docs/guides/packages-setup.md`
 | `zoxide` | shell | `packages/Brewfile` | `pacman` |
 | `eza` | shell | `packages/Brewfile` | `pacman` |
 | `bat` | shell | `packages/Brewfile` | `pacman` |
+| `chafa` | shell (optional) | `packages/Brewfile` | `pacman` |
 | `oh-my-posh` | shell | `packages/Brewfile` (tap) | AUR (`oh-my-posh-bin`) |
 | `zinit` | shell | manual git clone (see below) | manual git clone |
 
-Core tooling (`git`, `stow`, `go-task`) is checked by `scripts/check.sh`. Shell tooling is checked by `scripts/check-zsh-deps.sh`.
+Core tooling (`git`, `stow`, `go-task`) is checked by `scripts/check.sh`. Shell tooling is checked by `scripts/check-zsh-deps.sh`, which reports optional tools (`chafa`)
+with INFO and never fails on them.
 
 [`go-task`](https://taskfile.dev/) ([github](https://github.com/go-task/task)) is a core
 prerequisite (the task runner for this repo's `Taskfile.yml`) and **also** serves the shell

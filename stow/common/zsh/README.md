@@ -122,6 +122,31 @@ the missing branch and can be removed once upstream gains `desktop`.
 The `desktop` tree is static — its completion path runs no subprocesses — and the
 fzf-tab preview reads only `--help` output. Guarded by `command -v docker`.
 
+## Image preview (chafa)
+
+When [chafa](https://hpjansson.org/chafa/) is installed, `aliases.zsh` makes `cat` show image
+files (`png jpg jpeg gif tif tiff webp`, any case) with chafa and sends every other file to `bat`
+(or to the real `cat` when `bat` is absent). A call without an image runs exactly as before, as
+one `bat` call. When the output is not a terminal (a pipe or a redirect), `cat` always runs `bat`,
+which passes image bytes through unchanged.
+
+Typing an image file name alone (`./photo.png`) shows it too, through suffix aliases that run
+`imgview`. zsh suffix aliases are case-sensitive, so only lowercase and uppercase extensions are
+registered (`.png`, `.PNG`); `cat Photo.Png` works, `./Photo.Png` does not.
+
+- **Ghostty** shows real pixels. Inside **herdr** chafa cannot detect the graphics support, so
+  `imgview` forces the kitty protocol there (`TERM_PROGRAM=herdr`), including `herdr --remote`
+  sessions viewed from Ghostty.
+- **Alacritty** and plain SSH sessions get symbol art.
+- GIFs show a still frame (`--animate off`). The height is capped to the terminal, minus 4 rows
+  so the prompt stays visible.
+
+Known limit: in a call that has an image, an option whose value is a separate word (`cat -l md
+notes.txt photo.png`) treats `md` as a file. Use the attached form there: `--language=md`.
+
+Guarded by `command -v chafa`: without it, `alias cat='bat'` stays and no image suffix alias is
+registered. `task deps:check:zsh` reports chafa as optional.
+
 ## Where machine-specific setup goes
 
 Two different files, split by role (ADR-0062):
