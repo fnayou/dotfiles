@@ -1,11 +1,12 @@
 # Plan: Implement chafa Image Preview
 
 **Number:** 0033
-**Status:** Approved
+**Status:** Complete
 **Date:** 2026-10-19
 **PRD:** [0030-chafa-image-preview](../prd/0030-chafa-image-preview.md) (Approved)
 **Architecture:** none — PRD 0030 adds no package or layout decision (reviews 0090, 0091)
 **Plan review:** [0092](../reviews/0092-chafa-image-preview-plan-review.md)
+**Implementation review:** [0093](../reviews/0093-chafa-image-preview-implementation-review.md)
 
 ## Objective
 
@@ -380,9 +381,9 @@ All changes are edits to tracked files.
 
 ## Completion Criteria
 
-- [ ] Task 1 confirms Debian chafa 1.14.5 accepts `-f kitty`, `-s x<rows>` and `--animate off`.
-- [ ] Every Task 9 check passes with the expected outputs.
-- [ ] The operator confirms every Task 10 visual check.
-- [ ] Every PRD 0030 acceptance criterion is met.
-- [ ] Every file in "Files Affected" matches the new behaviour; no other file changed.
-- [ ] Implementation review passes with no blocking issue.
+- [x] Task 1 confirms Debian chafa 1.14.5 accepts `-f kitty`, `-s x<rows>` and `--animate off`.
+- [x] Every Task 9 check passes with the expected outputs.
+- [x] The operator confirms every Task 10 visual check.
+- [x] Every PRD 0030 acceptance criterion is met.
+- [x] Every file in "Files Affected" matches the new behaviour; no other file changed.
+- [x] Implementation review passes with no blocking issue.
