@@ -46,6 +46,10 @@ brew "btop"
 # See: docs/guides/speedtest-setup.md
 brew "cloudflare-speed-cli"
 
+# --- Image preview ---
+# Optional — lets `cat` and image suffix aliases in the zsh package show images.
+brew "chafa"
+
 # --- Terminal workspace manager ---
 # Optional — only needed if you stow the `herdr` package.
 # Not in the official Arch repos or the Debian archive; Homebrew carries it on

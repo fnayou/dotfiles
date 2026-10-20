@@ -32,6 +32,10 @@
 # See: docs/guides/speedtest-setup.md
 # sudo pacman -S cloudflare-speed-cli
 
+# --- Image preview (pacman, extra repo) ---
+# Optional — lets `cat` and image suffix aliases in the zsh package show images.
+# sudo pacman -S chafa
+
 # --- Terminal workspace manager ---
 # Optional — only needed if you stow the `herdr` package.
 # Not in the official Arch repos. Either Homebrew or the AUR package below.
