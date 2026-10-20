@@ -19,6 +19,7 @@ All tools in this repository are cross-platform — they are available on macOS,
 | `zoxide` | smarter `cd` | Optional |
 | `eza` | modern `ls` with icons (aliases, fzf-tab previews) | Optional |
 | `bat` | syntax-highlighted file viewer (suffix aliases: `.md`, `.txt`, `.log`) | Optional |
+| `chafa` | terminal image viewer (`cat` and suffix aliases for images) | Optional |
 | `btop` | interactive resource monitor (Catppuccin Macchiato theme) | Optional |
 | `oh-my-posh` | shell prompt theme | Optional |
 | `zinit` | zsh plugin manager | Optional |
@@ -64,7 +65,7 @@ This shows which packages would be installed. No changes are made.
 brew bundle --file=packages/Brewfile
 ```
 
-This installs all tools in one step: `git`, `stow`, `go-task`, `git-cliff`, `fzf`, `zoxide`, `eza`, `bat`, and `oh-my-posh`.
+This installs all tools in one step: `git`, `stow`, `go-task`, `git-cliff`, `fzf`, `zoxide`, `eza`, `bat`, `chafa`, and `oh-my-posh`.
 
 ### Step 3: Install zinit
 
@@ -96,7 +97,7 @@ All lines should show `PASS`. If any tool shows `FAIL`, follow the install hint 
 ⚠️  MANUAL STEP — review before running
 
 ```bash
-sudo pacman -S git stow go-task git-cliff fzf zoxide eza bat
+sudo pacman -S git stow go-task git-cliff fzf zoxide eza bat chafa
 ```
 
 ### Step 2: Install AUR packages
@@ -154,7 +155,7 @@ task deps:check:nvim
 ⚠️  MANUAL STEP — review before running
 
 ```bash
-sudo apt install git stow fzf zoxide eza bat
+sudo apt install git stow fzf zoxide eza bat chafa
 ```
 
 Debian binary names differ from other platforms: `bat` runs as `batcat`, and
@@ -239,6 +240,7 @@ brew install eza
 brew install fzf
 brew install zoxide
 brew install bat
+brew install chafa
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
 brew install git-cliff
 
@@ -247,6 +249,7 @@ sudo pacman -S eza
 sudo pacman -S fzf
 sudo pacman -S zoxide
 sudo pacman -S bat
+sudo pacman -S chafa
 yay -S oh-my-posh-bin
 sudo pacman -S git-cliff
 
@@ -255,6 +258,7 @@ sudo apt install eza
 sudo apt install fzf
 sudo apt install zoxide
 sudo apt install bat
+sudo apt install chafa
 # oh-my-posh: curl -s https://ohmyposh.dev/install.sh | bash -s
 # git-cliff:  cargo install git-cliff   (or a release binary — see Step 2 above)
 ```

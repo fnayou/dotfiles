@@ -34,8 +34,11 @@ When `bat` is installed:
 |---|---|
 | `cat` | `bat` |
 | `*.md` / `*.txt` / `*.log` | suffix aliases — run the file through `bat` |
+| `cat` with image files | images shown with [chafa](https://hpjansson.org/chafa/), other files with `bat` (when chafa is installed) |
+| `*.png` / `*.jpg` / `*.jpeg` / `*.gif` / `*.tif` / `*.tiff` / `*.webp` | suffix aliases (lowercase or uppercase) — show the image with `imgview` |
 
-Suffix aliases mean typing `./notes.md` opens it in `bat`.
+Suffix aliases mean typing `./notes.md` opens it in `bat`, and `./photo.png` shows the image.
+A `cat` call without an image file, or whose output goes to a pipe or a file, runs `bat` exactly as before.
 
 ## Navigation
 

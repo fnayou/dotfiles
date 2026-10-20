@@ -80,6 +80,7 @@ Optional tools (not required to start; all integrations are guarded and are no-o
 | zoxide | `tools.zsh` — `zoxide init --cmd cd zsh`; no-op if absent | `cd` smart jump (aliased to zoxide) |
 | eza | `tools.zsh`, `aliases.zsh`, `completions.zsh` — guarded; no-op if absent | `ls`/`ll`/`tree` aliases, fzf-tab previews |
 | bat | `aliases.zsh` — suffix aliases (`.md`, `.txt`, `.log`) guarded by `command -v bat` | file preview in terminal |
+| chafa | `aliases.zsh` — image routing for `cat` and image suffix aliases, guarded by `command -v chafa` | image preview in terminal |
 | oh-my-posh | `prompt.zsh` — double-guarded; no-op if absent or if omp.toml missing | shell prompt theme |
 | go-task | `taskfile.zsh` — `command -v task` guard; no-op if absent | `task <Tab>` completion (needs brew/pacman install for the `_task` file) |
 

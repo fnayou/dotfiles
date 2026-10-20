@@ -64,6 +64,7 @@ Aliases live in `aliases.zsh` (portable) with tool-specific behaviour gated behi
 
 - `eza` provides `ls` / `ll` / `tree`-style aliases when installed.
 - `bat` adds suffix aliases (`.md`, `.txt`, `.log`) for file preview.
+- `chafa` lets `cat` and image file names (`.png`, `.jpg`, `.gif`, …) show images in the terminal.
 - `zoxide` powers a smarter `cd`.
 - `fzf` drives fuzzy completion and fzf-tab previews.
 - `cloudflare-speed-cli` gets `speed` / `speed-json` / `speed-log` / `speed-history` wrappers — see
