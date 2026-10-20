@@ -1,7 +1,7 @@
 # Plan: chafa Documentation Follow-up and Release v2026.10
 
 **Number:** 0034
-**Status:** Approved
+**Status:** Complete
 **Date:** 2026-10-20
 **PRD:** [0030-chafa-image-preview](../prd/0030-chafa-image-preview.md) (Approved)
 **Architecture:** none — documentation and one report line only
@@ -176,11 +176,11 @@ No file is deleted.
 
 ## Completion Criteria
 
-- [ ] Every file in Files Affected names chafa as described; no other file changed.
-- [ ] The repeated search returns only the files listed as exclusions.
-- [ ] `bash scripts/doctor.sh` reports chafa under Optional tooling.
-- [ ] The screenshot shows on the Shell features page and in the gallery.
-- [ ] CI passes on the PR.
-- [ ] Implementation review passes with no blocking issue.
-- [ ] `v2026.10` exists on GitHub, on the `chore(release): v2026.10` commit, and `CHANGELOG.md` has
+- [x] Every file in Files Affected names chafa as described; no other file changed.
+- [x] The repeated search returns only the files listed as exclusions.
+- [x] `bash scripts/doctor.sh` reports chafa under Optional tooling.
+- [x] The screenshot shows on the Shell features page and in the gallery.
+- [x] CI passes on the PR.
+- [x] Implementation review passes with no blocking issue.
+- [x] `v2026.10` exists on GitHub, on the `chore(release): v2026.10` commit, and `CHANGELOG.md` has
       its section.
