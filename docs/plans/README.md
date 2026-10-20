@@ -92,4 +92,4 @@ These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical 
 | [0031](0031-implement-ghostty-configuration.md) | Implement Ghostty Configuration | Complete |
 | [0032](0032-ghostty-follow-ups.md) | Ghostty Follow-ups — Doctor, Task Dry-Run, Palette Wording | Complete |
 | [0033](0033-implement-chafa-image-preview.md) | Implement chafa Image Preview | Complete |
-| [0034](0034-chafa-documentation-follow-up.md) | chafa Documentation Follow-up and Release v2026.10 | Approved |
+| [0034](0034-chafa-documentation-follow-up.md) | chafa Documentation Follow-up and Release v2026.10 | Complete |
