@@ -42,7 +42,7 @@ The repository ships read-only dependency checks (they never install anything):
 
 ```bash
 task check            # core prerequisites: stow, git, task
-task deps:check:zsh   # shell-tier tools: fzf, zoxide, eza, bat, oh-my-posh, zinit
+task deps:check:zsh   # shell-tier tools: fzf, zoxide, eza, bat, oh-my-posh, zinit; chafa optional
 task deps:check:nvim  # Neovim-tier tools: nvim, tree-sitter, rg, fd, node
 ```
 

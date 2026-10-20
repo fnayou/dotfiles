@@ -31,7 +31,7 @@ config starts cleanly without them.
 | `git` | repository management | Yes |
 | `stow` | symlink manager | Yes |
 | [`go-task`](https://taskfile.dev/) | task runner; powers `task <Tab>` completion | Yes |
-| `fzf`, `zoxide`, `eza`, `bat`, `oh-my-posh`, `zinit`, `herdr` | shell/tooling enhancements | Optional |
+| `fzf`, `zoxide`, `eza`, `bat`, `chafa`, `oh-my-posh`, `zinit`, `herdr` | shell/tooling enhancements | Optional |
 
 Install commands per platform (from the repository's packages guide):
 
@@ -50,7 +50,7 @@ Install commands per platform (from the repository's packages guide):
     ⚠️  MANUAL STEP — review before running
 
     ```bash
-    sudo pacman -S git stow go-task fzf zoxide eza bat
+    sudo pacman -S git stow go-task fzf zoxide eza bat chafa
     # oh-my-posh is AUR-only:
     yay -S oh-my-posh-bin
     ```
@@ -60,7 +60,7 @@ Install commands per platform (from the repository's packages guide):
     ⚠️  MANUAL STEP — review before running
 
     ```bash
-    sudo apt install git stow fzf zoxide eza bat
+    sudo apt install git stow fzf zoxide eza bat chafa
     # Binary names differ on Debian: bat -> batcat, fd -> fdfind
     # go-task and oh-my-posh are NOT in the Debian archive — install out-of-band:
     sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin   # go-task

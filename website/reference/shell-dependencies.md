@@ -25,6 +25,7 @@ This page is curated from the repository's `docs/shell-dependencies.md` and `doc
 | `zoxide` | shell | Optional | `packages/Brewfile` | `pacman` | `apt` |
 | `eza` | shell | Optional | `packages/Brewfile` | `pacman` | `apt` (trixie / 13+) |
 | `bat` | shell | Optional | `packages/Brewfile` | `pacman` | `apt` (runs as `batcat`) |
+| `chafa` | shell | Optional | `packages/Brewfile` | `pacman` | `apt` (trixie ships 1.14.5) |
 | `oh-my-posh` | shell | Optional | `packages/Brewfile` (tap) | AUR (`oh-my-posh-bin`) | out-of-band (`ohmyposh.dev` install.sh) |
 | `zinit` | shell | Optional | manual git clone | manual git clone | manual git clone |
 
@@ -84,7 +85,7 @@ Exit code is non-zero if any required tool is missing.
     ⚠️  MANUAL STEP — review before running
 
     ```bash
-    sudo pacman -S git stow go-task fzf zoxide eza bat
+    sudo pacman -S git stow go-task fzf zoxide eza bat chafa
     ```
 
     AUR (requires `yay` or `paru`):
@@ -113,7 +114,7 @@ Exit code is non-zero if any required tool is missing.
     ⚠️  MANUAL STEP — review before running
 
     ```bash
-    sudo apt install git stow fzf zoxide eza bat
+    sudo apt install git stow fzf zoxide eza bat chafa
     ```
 
     `go-task` and `oh-my-posh` are not in the Debian archive — install out-of-band:

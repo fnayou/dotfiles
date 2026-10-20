@@ -103,7 +103,7 @@ The zsh config sources zinit via a directory-existence guard — it never auto-c
 ⚠️  MANUAL STEP — review before running
 
 ```bash
-sudo pacman -S git stow go-task fzf zoxide eza bat
+sudo pacman -S git stow go-task fzf zoxide eza bat chafa
 ```
 
 ### AUR packages (requires yay or paru)
@@ -158,7 +158,7 @@ Do not run `brew bundle cleanup` without `--dry-run` — it removes packages imm
 | Task | What it does |
 |---|---|
 | `task check` | Check core prerequisites (`git`, `stow`, `task`) |
-| `task deps:check:zsh` | Check shell-tier tools (`fzf`, `zoxide`, `eza`, `bat`, `oh-my-posh`, `zinit`) |
+| `task deps:check:zsh` | Check shell-tier tools (`fzf`, `zoxide`, `eza`, `bat`, `oh-my-posh`, `zinit`; `chafa` optional) |
 | `task deps:brew` | Print manual install commands for macOS / Homebrew |
 | `task deps:arch` | Print manual install commands for Arch / EndeavourOS |
 
