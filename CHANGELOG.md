@@ -5,6 +5,100 @@ Commits via [git-cliff](https://git-cliff.org). Do not edit by hand.
 
 Versioning is CalVer (`vYYYY.MM`) — see the git-cliff config for rationale.
 
+## [2026.10] - 2026-10-20
+
+### Features
+
+- **doctor**: Add a read-only machine health check
+- **codex**: Add managed config package
+- **codex**: Align palette and docs
+- **packages**: Add rtk to macOS, Arch and Debian package lists
+- **agents**: Add rtk/caveman/pocock maintenance scripts and tasks
+- **codex**: Sync config template instead of stowing it
+- **zsh**: Add lms and docker desktop completion support
+- **ghostty**: Add common and macOS Ghostty stow packages
+- **zsh**: Show images with chafa from cat and suffix aliases
+- **packages**: Add chafa to the package manifests
+- **deps**: Report chafa as an optional shell tool
+- **doctor**: Report chafa as optional tooling
+
+### Bug Fixes
+
+- **scripts**: Teach detect-os.sh about Debian
+- **decisions**: Reconcile ADR-0013/0014 and check the record in CI
+- **statusline**: Detect caveman seam by capability
+- **zsh**: Guard chpwd listing to interactive terminals
+- **doctor**: Check platform-area stow packages
+
+### Refactor
+
+- **claude**: Show actual output tokens in caveman statusline
+
+### Documentation
+
+- **claude**: Record two more git commit stalls in the ship-change skill
+- **prd**: Add PRD 0023 for agent-facing install and update documents
+- **architecture**: Approve PRD 0023 and design the agent install/update documents
+- **architecture**: Resolve nine design questions for the agent install/update documents
+- **decisions**: Approve architecture 0022 and lift §8 for provisioning runs
+- **statusline**: Sync architecture, guide and site with the seam change
+- **plans**: Mark plan 0024 complete
+- **workflow**: Require explicit gate approval
+- **agent-tooling**: Record rtk, caveman and Pocock skills setup
+- **agent-tooling**: Record what installing on a live machine revealed
+- **codex**: Align docs with template-not-stowed setup
+- **plans**: Rebuild index from actual plan file statuses
+- **prd**: Add PRD 0028 for Ghostty configuration
+- **prd**: Approve PRD 0028 and resolve its open questions
+- **architecture**: Add architecture 0026 for Ghostty configuration
+- **prd**: Amend PRD 0028 with a custom macOS Ghostty icon
+- **architecture**: Add the macOS Ghostty icon package to architecture 0026
+- **architecture**: Approve architecture 0026 for Ghostty configuration
+- **reviews**: Add PRD and architecture review for Ghostty configuration
+- **prd**: Move macOS Ghostty options into an optional include
+- **architecture**: Resolve review 0080 findings for Ghostty
+- **reviews**: Re-review Ghostty PRD and architecture after review 0080 fixes
+- **architecture**: Resolve review 0081 findings for Ghostty
+- **reviews**: Confirm review 0081 fixes for Ghostty PRD and architecture
+- **plans**: Add plan 0031 for Ghostty configuration
+- **reviews**: Add plan review for Ghostty configuration
+- **plans**: Resolve review 0083 findings for plan 0031
+- **reviews**: Confirm review 0083 fixes for plan 0031
+- **plans**: Approve plan 0031 and apply review 0084 suggestions
+- Withdraw the custom Ghostty Dock icon
+- **guides**: Add Ghostty setup guide
+- Add Ghostty to stow usage and website pages
+- Mark Ghostty packages as stowed
+- **reviews**: Add Ghostty implementation review
+- **plans**: Add Ghostty follow-ups plan
+- **task**: Describe all dry-run areas
+- Name Ghostty alongside Alacritty for terminal colors
+- **reviews**: Add Ghostty follow-ups implementation review
+- **website**: Cover platform packages in the folded-directory fix
+- **plans**: Close plans 0001-0004 and 0030 with implementation reviews
+- **prd**: Draft PRD 0030 for chafa image preview
+- **prd**: Record chafa and herdr test results in PRD 0030
+- **reviews**: Add PRD review for chafa image preview
+- **prd**: Resolve review 0090 findings for PRD 0030
+- **prd**: Record remote herdr test results in PRD 0030
+- **prd**: Approve PRD 0030 for chafa image preview
+- **plans**: Add plan 0033 for chafa image preview
+- **plans**: Resolve plan review 0092 findings for plan 0033
+- **plans**: Approve plan 0033 for chafa image preview
+- Document chafa image preview
+- **reviews**: Add implementation review 0093 and complete plan 0033
+- **plans**: Add plan 0034 for chafa documentation follow-up
+- **plans**: Add the chafa screenshot task to plan 0034
+- **plans**: Approve plan 0034 for chafa documentation follow-up
+- List chafa with the optional shell tools
+- **website**: Add a chafa image preview screenshot
+- **reviews**: Add implementation review 0095 for plan 0034
+- **plans**: Mark plan 0034 complete
+
+### Chores
+
+- **nvim**: Update lazy-lock.json
+
 ## [2026.08.1] - 2026-08-04
 
 ### Features
