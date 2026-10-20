@@ -14,6 +14,9 @@ pages; this page collects them in one place.
 ![bat showing a syntax-highlighted file in the Macchiato theme](assets/images/bat-output.png)
 *Syntax-highlighted file preview with bat.*
 
+![cat showing an image with chafa, then a Markdown file with bat, in Ghostty](assets/images/chafa-preview.png)
+*Image preview in the terminal: chafa for images, bat for text, from one `cat`.*
+
 ![Neovim editing a file with the Catppuccin Macchiato colorscheme](assets/images/nvim-editor.png)
 *Neovim editing inside the dotfiles repository.*
 

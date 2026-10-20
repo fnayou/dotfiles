@@ -72,6 +72,9 @@ Aliases live in `aliases.zsh` (portable) with tool-specific behaviour gated behi
 
 Each integration disappears cleanly if its tool is absent.
 
+![cat showing an image with chafa, then a Markdown file with bat, in Ghostty](../assets/images/chafa-preview.png)
+*`cat image.png notes.md` in Ghostty: the image through chafa, the Markdown through bat.*
+
 ## Completions
 
 Tab completion is layered on top of Zsh's `compinit` (run once in `plugins.zsh`). When the optional
