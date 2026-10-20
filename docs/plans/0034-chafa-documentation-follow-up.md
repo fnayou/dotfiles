@@ -1,7 +1,7 @@
 # Plan: chafa Documentation Follow-up and Release v2026.10
 
 **Number:** 0034
-**Status:** Draft
+**Status:** Approved
 **Date:** 2026-10-20
 **PRD:** [0030-chafa-image-preview](../prd/0030-chafa-image-preview.md) (Approved)
 **Architecture:** none — documentation and one report line only
