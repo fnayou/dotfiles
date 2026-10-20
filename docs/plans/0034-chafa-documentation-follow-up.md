@@ -7,6 +7,7 @@
 **Architecture:** none — documentation and one report line only
 **Follows:** [Plan 0033](0033-implement-chafa-image-preview.md), [review 0093](../reviews/0093-chafa-image-preview-implementation-review.md)
 **Plan review:** [0094](../reviews/0094-chafa-documentation-follow-up-plan-review.md)
+**Implementation review:** [0095](../reviews/0095-chafa-documentation-follow-up-implementation-review.md)
 
 ## Objective
 
