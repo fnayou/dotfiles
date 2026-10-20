@@ -91,4 +91,4 @@ These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical 
 | [0030](0030-implement-lms-docker-desktop-completions.md) | Interactive CLI Completions for `lms` and `docker desktop` | Complete — implementation review [0089](../reviews/0089-lms-docker-desktop-completions-implementation-review.md), no blocking issues |
 | [0031](0031-implement-ghostty-configuration.md) | Implement Ghostty Configuration | Complete |
 | [0032](0032-ghostty-follow-ups.md) | Ghostty Follow-ups — Doctor, Task Dry-Run, Palette Wording | Complete |
-| [0033](0033-implement-chafa-image-preview.md) | Implement chafa Image Preview | Draft |
+| [0033](0033-implement-chafa-image-preview.md) | Implement chafa Image Preview | Approved |

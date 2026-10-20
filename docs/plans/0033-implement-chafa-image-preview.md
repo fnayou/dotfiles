@@ -1,7 +1,7 @@
 # Plan: Implement chafa Image Preview
 
 **Number:** 0033
-**Status:** Draft
+**Status:** Approved
 **Date:** 2026-10-19
 **PRD:** [0030-chafa-image-preview](../prd/0030-chafa-image-preview.md) (Approved)
 **Architecture:** none — PRD 0030 adds no package or layout decision (reviews 0090, 0091)
