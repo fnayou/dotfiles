@@ -363,7 +363,7 @@ fi
 
 section "Optional tooling"
 
-for tool in fzf zoxide eza bat oh-my-posh nvim jq herdr task git-cliff cloudflare-speed-cli; do
+for tool in fzf zoxide eza bat chafa oh-my-posh nvim jq herdr task git-cliff cloudflare-speed-cli; do
   if command -v "$tool" >/dev/null 2>&1; then
     pass "$tool"
   else
