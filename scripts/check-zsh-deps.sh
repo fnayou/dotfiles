@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Usage: bash scripts/check-zsh-deps.sh
 # Checks that zsh shell-tier dependencies are installed.
-# Prints PASS/FAIL per tool. Exits 1 if any required tool is missing.
+# Prints PASS/FAIL per tool. Exits 1 if any required tool is missing; optional
+# tools are reported with INFO.
 # Never installs anything. Read-only.
 #
 # For core repo tooling (git, stow, task), run: bash scripts/check.sh
@@ -51,6 +52,15 @@ for tool in fzf zoxide eza bat oh-my-posh; do
     echo "FAIL: $tool (not installed)"
     hint_install
     FAILED=1
+  fi
+done
+
+# --- Check optional shell-tier tools (reported, never a failure) ---
+for tool in chafa; do
+  if command -v "$tool" >/dev/null 2>&1; then
+    echo "PASS: $tool"
+  else
+    echo "INFO: $tool (optional, not installed — image preview in cat and suffix aliases)"
   fi
 done
 
