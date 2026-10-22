@@ -1,7 +1,7 @@
 # Plan: macOS Terminal.app Profile
 
 **Number:** 0035
-**Status:** Approved
+**Status:** Complete
 **Date:** 2026-10-22
 **PRD:** [0031-terminal-app-profile](../prd/0031-terminal-app-profile.md) (Approved)
 **Architecture:** [0027-terminal-app-profile-architecture](../architecture/0027-terminal-app-profile-architecture.md) (Approved)
