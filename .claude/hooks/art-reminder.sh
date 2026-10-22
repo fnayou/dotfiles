@@ -9,7 +9,7 @@
 #
 # Output (only when there is something to say):
 #   systemMessage                      the operator's message
-#   hookSpecificOutput.additionalContext   asks Claude to relay it, in case the first is not shown
+#   hookSpecificOutput.additionalContext   reaches Claude after the command runs, so it can repeat it
 exec python3 -c '
 import json, os, re, subprocess, sys
 
@@ -38,7 +38,7 @@ try:
         "systemMessage": out,
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
-            "additionalContext": "Before you run this command, tell the operator this reminder, word for word: " + out,
+            "additionalContext": "Generated-art reminder for the operator. If they have not seen it, tell them word for word: " + out,
         },
     }))
 except Exception:
