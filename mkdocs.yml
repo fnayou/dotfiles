@@ -56,6 +56,7 @@ nav:
   - Reference:
       - Overview: reference/index.md
       - Repository Structure: reference/repository-structure.md
+      - Architecture: reference/architecture.md
       - GNU Stow Workflow: reference/stow.md
       - Shell Dependencies: reference/shell-dependencies.md
       - Supported Systems: reference/supported-systems.md
