@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Opt-in Git hook (enable with: task hooks:install ARGS='--apply').
+# Reminds the operator to regenerate the art when the commits being pushed call for it. It changes
+# nothing, never blocks the push, and exits 0 whatever happens.
+#
+# Git passes one line per ref on stdin: <local ref> <local sha> <remote ref> <remote sha>.
+root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+zero="0000000000000000000000000000000000000000"
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  [[ -z "${local_sha:-}" || "$local_sha" == "$zero" ]] && continue   # a branch deletion pushes no commits
+  if [[ "${remote_sha:-$zero}" == "$zero" ]]; then base="origin/main"; else base="$remote_sha"; fi
+  bash "$root/scripts/art.sh" remind --range "$base..$local_sha" >&2 || true
+done
+exit 0

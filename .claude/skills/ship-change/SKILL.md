@@ -32,7 +32,16 @@ Do **not** use this to bypass review — the change must already be reviewed (se
    git switch -c <type>/<short-slug>      # e.g. feat/btop-package, docs/site-refresh
    ```
 
-3. **Stage the change**
+3. **Check the generated art, then stage the change**
+
+   A change to a package, task, ADR, guide, CI step, install list or the release heading can make the
+   committed banner and social preview stale (CI fails the pull request on a stale SVG). Check first:
+   ```bash
+   task art:check
+   ```
+   If it reports stale files, run `task art:build`, review `git diff --stat website/assets/images/`, and
+   stage the images with the change. A reminder for this also appears before `git commit`, `git push` and
+   `gh pr create` when it is due (see `docs/guides/art-setup.md`).
    ```bash
    git add -A
    git diff --staged --stat
