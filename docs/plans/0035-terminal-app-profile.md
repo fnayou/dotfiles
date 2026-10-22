@@ -18,8 +18,8 @@ user-run, dry-run-by-default `task terminal:sync`, and document it in the guide 
   and reviews 0096, 0097 and 0098 are on it, uncommitted. Task 0 commits them on their own, so every
   later rollback concerns only the build.
 - Plan 0035 is Approved by the user before Task 0 starts. The Builder does not change plan status.
-- `JetBrainsMonoNF-Regular` is the verified PostScript name; `font-jetbrains-mono-nerd-font` is
-  already in the Brewfile.
+- `JetBrainsMonoNF-Regular` is the verified PostScript name; `font-jetbrains-mono-nerd-font` is installed separately with
+  `brew install --cask`, not through the Brewfile, as `docs/guides/ghostty-setup.md` documents.
 - `ProfileCurrentVersion` is `2.09`, read once from the existing "Clear Dark" profile on
   2026-10-22. It is a committed constant of the build; the build never reads local preferences.
 - The highest ADR is 0080 and the highest review is 0098. The Builder
@@ -148,7 +148,7 @@ Created:
 Modified:
 - `Taskfile.yml` — new `terminal:sync` target
 - `docs/decisions/README.md` — ADR index row
-- `docs/stow-usage.md` — package tree
+- `docs/stow-usage.md` and `website/reference/stow.md` — package tree
 - `README.md` — package table row and guide list
 - `website/features/terminal.md`, `website/features/scripts.md`
 - `AGENTS.md` (§2) and `CLAUDE.md` — status blocks

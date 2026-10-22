@@ -430,3 +430,12 @@ tasks:
     silent: true
     cmds:
       - bash scripts/codex-sync.sh {{.ARGS}}
+
+  # macOS Terminal.app profile. The profile in stow/macos/terminal/ is not stowed
+  # (Terminal.app keeps profiles in its preference domain); sync adds or updates only
+  # the "Catppuccin Macchiato" profile. macOS only; quit Terminal.app before --apply.
+  terminal:sync:
+    desc: "Terminal.app profile sync — DRY RUN by default (reads, writes nothing). Execute for real with: task terminal:sync ARGS='--apply' (add --set-default to also make it the default)"
+    silent: true
+    cmds:
+      - bash scripts/terminal-sync.sh {{.ARGS}}

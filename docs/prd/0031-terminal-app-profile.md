@@ -27,8 +27,8 @@
   `task terminal:sync ARGS='--apply'` themselves, may do that.
 - Stowing anything for Terminal.app. Its settings are not file-based dotfiles and cannot be linked,
   so Stow is not the deploy mechanism.
-- Installing the font. `font-jetbrains-mono-nerd-font` is already managed by the Brewfile and
-  installed on the primary machine.
+- Installing the font. `font-jetbrains-mono-nerd-font` is installed separately with Homebrew, as
+  the Ghostty guide documents, and is already installed on the primary machine.
 - Changing Alacritty, Ghostty, Oh My Posh, or any other tool's theme or font.
 - Supporting iTerm2 or any terminal other than Terminal.app in this PRD.
 - Working around Terminal.app's lack of 24-bit color (for example by changing hex colors in omp or

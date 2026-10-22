@@ -162,7 +162,7 @@ unsupported systems, before reading any preference. It also exits if `defaults` 
 - **24-bit color:** Terminal.app approximates hex colors from omp, nvim and bat to 256 colors.
   Nothing here fixes that; the guide says so.
 - **Cross-platform:** macOS-only by construction. Arch and Debian are untouched, and the script
-  exits early there. Homebrew is required only for the font, which the Brewfile already installs.
+  exits early there. Homebrew is required only for the font, which the user installs separately (`brew install --cask font-jetbrains-mono-nerd-font`).
 - **Privacy:** the profile and script contain colors, a font name and a profile name only. Backups
   are written outside the repository, so personal profile data never enters version control.
 - **Reversibility:** `--apply` only adds or replaces its own key. The backup plus
