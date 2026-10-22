@@ -439,3 +439,49 @@ tasks:
     silent: true
     cmds:
       - bash scripts/terminal-sync.sh {{.ARGS}}
+
+  # Generated art (README banner, social preview, logo, favicon, architecture diagram). Python 3
+  # standard library only; a PNG is rendered beside every SVG when `rsvg-convert` is installed.
+  # Writes only inside website/assets/images/. See docs/guides/art-setup.md.
+  art:build:
+    desc: "Regenerate the art: each SVG, then its PNG beside it. Writes website/assets/images/ (ARGS='--only banner' or '--no-png')"
+    silent: true
+    cmds:
+      - bash scripts/art.sh build {{.ARGS}}
+
+  art:check:
+    desc: "Check the committed SVGs and the palette are current — read-only, also runs in CI"
+    silent: true
+    cmds:
+      - bash scripts/art.sh check
+
+  art:logo:
+    desc: "Rebuild the logo, its PNG and the favicon only. Writes website/assets/images/"
+    silent: true
+    cmds:
+      - bash scripts/art.sh logo
+
+  art:remind:
+    desc: "Print the reminder to regenerate the art, if it is due — read-only (ARGS='--staged' or '--range A..B')"
+    silent: true
+    cmds:
+      - bash scripts/art.sh remind {{.ARGS}}
+
+  # Opt-in Git hooks (.githooks/) that run the reminder on commit and push. Dry run by default.
+  hooks:status:
+    desc: "Show whether the opt-in Git hooks are enabled — read-only"
+    silent: true
+    cmds:
+      - bash scripts/hooks.sh status
+
+  hooks:install:
+    desc: "Enable the Git hooks — DRY RUN by default. Enable with: task hooks:install ARGS='--apply' (sets core.hooksPath in this repository's local config)"
+    silent: true
+    cmds:
+      - bash scripts/hooks.sh install {{.ARGS}}
+
+  hooks:uninstall:
+    desc: "Disable the Git hooks — DRY RUN by default. Disable with: task hooks:uninstall ARGS='--apply'"
+    silent: true
+    cmds:
+      - bash scripts/hooks.sh uninstall {{.ARGS}}

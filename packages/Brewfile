@@ -50,6 +50,11 @@ brew "cloudflare-speed-cli"
 # Optional — lets `cat` and image suffix aliases in the zsh package show images.
 brew "chafa"
 
+# --- Generated art (PNG rendering) ---
+# Optional — `task art:build` renders a PNG beside each generated SVG with rsvg-convert.
+# The SVGs and `task art:check` need only Python 3. See: docs/guides/art-setup.md
+brew "librsvg"
+
 # --- Terminal workspace manager ---
 # Optional — only needed if you stow the `herdr` package.
 # Not in the official Arch repos or the Debian archive; Homebrew carries it on

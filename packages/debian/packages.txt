@@ -43,6 +43,11 @@
 # trixie ships chafa 1.14.5; Homebrew on Linux gets 1.18.x via packages/Brewfile.
 # sudo apt install chafa
 
+# --- Generated art, PNG rendering (apt) ---
+# Optional — `task art:build` renders a PNG beside each generated SVG with rsvg-convert.
+# See: docs/guides/art-setup.md
+# sudo apt install librsvg2-bin
+
 # --- Out-of-band (not in the Debian archive) ---
 # go-task:    sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
 # oh-my-posh: curl -s https://ohmyposh.dev/install.sh | bash -s

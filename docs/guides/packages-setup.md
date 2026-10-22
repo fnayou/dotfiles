@@ -20,6 +20,7 @@ All tools in this repository are cross-platform — they are available on macOS,
 | `eza` | modern `ls` with icons (aliases, fzf-tab previews) | Optional |
 | `bat` | syntax-highlighted file viewer (suffix aliases: `.md`, `.txt`, `.log`) | Optional |
 | `chafa` | terminal image viewer (`cat` and suffix aliases for images) | Optional |
+| `librsvg` | `rsvg-convert`, renders the PNG beside each generated SVG (`task art:build`) | Optional |
 | `btop` | interactive resource monitor (Catppuccin Macchiato theme) | Optional |
 | `oh-my-posh` | shell prompt theme | Optional |
 | `zinit` | zsh plugin manager | Optional |
