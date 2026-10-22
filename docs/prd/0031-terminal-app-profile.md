@@ -50,7 +50,7 @@
 - **Platform:** macOS only. Lives under `stow/macos/`; nothing is added to `stow/common/`.
 - **Format:** a Terminal.app `.terminal` profile (XML property list) containing archived `NSColor`
   and `NSFont` values. It can be produced by a script, but the committed file is the source of truth.
-- **Font:** `JetBrainsMono Nerd Font`, size 13, matching `config.ghostty`. The exact PostScript name
+- **Font:** `JetBrainsMono Nerd Font Mono` (amended 2026-10-23, see ADR 0081), size 13. The exact PostScript name
   must be verified against the installed font during architecture, not guessed.
 - **Deploy:** `task terminal:sync` runs a script under `scripts/` (like `scripts/codex-sync.sh`).
   It is macOS-only and refuses on Arch and Debian using the repo's OS detection. The exact import
@@ -84,7 +84,7 @@
 
 - [ ] A `Catppuccin Macchiato.terminal` profile is committed under `stow/macos/terminal/` and parses
       as a valid property list (`plutil -lint`).
-- [ ] The profile sets `JetBrainsMono Nerd Font` size 13, with the PostScript name verified.
+- [ ] The profile sets `JetBrainsMono Nerd Font Mono` size 13, with the PostScript name verified.
 - [ ] Background, foreground, cursor, selection and all 16 ANSI colors equal the Macchiato values
       used by the Alacritty theme, checked by a script against that file.
 - [ ] After `task terminal:sync ARGS='--apply'`, the Oh My Posh Apple glyph renders in Terminal.app.

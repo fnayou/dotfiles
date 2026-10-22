@@ -95,7 +95,7 @@ stow --dir=stow/macos --target="$HOME" --no-folding ghostty
 ## Terminal.app (macOS)
 
 [macOS] The `stow/macos/terminal/` package ships a Catppuccin Macchiato profile for the macOS
-Terminal.app, with `JetBrainsMono Nerd Font` so the Oh My Posh icons render instead of a square with
+Terminal.app, with `JetBrainsMono Nerd Font Mono` so the Oh My Posh icons render instead of a square with
 a question mark. The colors come from the Alacritty theme.
 
 | File | Purpose |

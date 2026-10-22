@@ -47,7 +47,7 @@ Each package is self-contained and carries its own README. `stow/macos/` holds `
 | **herdr** | Herdr agent multiplexer — theme, terminal, UI, toast | [README](stow/common/herdr/README.md) | [guide](docs/guides/herdr-setup.md) |
 | **nvim** | Neovim config — Catppuccin Macchiato (Lua), managed plugins | [README](stow/common/nvim/README.md) | — |
 | **omp** | Oh My Posh prompt — segments + Catppuccin Macchiato palette | [README](stow/common/omp/README.md) | — |
-| **terminal** | macOS Terminal.app profile — Catppuccin Macchiato colors and JetBrainsMono Nerd Font; not stowed, deployed with `task terminal:sync` | [macOS README](stow/macos/terminal/README.md) | [guide](docs/guides/terminal-app-setup.md) |
+| **terminal** | macOS Terminal.app profile — Catppuccin Macchiato colors and JetBrainsMono Nerd Font Mono; not stowed, deployed with `task terminal:sync` | [macOS README](stow/macos/terminal/README.md) | [guide](docs/guides/terminal-app-setup.md) |
 | **zsh** | Layered Zsh config — path, history, plugins, tools, prompt, per-OS layers, go-task completion | [README](stow/common/zsh/README.md) | [guide](docs/guides/zsh-setup.md) |
 
 ## Documentation
