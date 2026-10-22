@@ -103,8 +103,10 @@ command always goes on.
 It reaches you in two ways, both calling the same read-only command, `task art:remind`.
 
 **In a Claude Code session.** `.claude/settings.json` registers a hook that runs before
-`git commit`, `git push` and `gh pr create`. After the first session on this repository, open `/hooks`
-in Claude Code to review it. The hook shows the message and lets the command continue.
+`git commit`, `git push` and `gh pr create`, including inside a compound command such as
+`cd . && git commit`. After the first session on this repository, open `/hooks` in Claude Code to review
+it. The hook shows the message in the terminal as `PreToolUse:Bash says: ⚠️  MANUAL STEP …` and lets the
+command continue; Claude also receives it after the command runs, so it can repeat it.
 
 **In a plain terminal.** Opt in to the repository's Git hooks (`.githooks/pre-commit`, `pre-push`). The
 task shows what it will do first and sets `core.hooksPath` in this repository's local Git config only:

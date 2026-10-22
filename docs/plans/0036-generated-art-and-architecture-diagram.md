@@ -326,3 +326,24 @@ and restart the session.
       file; the public repository name `fnayou/dotfiles` is allowed.
 - [ ] The user has run Task 21 and recorded whether `systemMessage` shows for `PreToolUse` and whether
       the `if` filters match a compound command, and the fallback was applied where it did not.
+
+## Live test results (Task 21, 2026-10-23)
+
+Run with the user's one-shot approval, in a fresh Claude Code worker session (Sonnet 5.5, permission mode
+`acceptEdits`) and a plain shell pane, on a throwaway branch `tmp/art-hook-test` with a throwaway ADR file
+that made the banner stale.
+
+| Case | Result |
+|---|---|
+| Claude Code, plain `git commit` | `PreToolUse:Bash says: ⚠️  MANUAL STEP …` shown; commit ran |
+| Claude Code, compound `cd . && git commit` | reminder shown; the `if` filter matches a compound command |
+| Claude Code, `git push` to an isolated local bare repository | reminder shown; push went to the bare repository only |
+| Claude Code, `gh pr create --help` | reminder shown; no pull request created |
+| Git hooks (`hooks:install --apply`), `git commit` in a plain shell | reminder on stderr; commit ran |
+| Git hooks, `git push` to the same bare repository | reminder on stderr; push ran |
+
+Findings: `systemMessage` is shown to the operator for `PreToolUse`, so no fallback was needed. Claude receives
+`additionalContext` only after the command has run, so its wording was changed from "before you run this
+command" to a message Claude repeats if the operator has not seen it. Cleanup: `hooks:uninstall --apply`
+(`core.hooksPath` unset again), the throwaway branch deleted, and the temporary bare repository removed from the
+system temporary directory. The first `docs.yml` run on `main` is still pending, so this plan stays Approved.
