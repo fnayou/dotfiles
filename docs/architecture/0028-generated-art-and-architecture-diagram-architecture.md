@@ -250,7 +250,8 @@ a row in `docs/guides/packages-setup.md`. It is needed only for the PNG sidecars
   fails the check, which the plan tests by running it on both.
 - **Cross-platform:** the generators are pure Python and work on macOS, Arch and Debian. Only the PNG
   step needs `librsvg`, and it is skipped when missing. No path is machine-specific.
-- **Privacy:** images and scripts hold no user name, host name or absolute path. The illustrative prompt
+- **Privacy:** images and scripts hold no machine user name, host name or absolute path. The public
+  repository name `fnayou/dotfiles` is the brand and is allowed (clarified 2026-10-23). The illustrative prompt
   path stays `~/works/dotfiles`.
 - **Reversibility:** every output is a file inside the repository, restorable from Git. The Git hooks
   are removed by `hooks:uninstall`; the Claude Code hook by deleting `.claude/settings.json`.

@@ -98,7 +98,7 @@ Tasks run in this order. Dependencies are stated where a task needs an earlier o
    staged new task in `Taskfile.yml` with a stale banner prints the reminder; the same change with the
    art rebuilt prints nothing; a forced exception (a missing Taskfile) prints nothing and exits 0.
 10. **Taskfile targets** (depends on Tasks 8 and 9). Add `art:build`, `art:check`, `art:logo`,
-    `art:remind`, and `hooks:install`, `hooks:uninstall`, `hooks:status` beside the other task groups,
+    `art:remind`, and `hooks:install`, `hooks:uninstall`, `hooks:status` beside the other task groups (the `hooks:` tasks call `scripts/hooks.sh`),
     with descriptions that say what they write. The `hooks:` tasks are a dry run by default and need
     `ARGS='--apply'`; `hooks:install` refuses when `core.hooksPath` is already set to something else;
     `hooks:uninstall` removes the key only when it still equals `.githooks`. Validate: `task --list`
@@ -197,7 +197,7 @@ Tasks run in this order. Dependencies are stated where a task needs an earlier o
 ## Files Affected
 
 Created:
-- `scripts/art.sh`, `scripts/art/art.py`, `palette.py`, `facts.py`, `svg.py`, `render.py`, `banner.py`,
+- `scripts/art.sh`, `scripts/hooks.sh` (the `hooks:*` tasks call it), `scripts/art/art.py`, `palette.py`, `facts.py`, `svg.py`, `render.py`, `banner.py`,
   `social.py`, `logo.py`, `architecture.py`
 - `.githooks/pre-commit`, `.githooks/pre-push`
 - `.claude/settings.json`, `.claude/hooks/art-reminder.sh`
@@ -322,6 +322,7 @@ and restart the session.
       `mkdocs.yml` and the website exists.
 - [ ] ADR, guide, website page and `ship-change` step are in place, `task check:decisions` passes, and
       the first `docs.yml` run on `main` builds with `--strict`.
-- [ ] No secrets, user names or machine-specific paths are in the diff or in any generated file.
+- [ ] No secrets, machine user names or machine-specific paths are in the diff or in any generated
+      file; the public repository name `fnayou/dotfiles` is allowed.
 - [ ] The user has run Task 21 and recorded whether `systemMessage` shows for `PreToolUse` and whether
       the `if` filters match a compound command, and the fallback was applied where it did not.
