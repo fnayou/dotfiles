@@ -25,7 +25,7 @@ Key context:
 Current status:          Claude Code operating layer complete; common and macOS packages stowed.
 Dotfiles implementation: stowed — all stow/common/ packages symlinked into $HOME.
 GNU Stow packages:       see stow/common/ and stow/macos/ (source of truth; arch/, debian/ empty).
-Stowed to $HOME:         all stow/common/ packages, plus stow/macos/ghostty on macOS — live symlinks into the repo.
+Stowed to $HOME:         all stow/common/ packages, plus stow/macos/ghostty on macOS — live symlinks into the repo; other stow/macos/ packages are not stowed.
 Home directory:          modified by these symlinks; further modifications forbidden unless explicitly requested.
 ```
 

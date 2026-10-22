@@ -60,6 +60,26 @@ task clean:apply
     overwriting it with an empty `.pacnew` template. See the repository's `docs/guides/os-maintenance.md`
     for the mirror re-ranking commands.
 
+## Terminal.app profile sync [macOS]
+
+`task terminal:sync` deploys the Catppuccin Macchiato profile for the macOS Terminal.app. It is a dry
+run by default and writes nothing; it works on macOS only and exits on Arch and Debian.
+
+```bash
+# macOS
+task terminal:sync
+```
+
+⚠️  MANUAL STEP — quit Terminal.app and review the dry-run output first
+
+```bash
+# macOS
+task terminal:sync ARGS='--apply'
+```
+
+`--apply` writes a backup first, then adds or updates only the `Catppuccin Macchiato` profile.
+Add `--set-default` to also make it the default profile. See [Terminal](terminal.md#terminalapp-macos).
+
 ## Related
 
 - [Installation](../installation.md) · [Repository Structure](../reference/repository-structure.md)

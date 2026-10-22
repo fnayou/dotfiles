@@ -138,3 +138,4 @@ Use numbered filenames in sequence:
 | [0067](0067-codex-config-boundary-and-statusline-savings.md) | Codex config boundary and status line savings | Accepted |
 | [0068](0068-macchiato-blue-palette-source-of-truth.md) | Macchiato blue palette source of truth | Accepted |
 | [0080](0080-agent-token-tooling-and-shared-skills-directory.md) | Agent token tooling installed per-tool; skills through the shared `~/.agents` directory | Accepted |
+| [0081](0081-terminal-app-profile-deployed-by-task-not-stow.md) | Terminal.app profile deployed by a Task, not by Stow | Accepted |

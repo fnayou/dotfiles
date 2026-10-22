@@ -22,7 +22,8 @@ stow/
 │   ├── herdr/       # Herdr multiplexer config + Catppuccin overrides
 │   └── zsh/         # Zsh config (shared + macOS / Arch per-OS layer, runtime OS detection)
 ├── macos/           # macOS-specific config only
-│   └── ghostty/     # Ghostty macOS-only options (macos.ghostty)
+│   ├── ghostty/     # Ghostty macOS-only options (macos.ghostty)
+│   └── terminal/    # Terminal.app profile (never stowed, deployed via task terminal:sync)
 ├── arch/            # EndeavourOS / Arch-specific config only
 └── debian/          # Debian-specific config only
 ```

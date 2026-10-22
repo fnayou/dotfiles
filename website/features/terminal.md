@@ -4,8 +4,11 @@ Three tools shape the terminal: **Alacritty** and **Ghostty** (two emulators, co
 **Herdr** (an agent-oriented multiplexer). All ship a Catppuccin Macchiato look with a blue accent,
 consistent with the rest of the setup.
 
-Curated from `docs/guides/alacritty-setup.md`, `docs/guides/ghostty-setup.md`, and
-`docs/guides/herdr-setup.md`.
+[macOS] The default **Terminal.app** can use the same look through a profile that is deployed with a
+task, not with Stow — see [Terminal.app](#terminalapp-macos) below.
+
+Curated from `docs/guides/alacritty-setup.md`, `docs/guides/ghostty-setup.md`,
+`docs/guides/terminal-app-setup.md`, and `docs/guides/herdr-setup.md`.
 
 ## Alacritty
 
@@ -88,6 +91,49 @@ stow --dir=stow/common --target="$HOME" --no-folding ghostty
 # macOS
 stow --dir=stow/macos --target="$HOME" --no-folding ghostty
 ```
+
+## Terminal.app (macOS)
+
+[macOS] The `stow/macos/terminal/` package ships a Catppuccin Macchiato profile for the macOS
+Terminal.app, with `JetBrainsMono Nerd Font` so the Oh My Posh icons render instead of a square with
+a question mark. The colors come from the Alacritty theme.
+
+| File | Purpose |
+|---|---|
+| `Catppuccin Macchiato.terminal` | The profile: background, text, cursor, selection, the 16 ANSI colors and the font |
+
+!!! note "Deployed by a task, not by Stow"
+    Terminal.app keeps its profiles inside its preference domain, so there is nothing for Stow to
+    link. Every file in the package is Stow-ignored. `task terminal:sync` deploys the profile instead.
+
+Dry run first. It reports the state and changes nothing:
+
+```bash
+# macOS
+task terminal:sync
+```
+
+Quit Terminal.app (Cmd+Q) before applying. The script refuses to run while it is open, and writes a
+backup first. Apply adds or updates only the `Catppuccin Macchiato` profile:
+
+⚠️  MANUAL STEP — review output before running
+```bash
+# macOS
+task terminal:sync ARGS='--apply'
+```
+
+Making it the default profile is a separate, optional step:
+
+⚠️  MANUAL STEP — review output before running
+```bash
+# macOS
+task terminal:sync ARGS='--apply --set-default'
+```
+
+!!! warning "Terminal.app has no 24-bit color"
+    Hex colors from Oh My Posh, Neovim and bat are approximated to 256 colors, so they look slightly
+    different from Alacritty and Ghostty even with this profile. The selection color is Surface2
+    `#5b6078`, because Terminal.app cannot set a selection text color.
 
 ## Herdr
 
