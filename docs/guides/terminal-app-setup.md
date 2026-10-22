@@ -22,8 +22,13 @@ The profile uses:
 
 - the colors of `stow/common/alacritty/.config/alacritty/catppuccin-macchiato.toml`, with blue
   `#8aadf4` as the accent;
-- the font `JetBrainsMono Nerd Font` (PostScript name `JetBrainsMonoNF-Regular`), size 13, so the
+- the font `JetBrainsMono Nerd Font Mono` (PostScript name `JetBrainsMonoNFM-Regular`), size 13, so the
   Oh My Posh icons render instead of a square with a question mark.
+
+The profile uses the **Mono** variant on purpose. With the regular `JetBrainsMono Nerd Font`
+(`JetBrainsMonoNF-Regular`), Terminal.app drew the icons as boxes with a question mark, even though
+the font was installed and in use. Alacritty and Ghostty, which are configured with the regular
+variant, are not affected.
 
 The selection color is Surface2 `#5b6078`, not the rosewater of Alacritty and Ghostty. Terminal.app
 cannot set a selection text color, so a rosewater background would hide light text.
@@ -167,5 +172,5 @@ You ran it on Arch or Debian. Nothing was changed.
 ### The icon is still a square
 
 The font is missing or the profile is not in use. Check the first line of the dry run
-(`font JetBrainsMono Nerd Font installed`), then confirm the window uses the
+(`font JetBrainsMono Nerd Font Mono installed`), then confirm the window uses the
 `Catppuccin Macchiato` profile under Terminal → Settings → Profiles.

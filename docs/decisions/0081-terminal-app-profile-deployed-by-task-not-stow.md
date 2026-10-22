@@ -56,3 +56,12 @@ light text.
   `com.example.terminal-sync-test*` domain, and the running-Terminal guard and the backup always
   apply to the live domain.
 - The backup is written next to the live preferences file, as `codex-sync.sh` does.
+
+## Update (2026-10-23)
+
+The profile uses the **Mono** font variant, `JetBrainsMono Nerd Font Mono` (PostScript name
+`JetBrainsMonoNFM-Regular`), not the `JetBrainsMono Nerd Font` (`JetBrainsMonoNF-Regular`) that
+Ghostty and Alacritty use. On the first deployment the regular variant was installed and stored in the
+profile correctly, yet Terminal.app drew the Oh My Posh icons as boxes with a question mark; switching
+the profile to the Mono variant in Terminal.app's font picker made every icon render. PRD 0031 and
+architecture 0027 carry a dated amendment. The font is still installed through the same Homebrew cask.

@@ -114,8 +114,10 @@ PROFILE_NAME = "Catppuccin Macchiato"
 # Read once from the existing "Clear Dark" profile on 2026-10-22; the build never
 # reads local preferences.
 PROFILE_CURRENT_VERSION = 2.09
-FONT_POSTSCRIPT = "JetBrainsMonoNF-Regular"
-FONT_FILE_GLOB = "JetBrainsMonoNerdFont-Regular.*"
+# The Mono variant, not "JetBrainsMono Nerd Font": Terminal.app rendered the icons of the
+# regular variant as boxes with a question mark (checked on the primary machine, 2026-10-23).
+FONT_POSTSCRIPT = "JetBrainsMonoNFM-Regular"
+FONT_FILE_GLOB = "JetBrainsMonoNerdFontMono-Regular.*"
 FONT_SIZE = 13.0
 # Terminal.app cannot set a selection text color, so the rosewater selection of
 # Alacritty and Ghostty would hide light text. Surface2 keeps it readable.
@@ -249,7 +251,7 @@ def drifted_keys():
 def report():
     drift = drifted_keys()
     rows = [
-        (font_installed(), "font JetBrainsMono Nerd Font installed"),
+        (font_installed(), "font JetBrainsMono Nerd Font Mono installed"),
         (live_profile is not None, f"profile '{PROFILE_NAME}' present in {domain}"),
         (drift == [] if drift is not None else False, "live profile matches the repository file"),
         (current_default == PROFILE_NAME, f"default profile is '{PROFILE_NAME}'"),

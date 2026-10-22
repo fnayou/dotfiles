@@ -16,7 +16,7 @@ State of the repository and the machine, verified on 2026-10-22:
   preference domain, keyed by profile name. Colors and fonts are `NSKeyedArchiver` data blobs.
   The default and startup profile are the strings `Default Window Settings` and
   `Startup Window Settings` (both `Clear Dark` today).
-- The installed font is `JetBrainsMono Nerd Font` with PostScript name `JetBrainsMonoNF-Regular`
+- The installed fonts include `JetBrainsMono Nerd Font` (PostScript name `JetBrainsMonoNF-Regular`)
   (read with `fc-scan`, not guessed). Ghostty uses the same family at size 13.
 - Alacritty's theme `stow/common/alacritty/.config/alacritty/catppuccin-macchiato.toml` is the
   ANSI reference (PRD 0026) and is the palette source for this profile.
@@ -122,7 +122,7 @@ Profile contents:
 - `name`, `type = Window Settings`, `ProfileCurrentVersion` copied from an existing profile.
 - `BackgroundColor #24273a`, `TextColor #cad3f5`, `TextBoldColor #cad3f5`, `CursorColor #f4dbd6`.
 - 16 ANSI colors mapped to the same slots as the Alacritty theme.
-- `Font` = `JetBrainsMonoNF-Regular` at size 13, `FontAntialias` on.
+- `Font` = `JetBrainsMonoNFM-Regular` (the Mono variant; amended 2026-10-23, see ADR 0081) at size 13, `FontAntialias` on.
 - Window size, bell, blur and keyboard keys are not set, so Terminal.app defaults apply (PRD
   out of scope).
 
