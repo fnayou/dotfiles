@@ -80,6 +80,28 @@ task terminal:sync ARGS='--apply'
 `--apply` writes a backup first, then adds or updates only the `Catppuccin Macchiato` profile.
 Add `--set-default` to also make it the default profile. See [Terminal](terminal.md#terminalapp-macos).
 
+## Generated art
+
+The README banner, the social preview, the logo, the favicon and the [architecture
+diagram](../reference/architecture.md) are generated from the repository, in the Catppuccin Macchiato
+palette. Each SVG gets a PNG beside it when `rsvg-convert` (librsvg) is installed.
+
+```bash
+task art:check     # read-only: are the committed SVGs and the palette current? (also runs in CI)
+```
+
+⚠️  MANUAL STEP — review the diff afterwards
+
+```bash
+task art:build     # every image, writes website/assets/images/
+task art:logo      # the logo, its PNG and the favicon only
+```
+
+A short reminder appears before `git commit`, `git push` and `gh pr create` when the art is stale and
+the change touches what it is built from. In Claude Code it comes from a project hook; in a plain
+terminal it comes from opt-in Git hooks (`task hooks:status`, then `task hooks:install`, a dry run by
+default). See `docs/guides/art-setup.md`.
+
 ## Related
 
 - [Installation](../installation.md) · [Repository Structure](../reference/repository-structure.md)

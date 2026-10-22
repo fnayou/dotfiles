@@ -139,3 +139,4 @@ Use numbered filenames in sequence:
 | [0068](0068-macchiato-blue-palette-source-of-truth.md) | Macchiato blue palette source of truth | Accepted |
 | [0080](0080-agent-token-tooling-and-shared-skills-directory.md) | Agent token tooling installed per-tool; skills through the shared `~/.agents` directory | Accepted |
 | [0081](0081-terminal-app-profile-deployed-by-task-not-stow.md) | Terminal.app profile deployed by a Task, not by Stow | Accepted |
+| [0082](0082-generated-art-with-svg-png-sidecars.md) | Generated art with SVG and PNG sidecars, checked in CI, reminded locally | Accepted |
