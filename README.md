@@ -1,7 +1,7 @@
 # dotfiles
 
 <p align="center">
-  <img src="website/assets/images/dotfiles-readme-banner.png" alt="fnayou/dotfiles banner" />
+  <img src="website/assets/images/dotfiles-readme-banner.svg" alt="fnayou/dotfiles banner" />
 </p>
 
 <p align="center">
@@ -60,7 +60,7 @@ Setup guides are written for a human operator, not for agents.
 - [Doctor](docs/guides/doctor.md) — `task doctor`, a read-only health check answering "is this machine set up the way the repo intends?".
 - [Packages setup](docs/guides/packages-setup.md) — install the tools every package depends on (`git`, `stow`, `go-task`, …).
 - [GNU Stow usage](docs/stow-usage.md) — dry-run workflow, install steps, conflict handling, adding packages.
-- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [bat](docs/guides/bat-setup.md) · [btop](docs/guides/btop-setup.md) · [claude](docs/guides/claude-setup.md) · [codex](docs/guides/codex-setup.md) · [eza](docs/guides/eza-setup.md) · [ghostty](docs/guides/ghostty-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [terminal-app](docs/guides/terminal-app-setup.md) · [zsh](docs/guides/zsh-setup.md).
+- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [art](docs/guides/art-setup.md) · [bat](docs/guides/bat-setup.md) · [btop](docs/guides/btop-setup.md) · [claude](docs/guides/claude-setup.md) · [codex](docs/guides/codex-setup.md) · [eza](docs/guides/eza-setup.md) · [ghostty](docs/guides/ghostty-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [terminal-app](docs/guides/terminal-app-setup.md) · [zsh](docs/guides/zsh-setup.md).
 - [Speed test setup](docs/guides/speedtest-setup.md) — optional `cloudflare-speed-cli` helpers (`speed`, `speed-json`, `speed-log`, `speed-history`) shipped by the zsh package.
 - [Agent tooling setup](docs/guides/agent-tooling-setup.md) — optional `rtk`, `caveman`, and Matt Pocock's skills, and how each is activated in Claude Code, opencode, and Codex CLI. Not Stow packages.
 - [Shell dependencies](docs/shell-dependencies.md) · [Zsh migration notes](docs/zsh-migration.md).
