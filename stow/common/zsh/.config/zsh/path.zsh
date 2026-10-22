@@ -23,3 +23,5 @@ path_append() {
 # --- Default PATH entries ---
 path_prepend "$HOME/.local/bin"
 path_prepend "$HOME/bin"
+# LM Studio CLI: must be on PATH before lms.zsh runs its `command -v lms` guard.
+path_append "$HOME/.lmstudio/bin"
