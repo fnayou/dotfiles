@@ -399,7 +399,14 @@ docs/claude/       → agent guides and workflow documentation
 - Commit messages must explain **intent**, not just what changed.
 - Do not commit generated sensitive files.
 - Do not commit machine-specific local overrides.
-- Format: `type(scope): short description`
+- **Conventional Commits 1.0.0** ([spec](https://www.conventionalcommits.org/en/v1.0.0/)) — every
+  commit message and pull request title uses it. `git-cliff` builds `CHANGELOG.md` from the commit
+  log (`docs/decisions/0055-git-cliff-changelog-generation.md`), so a malformed subject is lost from
+  the changelog.
+- Format: `type(scope)!: short description`, where `(scope)` and `!` are optional.
+  - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`,
+    `revert`. Use `feat` and `fix` only for a change a user of the code can observe.
+  - A breaking change carries `!` before the colon, or a `BREAKING CHANGE:` footer.
   - `feat(stow): add zsh common package`
   - `docs(plans): add zsh bootstrap plan for macOS`
   - `fix(rules): correct cross-platform package manager guidance`
