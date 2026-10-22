@@ -36,6 +36,11 @@
 # Optional — lets `cat` and image suffix aliases in the zsh package show images.
 # sudo pacman -S chafa
 
+# --- Generated art, PNG rendering (pacman, extra repo) ---
+# Optional — `task art:build` renders a PNG beside each generated SVG with rsvg-convert.
+# See: docs/guides/art-setup.md
+# sudo pacman -S librsvg
+
 # --- Terminal workspace manager ---
 # Optional — only needed if you stow the `herdr` package.
 # Not in the official Arch repos. Either Homebrew or the AUR package below.
