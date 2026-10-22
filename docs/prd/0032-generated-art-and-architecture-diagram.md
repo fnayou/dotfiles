@@ -89,7 +89,9 @@
   rollback.
 - **Workflow:** follows PRD → Architecture → Plan → Build → Review. Whether the generators and tasks
   live in `scripts/` or in a new folder, and the exact task names, are decided in architecture.
-- **Privacy:** images contain no user name, host name, absolute path or secret. The illustrative
+- **Privacy:** images contain no machine user name, host name, absolute path or secret. The public
+  repository name `fnayou/dotfiles` is the brand, appears in the title and metadata, and is allowed
+  (clarified 2026-10-23 after the implementation review). The illustrative
   prompt path stays `~/works/dotfiles`, as in the current banner.
 - **Reminder triggers (decided in architecture):** two mechanisms are expected. A Claude Code hook,
   committed under `.claude/`, for sessions where an agent runs the Git or `gh` command, and
@@ -160,7 +162,8 @@
       images; every command that writes files is marked as a manual step.
 - [ ] `mkdocs.yml` logo and favicon still resolve, and every image the README and the site reference
       exists.
-- [ ] No secrets, user names or machine-specific paths appear in the diff or in any generated file.
+- [ ] No secrets, machine user names or machine-specific paths appear in the diff or in any generated
+      file; the public repository name `fnayou/dotfiles` is allowed (clarified 2026-10-23).
 
 ## Out of Scope
 
