@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1254" height="1254" viewBox="0 0 1254 1254" role="img" aria-labelledby="t d"><title id="t">fnayou/dotfiles</title><desc id="d">Logo of fnayou/dotfiles: a terminal prompt and a git branch.</desc>
+<rect width="1254" height="1254" fill="#181926"/>
+<rect x="134" y="154" width="986" height="966" rx="165" fill="#1e2030" stroke="#494d64" stroke-width="16"/>
+<path d="M318,562 L478,730 L318,898" fill="none" stroke="#8aadf4" stroke-width="64" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="536" y="884" width="244" height="58" rx="29" fill="#8aadf4"/>
+<path d="M696,448 V730" stroke="#c6a0f6" stroke-width="20" stroke-linecap="round" fill="none"/>
+<path d="M696,660 C696,606 740,576 800,576 L900,576" stroke="#c6a0f6" stroke-width="20" stroke-linecap="round" fill="none"/>
+<circle cx="696" cy="384" r="72" fill="#363a4f" stroke="#494d64" stroke-width="10"/>
+<circle cx="696" cy="384" r="52" fill="#8aadf4"/>
+<circle cx="946" cy="576" r="72" fill="#363a4f" stroke="#494d64" stroke-width="10"/>
+<circle cx="946" cy="576" r="52" fill="#8aadf4"/>
+<circle cx="696" cy="734" r="72" fill="#363a4f" stroke="#494d64" stroke-width="10"/>
+<circle cx="696" cy="734" r="52" fill="#c6a0f6"/>
+</svg>
