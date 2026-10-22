@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Opt-in Git hook (enable with: task hooks:install ARGS='--apply').
+# Reminds the operator to regenerate the art when the staged change calls for it. It changes nothing,
+# never blocks the commit, and exits 0 whatever happens.
+root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+bash "$root/scripts/art.sh" remind --staged >&2 || true
+exit 0
