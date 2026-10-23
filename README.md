@@ -5,34 +5,56 @@
 </p>
 
 <p align="center">
-  <a href="https://fnayou.github.io/dotfiles/">Documentation</a>
+  <a href="https://fnayou.github.io/dotfiles/">Documentation</a> ·
+  <a href="https://fnayou.github.io/dotfiles/reference/architecture/">Architecture</a> ·
+  <a href="#whats-included">Packages</a> ·
+  <a href="#daily-commands">Commands</a>
 </p>
 
 Private, safe, cross-platform personal dotfiles for **macOS**, **EndeavourOS / Arch Linux**, and
 **Debian** (trixie / 13+), managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
-macOS is the primary environment; Arch is supported from the start, and Debian runs on all servers.
-Configs are version-controlled
-in `stow/common/` and `stow/macos/`, and only ever symlinked into `$HOME` by a **deliberate,
-manual** Stow step — never automatically.
+Configs are version-controlled in `stow/common/` and `stow/macos/`, and only ever symlinked into `$HOME`
+by a **deliberate, manual** Stow step — never automatically. Everything uses the Catppuccin Macchiato
+palette with a blue accent.
+
+| Platform | Role | Installs with |
+|---|---|---|
+| macOS | primary environment | Homebrew — `packages/Brewfile` |
+| EndeavourOS / Arch Linux | also used, supported from the start | pacman, yay — `packages/arch/packages.txt` |
+| Debian 13 (trixie) | runs on all servers | apt — `packages/debian/packages.txt` |
 
 ## Status
 
 ```
-Claude Code operating layer:    complete
-GNU Stow scaffold:              created
-Managed packages:               see stow/common/ and stow/macos/
-Home directory:                 stowed — all packages linked (stow/macos/ on macOS only)
+Claude Code operating layer:  complete
+GNU Stow packages:            see stow/common/ and stow/macos/ (source of truth; arch/ and debian/ are empty)
+Stowed to $HOME:              all stow/common/ packages, plus stow/macos/ghostty on macOS
+Not stowed:                   other stow/macos/ packages (the Terminal.app profile is deployed with a task)
+Home directory:               changed only by those symlinks and by tasks you run yourself
 ```
 
-`stow/common/` and `stow/macos/` are the source of truth for which packages exist. All common
-packages are stowed, and so is the macOS-only `stow/macos/ghostty` on macOS: live symlinks point
-from `$HOME` into the repo. Stow is still always a deliberate, manual step.
+Stow is always a deliberate, manual step: dry-run first, install only after reviewing the output.
+
+## Architecture at a glance
+
+One technical picture shows how the repository, deployment and the machine fit together: governance,
+the source of truth, deployment, what you get on the machine, and delivery. It is generated from this
+repository, so it follows the packages, tasks, zsh layers and CI steps that exist today.
+
+**[Open the architecture diagram →](https://fnayou.github.io/dotfiles/reference/architecture/)**
+
+1. **Governance** — PRD → architecture → plan → review → build → review → commit, and only you approve a gate.
+2. **Source of truth** — `stow/` packages, `packages/` install lists, `scripts/` and `Taskfile.yml`.
+3. **Deployment** — always manual and dry-run first: Stow for symlinks, `task` syncs for files Stow cannot link.
+4. **The machine** — symlinks in `$HOME`, then the shell, terminal and tools read their own config.
+5. **Delivery** — one pull request per change, CI checks, then the docs site is built from `main`.
 
 ## What's included
 
-Each package is self-contained and carries its own README. `stow/macos/` holds `ghostty`;
-`stow/arch/` and `stow/debian/` are reserved for platform-specific packages and are currently empty.
+Each package is self-contained and carries its own README. `stow/macos/` holds `ghostty` (stowed) and
+`terminal` (not stowed); `stow/arch/` and `stow/debian/` are reserved for platform-specific packages and
+are currently empty.
 
 | Package | What it manages | Details | Guide |
 |---|---|---|---|
@@ -50,10 +72,28 @@ Each package is self-contained and carries its own README. `stow/macos/` holds `
 | **terminal** | macOS Terminal.app profile — Catppuccin Macchiato colors and JetBrainsMono Nerd Font Mono; not stowed, deployed with `task terminal:sync` | [macOS README](stow/macos/terminal/README.md) | [guide](docs/guides/terminal-app-setup.md) |
 | **zsh** | Layered Zsh config — path, history, plugins, tools, prompt, per-OS layers, go-task completion | [README](stow/common/zsh/README.md) | [guide](docs/guides/zsh-setup.md) |
 
+## Daily commands
+
+Everything goes through [`task`](https://taskfile.dev). `task --list` shows all of it. Commands that change
+anything outside the repository are a dry run until you add `ARGS='--apply'`.
+
+| Command | What it does |
+|---|---|
+| `task doctor` | read-only health check: is this machine set up the way the repo intends? |
+| `task check` · `task detect` | verify `stow`, `git` and `task` are installed · print the detected OS |
+| `task list` · `task dry-run AREA=common PACKAGE=zsh` | list Stow packages · dry-run one of them |
+| `task deps:brew` · `deps:arch` · `deps:debian` | print the install commands for your platform; they never install |
+| `task codex:sync` · `task terminal:sync` | merge the Codex template / import the Terminal.app profile — dry run by default |
+| `task art:check` · `task art:build` | check / regenerate the banner, social preview, logo and diagram (see [the art guide](docs/guides/art-setup.md)) |
+| `task check:decisions` | validate the ADR record, also run in CI |
+| `task changelog` | regenerate `CHANGELOG.md` from Conventional Commits |
+| `task hooks:status` | show whether the opt-in Git hooks (the art reminder) are enabled |
+
 ## Documentation
 
 The public documentation site — overview, installation, features, usage, and reference — lives at
-<https://fnayou.github.io/dotfiles/> (built with MkDocs Material from `website/`).
+<https://fnayou.github.io/dotfiles/> (built with MkDocs Material from `website/`), including the
+[architecture diagram](https://fnayou.github.io/dotfiles/reference/architecture/).
 
 Setup guides are written for a human operator, not for agents.
 
@@ -80,16 +120,26 @@ stow --dir=stow/common --target="$HOME" --simulate <package>
 stow --dir=stow/common --target="$HOME" <package>
 ```
 
-If the dry run reports a conflict, **stop** and resolve it manually. Never use `--adopt` — it
+For a macOS-only package use `--dir=stow/macos`. Some packages need `--no-folding`: each package's guide
+says which. If the dry run reports a conflict, **stop** and resolve it manually. Never use `--adopt` — it
 overwrites existing files. See the [Stow usage guide](docs/stow-usage.md) for full detail.
 
 ## Safety
 
 - All `stow/common/` packages, plus `stow/macos/ghostty` on macOS, are stowed; symlinks point from `$HOME` into the repo.
 - Stow and symlink operations happen only with explicit per-session approval and a reviewed plan.
+- Tasks that write outside the repository (`codex:sync`, `terminal:sync`, `hooks:install`) are a dry run first and need `--apply`.
 - No secrets, credentials, or private hostnames are committed.
 - Local-only and sensitive values live in unstowed `.example` templates that you copy and fill in.
 - Every significant change follows: PRD → Architecture → Review → Plan → Review → Build → Review → Commit.
+- Commits and pull request titles use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+## Generated art
+
+The banner above, the social preview, the logo, the favicon and the architecture diagram are generated
+from this repository by a small Python program, with a PNG rendered beside each SVG. CI fails a pull
+request whose committed SVGs are stale, and a short reminder appears before you commit, push or open a
+pull request when the art needs rebuilding. See the [art guide](docs/guides/art-setup.md).
 
 ## For Claude Code
 
@@ -102,12 +152,16 @@ approval and an approved plan.
 ## Repository structure
 
 ```
-.claude/          Claude Code agents, rules, and skills
+.claude/          Claude Code agents, rules, skills and the project hook
+.githooks/        Opt-in Git hooks (task hooks:install)
+.github/          CI and docs workflows
 stow/
   common/         Packages that work on all platforms (source of truth)
-  macos/          macOS-specific packages
+  macos/          macOS-specific packages (ghostty is stowed, terminal is not)
   arch/           Arch / EndeavourOS-specific packages (empty)
   debian/         Debian-specific packages (empty)
+packages/         Install lists per platform (Brewfile, Arch, Debian)
+scripts/          Entry points behind the tasks, and the art generators (scripts/art/)
 docs/
   guides/         Human setup guides, one per package
   architecture/   Structure decisions and tradeoffs
@@ -116,16 +170,22 @@ docs/
   prd/            Product requirements documents
   reviews/        Review reports
   claude/         Agent guides and workflow documentation
+website/          The MkDocs site and its images
+Taskfile.yml      Every task, the only entry point
 AGENTS.md         Main operating contract — read this first
 CLAUDE.md         Claude Code entry point
 ```
 
 ## CI
 
-GitHub Actions runs on every push and pull request, performing non-destructive hygiene checks only:
-verifies expected files/directories exist, checks Markdown is present, runs `bash -n` on shell
-scripts, and scans for obvious secret patterns. It never runs Stow, creates symlinks, modifies
-`$HOME`, uses secrets, or deploys anything.
+Two GitHub Actions workflows:
+
+- **CI** runs on every push and pull request with non-destructive hygiene checks only: expected files
+  and directories exist, Markdown is present, `bash -n` on shell scripts, a scan for obvious secret
+  patterns, the ADR record is consistent, the status-line tests pass, and the committed SVG art is
+  current. It never runs Stow, creates symlinks, modifies `$HOME`, uses secrets, or deploys anything.
+- **Docs** runs on `main`: it generates the architecture diagram, builds the site with
+  `mkdocs build --strict`, and deploys it to GitHub Pages.
 
 ## License
 
