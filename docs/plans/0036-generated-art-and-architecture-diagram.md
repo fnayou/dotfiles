@@ -1,7 +1,7 @@
 # Plan: Generated Brand Art and Architecture Diagram
 
 **Number:** 0036
-**Status:** Approved
+**Status:** Complete
 **Date:** 2026-10-23
 **PRD:** [0032-generated-art-and-architecture-diagram](../prd/0032-generated-art-and-architecture-diagram.md) (Approved)
 **Architecture:** [0028-generated-art-and-architecture-diagram-architecture](../architecture/0028-generated-art-and-architecture-diagram-architecture.md) (Approved)
@@ -347,3 +347,14 @@ Findings: `systemMessage` is shown to the operator for `PreToolUse`, so no fallb
 command" to a message Claude repeats if the operator has not seen it. Cleanup: `hooks:uninstall --apply`
 (`core.hooksPath` unset again), the throwaway branch deleted, and the temporary bare repository removed from the
 system temporary directory. The first `docs.yml` run on `main` is still pending, so this plan stays Approved.
+
+## Completion (2026-10-23)
+
+The remaining conditions are met, so the Reviewer marks this plan Complete:
+
+- Implementation reviews [0105](../reviews/0105-generated-art-implementation-review.md) (six blocking issues) and
+  [0106](../reviews/0106-generated-art-implementation-re-review.md) (all resolved; three PASS verdicts).
+- Task 21 live tests done: both reminder mechanisms work, results recorded above.
+- Merged in pull request #91. The first `docs.yml` run on `main` (run 39875430516) generated the diagram, built
+  the site with `mkdocs build --strict` and deployed it; the Architecture page returns HTTP 200.
+- The user confirmed the README, website, logo and favicon display correctly.
