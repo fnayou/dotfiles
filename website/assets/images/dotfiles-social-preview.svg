@@ -107,7 +107,7 @@
 <line x1="517.2" y1="616" x2="517.2" y2="668" stroke="#363a4f" stroke-width="1.5"/>
 <rect x="545.2" y="620" width="5" height="44" rx="2.5" fill="#c6a0f6"/>
 <text x="563.2" y="640" font-size="16" font-weight="700" fill="#c6a0f6" text-anchor="start">Well documented</text>
-<text x="563.2" y="662" font-size="13.5" font-weight="400" fill="#a5adcb" text-anchor="start">17 guides, 71 ADRs</text>
+<text x="563.2" y="662" font-size="13.5" font-weight="400" fill="#a5adcb" text-anchor="start">17 guides, 72 ADRs</text>
 <line x1="762.8" y1="616" x2="762.8" y2="668" stroke="#363a4f" stroke-width="1.5"/>
 <rect x="790.8" y="620" width="5" height="44" rx="2.5" fill="#eed49f"/>
 <text x="808.8" y="640" font-size="16" font-weight="700" fill="#eed49f" text-anchor="start">Taskfile automation</text>

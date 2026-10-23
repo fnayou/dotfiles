@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1670" height="558" viewBox="0 0 1670 558" role="img" aria-labelledby="t d"><title id="t">fnayou/dotfiles</title><desc id="d">Modular personal dotfiles for macOS, Debian and Arch: 14 packages, 38 tasks, 71 decision records, release v2026.10.</desc><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e2030"/><stop offset="1" stop-color="#181926"/></linearGradient><linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#24273a"/><stop offset="1" stop-color="#1e2030"/></linearGradient><linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b7bdf8" stop-opacity=".55"/><stop offset="1" stop-color="#c6a0f6" stop-opacity=".35"/></linearGradient></defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="1670" height="558" viewBox="0 0 1670 558" role="img" aria-labelledby="t d"><title id="t">fnayou/dotfiles</title><desc id="d">Modular personal dotfiles for macOS, Debian and Arch: 14 packages, 38 tasks, 72 decision records, release v2026.10.</desc><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e2030"/><stop offset="1" stop-color="#181926"/></linearGradient><linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#24273a"/><stop offset="1" stop-color="#1e2030"/></linearGradient><linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b7bdf8" stop-opacity=".55"/><stop offset="1" stop-color="#c6a0f6" stop-opacity=".35"/></linearGradient></defs>
 <g font-family="'JetBrains Mono','JetBrainsMono Nerd Font','SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace">
 <rect width="1670" height="558" fill="url(#bg)"/>
 <rect x="38" y="40" width="1594" height="476" rx="30" fill="url(#card)" stroke="url(#edge)" stroke-width="2"/>
@@ -20,7 +20,7 @@
 <text x="330" y="410" font-size="21" font-weight="400" fill="#8087a2" text-anchor="end" letter-spacing="1">PACKAGES</text>
 <text x="330" y="462" font-size="46" font-weight="700" fill="#8aadf4" text-anchor="end">38</text>
 <text x="330" y="492" font-size="21" font-weight="400" fill="#8087a2" text-anchor="end" letter-spacing="1">TASKS</text>
-<text x="1340" y="380" font-size="46" font-weight="700" fill="#8aadf4" text-anchor="start">71</text>
+<text x="1340" y="380" font-size="46" font-weight="700" fill="#8aadf4" text-anchor="start">72</text>
 <text x="1340" y="410" font-size="21" font-weight="400" fill="#8087a2" text-anchor="start" letter-spacing="1">DECISION RECORDS</text>
 <text x="1340" y="462" font-size="46" font-weight="700" fill="#8aadf4" text-anchor="start">v2026.10</text>
 <text x="1340" y="492" font-size="21" font-weight="400" fill="#8087a2" text-anchor="start" letter-spacing="1">RELEASE</text>
