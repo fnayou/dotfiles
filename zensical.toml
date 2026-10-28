@@ -1,0 +1,43 @@
+[project]
+site_name = "fnayou/dotfiles"
+site_url = "https://fnayou.github.io/dotfiles/"
+site_description = "Personal dotfiles for macOS, EndeavourOS / Arch, and Debian."
+docs_dir = "website"
+site_dir = "site"
+repo_url = "https://github.com/fnayou/dotfiles"
+extra_css = ["stylesheets/macchiato.css"]
+nav = [
+  { Home = "index.md" },
+  { "Getting started" = ["getting-started.md", "installation.md", "philosophy.md"] },
+  { Features = ["features/index.md", { Shell = "features/shell.md" }, { Terminal = "features/terminal.md" }, { Editor = "features/editor.md" }, { Git = "features/git.md" }, { Packages = "features/packages.md" }, { Scripts = "features/scripts.md" }] },
+  { Usage = ["usage/index.md", { "Daily workflow" = "usage/daily-workflow.md" }, { Aliases = "usage/aliases.md" }, { Functions = "usage/functions.md" }, { Taskfile = "usage/taskfile.md" }] },
+  { Reference = ["reference/index.md", { Architecture = "reference/architecture.md" }, { "Repository structure" = "reference/repository-structure.md" }, { Systems = "reference/supported-systems.md" }, { Dependencies = "reference/shell-dependencies.md" }, { Stow = "reference/stow.md" }, { Troubleshooting = "reference/troubleshooting.md" }] },
+  { Guides = [
+    { "Agent tooling" = "guides/agent-tooling-setup.md" }, { Alacritty = "guides/alacritty-setup.md" },
+    { "Artwork workflow" = "guides/art-setup.md" }, { bat = "guides/bat-setup.md" },
+    { btop = "guides/btop-setup.md" }, { Claude = "guides/claude-setup.md" },
+    { Codex = "guides/codex-setup.md" }, { Doctor = "guides/doctor.md" },
+    { eza = "guides/eza-setup.md" }, { Ghostty = "guides/ghostty-setup.md" },
+    { Git = "guides/git-setup.md" }, { Herdr = "guides/herdr-setup.md" },
+    { "OS maintenance" = "guides/os-maintenance.md" }, { Packages = "guides/packages-setup.md" },
+    { Speedtest = "guides/speedtest-setup.md" }, { "Terminal app" = "guides/terminal-app-setup.md" },
+    { Zsh = "guides/zsh-setup.md" },
+  ] },
+  { Screenshots = "screenshots.md" },
+]
+
+[project.theme]
+language = "en"
+custom_dir = "overrides"
+logo = "assets/generated-brand/logo.svg"
+favicon = "assets/generated-brand/favicon.svg"
+palette = [{ scheme = "macchiato", primary = "custom", accent = "custom" }]
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[project.markdown_extensions]
+admonition = {}
+pymdownx.details = {}
+pymdownx.superfences = {}
+pymdownx.tabbed.alternate_style = true

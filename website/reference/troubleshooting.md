@@ -196,16 +196,16 @@ readlink ~/.config/eza/theme.yml
 If the variable is set, eza reads `theme.yml` from there instead — unset it or point it at
 `~/.config/eza`.
 
-## MkDocs local preview issues
+## Preview the site locally
 
-To preview this site locally without installing anything, serve it via Docker from the repository root:
+Install the pinned docs requirements, then run Zensical from the repository root:
 
 ```bash
-docker run --rm -it -p 8000:8000 -v "$PWD":/docs squidfunk/mkdocs-material serve --dev-addr=0.0.0.0:8000
+python3 -m pip install -r requirements-docs.txt
+zensical serve
 ```
 
-Open <http://localhost:8000>. The `--dev-addr=0.0.0.0:8000` binding is required so the container is
-reachable from the host.
+Open <http://localhost:8000>.
 
 ## Related
 

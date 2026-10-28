@@ -93,3 +93,6 @@ These values mirror `docs/claude/DOCUMENT-LIFECYCLE.md`, which is the canonical 
 | [0032](0032-ghostty-follow-ups.md) | Ghostty Follow-ups — Doctor, Task Dry-Run, Palette Wording | Complete |
 | [0033](0033-implement-chafa-image-preview.md) | Implement chafa Image Preview | Complete |
 | [0034](0034-chafa-documentation-follow-up.md) | chafa Documentation Follow-up and Release v2026.10 | Complete |
+| [0035](0035-terminal-app-profile.md) | macOS Terminal.app Profile | Complete |
+| [0036](0036-generated-art-and-architecture-diagram.md) | Generated Brand Art and Architecture Diagram | Complete |
+| [0037](0037-project-presentation-and-zensical-site.md) | Project Presentation and Zensical Website | Complete — implementation review [0109](../reviews/0109-project-presentation-implementation-review.md), no blocking issues |

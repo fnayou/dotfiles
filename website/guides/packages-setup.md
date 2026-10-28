@@ -1,0 +1,291 @@
+# Packages Setup Guide
+
+This guide explains how to install all tools required by this dotfiles repository on a new machine. It is written for a human user performing the setup, not for implementation agents.
+
+---
+
+## What needs to be installed
+
+All tools in this repository are cross-platform — they are available on macOS, Arch / EndeavourOS, and Debian (stable, trixie / 13+).
+
+| Tool | Used by | Required? |
+|---|---|---|
+| `git` | repository management | Yes |
+| `stow` | symlink manager | Yes |
+| [`go-task`](https://taskfile.dev/) | task runner; also powers `task <Tab>` zsh completion | Yes |
+| [`git-cliff`](https://git-cliff.org/) | regenerates `CHANGELOG.md` via `task changelog` | Optional |
+| `herdr` | terminal multiplexer with AI agent integration | Optional |
+| `fzf` | fuzzy finder (shell integration, fzf-tab completion previews) | Optional |
+| `zoxide` | smarter `cd` | Optional |
+| `eza` | modern `ls` with icons (aliases, fzf-tab previews) | Optional |
+| `bat` | syntax-highlighted file viewer (suffix aliases: `.md`, `.txt`, `.log`) | Optional |
+| `chafa` | terminal image viewer (`cat` and suffix aliases for images) | Optional |
+| `librsvg` | `rsvg-convert`, renders the social-preview PNG from its SVG source (`task brand:generate`) | Required for brand generation |
+| `btop` | interactive resource monitor (Catppuccin Macchiato theme) | Optional |
+| `oh-my-posh` | shell prompt theme | Optional |
+| `zinit` | zsh plugin manager | Optional |
+
+Optional tools are fully guarded — the shell starts cleanly without them. Install only what you want.
+
+Package files:
+- macOS / Linux (Homebrew): `packages/Brewfile`
+- Arch / EndeavourOS: `packages/arch/packages.txt`
+- Debian (stable, trixie / 13+): `packages/debian/packages.txt`
+
+> Debian note: `bat` runs as `batcat` and `fd` (package `fd-find`) as `fdfind`.
+> `go-task`, `oh-my-posh`, and `git-cliff` are not in the Debian archive —
+> install them out-of-band (see the Debian section below).
+
+---
+
+## macOS
+
+### Prerequisites
+
+Homebrew must be installed before any other step. If it is not installed:
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+### Step 1: Preview what will be installed
+
+```bash
+brew bundle list --file=packages/Brewfile
+```
+
+This shows which packages would be installed. No changes are made.
+
+### Step 2: Install all packages
+
+⚠️  MANUAL STEP — review brew bundle list output before running
+
+```bash
+brew bundle --file=packages/Brewfile
+```
+
+This installs all tools in one step: `git`, `stow`, `go-task`, `git-cliff`, `fzf`, `zoxide`, `eza`, `bat`, `chafa`, and `oh-my-posh`.
+
+### Step 3: Install zinit
+
+`zinit` is not in the Brewfile — it is installed via a one-time manual `git clone`:
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+git clone https://github.com/zdharma-continuum/zinit.git \
+  "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+```
+
+This clones zinit into `~/.local/share/zinit/zinit.git`. The zsh config detects it on the next shell start.
+
+### Step 4: Verify
+
+```bash
+task deps:check:zsh
+```
+
+All lines should show `PASS`. If any tool shows `FAIL`, follow the install hint printed on that line.
+
+---
+
+## Arch / EndeavourOS
+
+### Step 1: Install pacman packages
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+sudo pacman -S git stow go-task git-cliff fzf zoxide eza bat chafa
+```
+
+### Step 2: Install AUR packages
+
+`oh-my-posh` is only available via the AUR. Requires `yay` or `paru`:
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+yay -S oh-my-posh-bin
+```
+
+Skip this step if you do not want the Oh My Posh shell prompt — `prompt.zsh` is a no-op when `oh-my-posh` is absent.
+
+### Step 2b: Install the Neovim tier (optional)
+
+Only needed if you stow the `nvim` package. `base-devel` provides the C compiler and
+`tree-sitter-cli` the parser builder — without the latter, nvim-treesitter parser
+builds fail with `ENOENT ... (cmd): 'tree-sitter'`. See `stow/common/nvim/README.md`
+for the full dependency rationale.
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+sudo pacman -S neovim ripgrep fd nodejs npm python python-pipx base-devel tree-sitter-cli
+```
+
+### Step 3: Install zinit
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+git clone https://github.com/zdharma-continuum/zinit.git \
+  "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+```
+
+### Step 4: Verify
+
+```bash
+task deps:check:zsh
+```
+
+All lines should show `PASS`. If you installed the Neovim tier, also run:
+
+```bash
+task deps:check:nvim
+```
+
+---
+
+## Debian (stable, trixie / 13+)
+
+### Step 1: Install apt packages
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+sudo apt install git stow fzf zoxide eza bat chafa
+```
+
+Debian binary names differ from other platforms: `bat` runs as `batcat`, and
+`fd` (installed below via `fd-find`) runs as `fdfind`.
+
+### Step 2: Install out-of-band tools
+
+`go-task`, `oh-my-posh`, and `git-cliff` are not in the Debian archive. Install them via their
+upstream scripts (review each before running):
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin   # go-task
+curl -s https://ohmyposh.dev/install.sh | bash -s                              # oh-my-posh
+```
+
+Skip `oh-my-posh` if you do not want the prompt — `prompt.zsh` is a no-op when it is absent.
+
+`git-cliff` is only needed to run `task changelog`. Install it with `cargo install git-cliff` if you
+have a Rust toolchain, or download a release binary from
+<https://github.com/orhun/git-cliff/releases> into `~/.local/bin`.
+
+### Step 2b: Install the Neovim tier (optional)
+
+Only needed if you stow the `nvim` package. `build-essential` provides the C compiler.
+nvim-treesitter's `main` branch builds parsers by shelling out to a `tree-sitter`
+binary — without it, builds fail with `ENOENT ... (cmd): 'tree-sitter'`. On Debian,
+install the CLI from the prebuilt GitHub release (node-free, no ABI drift) rather than
+via npm. See `stow/common/nvim/README.md` for the full rationale.
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+sudo apt install neovim ripgrep fd-find nodejs npm python3 python3-pip pipx build-essential
+curl -fsSL https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz \
+  | gunzip > ~/.local/bin/tree-sitter && chmod +x ~/.local/bin/tree-sitter
+```
+
+Ensure `~/.local/bin` is on your `PATH`.
+
+> **Neovim version:** nvim-treesitter's `main` branch needs Neovim **>= 0.11**.
+> Debian stable's apt neovim may be older — check with `nvim --version`. If it is
+> too old, skip `neovim` in the apt line above and install the prebuilt tarball
+> into `~/.local` instead (node-free, no sudo):
+>
+> ```bash
+> curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
+>   | tar xz -C ~/.local --strip-components=1
+> ```
+
+### Step 3: Install zinit
+
+⚠️  MANUAL STEP — review before running
+
+```bash
+git clone https://github.com/zdharma-continuum/zinit.git \
+  "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+```
+
+### Step 4: Verify
+
+```bash
+task deps:check:zsh
+```
+
+All lines should show `PASS`. If you installed the Neovim tier, also run:
+
+```bash
+task deps:check:nvim
+```
+
+---
+
+## Selective install (any platform)
+
+If you want only specific tools rather than everything, install them individually:
+
+```bash
+# macOS — individual tools
+brew install eza
+brew install fzf
+brew install zoxide
+brew install bat
+brew install chafa
+brew install jandedobbeleer/oh-my-posh/oh-my-posh
+brew install git-cliff
+
+# Arch — individual tools
+sudo pacman -S eza
+sudo pacman -S fzf
+sudo pacman -S zoxide
+sudo pacman -S bat
+sudo pacman -S chafa
+yay -S oh-my-posh-bin
+sudo pacman -S git-cliff
+
+# Debian — individual tools (bat->batcat, fd->fdfind)
+sudo apt install eza
+sudo apt install fzf
+sudo apt install zoxide
+sudo apt install bat
+sudo apt install chafa
+# oh-my-posh: curl -s https://ohmyposh.dev/install.sh | bash -s
+# git-cliff:  cargo install git-cliff   (or a release binary — see Step 2 above)
+```
+
+All optional tools are guarded in the zsh config — uninstalled tools are silently skipped.
+
+---
+
+## Taskfile shortcuts
+
+| Task | What it does |
+|---|---|
+| `task deps:brew` | Print the macOS install commands (does not run them) |
+| `task deps:arch` | Print the Arch install commands (does not run them) |
+| `task deps:debian` | Print the Debian install commands (does not run them) |
+| `task deps:check:zsh` | Check which shell tools are installed vs missing |
+| `task deps:check:nvim` | Check which Neovim-tier tools are installed vs missing |
+
+---
+
+## Package files reference
+
+| File | Platform | Format |
+|---|---|---|
+| `packages/Brewfile` | macOS / Linux (Homebrew) | `brew bundle` format |
+| `packages/arch/packages.txt` | Arch / EndeavourOS | Annotated reference — read and run manually |
+| `packages/debian/packages.txt` | Debian (stable / trixie) | Annotated reference — read and run manually |
+
+Neither file is executed automatically. All installs are manual.

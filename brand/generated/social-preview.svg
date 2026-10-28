@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-labelledby="title description">
+  <title id="title">fnayou/dotfiles — Personal dotfiles for macOS, EndeavourOS / Arch, and Debian.</title>
+  <desc id="description">Macchiato Blue dotfiles for macOS · EndeavourOS / Arch · Debian with 14 packages and 40 task commands.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#24273a"/><stop offset="1" stop-color="#181926"/></linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#background)"/>
+  <circle cx="1110" cy="104" r="236" fill="#8aadf4" opacity=".07"/>
+  <circle cx="1170" cy="588" r="200" fill="#b7bdf8" opacity=".05"/>
+  <rect x="48" y="48" width="1184" height="544" rx="24" fill="none" stroke="#494d64" stroke-width="2"/>
+  <g transform="translate(92 96)">
+    <rect width="100" height="100" rx="22" fill="#1e2030" stroke="#8aadf4" stroke-width="3"/>
+    <path d="M24 39 39 50 24 61" fill="none" stroke="#8aadf4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M48 61h17" stroke="#cad3f5" stroke-width="5" stroke-linecap="round"/>
+    <path d="M69 25v16m0 4v18m0 4v14m0-23c0-7 5-10 12-10h3" fill="none" stroke="#b7bdf8" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="69" cy="21" r="5" fill="#8aadf4"/><circle cx="86" cy="44" r="5" fill="#8aadf4"/><circle cx="69" cy="81" r="5" fill="#b7bdf8"/>
+  </g>
+  <text x="224" y="138" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="23" fill="#b8c0e0">PERSONAL · CROSS-PLATFORM · MANUAL FIRST</text>
+  <text x="220" y="247" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="69" font-weight="700" letter-spacing="-3">
+    <tspan fill="#b7bdf8">fnayou/</tspan><tspan fill="#8aadf4">dotfiles</tspan>
+  </text>
+  <text x="96" y="315" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="24" fill="#cad3f5">Personal dotfiles for macOS, EndeavourOS / Arch, and Debian.</text>
+  <text x="96" y="364" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#b8c0e0">macOS · EndeavourOS / Arch · Debian</text>
+  <g transform="translate(96 430)">
+    <rect width="326" height="88" rx="14" fill="#1e2030" stroke="#363a4f" stroke-width="2"/>
+    <text x="22" y="39" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700" fill="#8aadf4">14</text>
+    <text x="22" y="66" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="13" letter-spacing="2" fill="#b8c0e0">CONFIG PACKAGES</text>
+  </g>
+  <g transform="translate(449 430)">
+    <rect width="326" height="88" rx="14" fill="#1e2030" stroke="#363a4f" stroke-width="2"/>
+    <text x="22" y="39" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700" fill="#8aadf4">40</text>
+    <text x="22" y="66" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="13" letter-spacing="2" fill="#b8c0e0">TASK COMMANDS</text>
+  </g>
+  <g transform="translate(802 430)">
+    <rect width="382" height="88" rx="14" fill="#1e2030" stroke="#363a4f" stroke-width="2"/>
+    <text x="22" y="39" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700" fill="#8aadf4">v2026.10</text>
+    <text x="22" y="66" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="13" letter-spacing="2" fill="#b8c0e0">CURRENT RELEASE</text>
+  </g>
+  <text x="96" y="558" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="16" fill="#a5adcb">GNU Stow  /  Catppuccin Macchiato  /  Blue accent</text>
+</svg>

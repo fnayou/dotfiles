@@ -135,8 +135,7 @@ jobs:
           echo "Running caveman status line segment tests..."
           node --test stow/common/claude/tests/statusline-caveman.test.js
 
-      # Regenerates the committed SVGs (banner, social preview, logo) in memory and compares them
-      # byte for byte, and checks the palette against the Alacritty theme. It never compares PNGs and
-      # needs neither rsvg-convert nor the task binary. To fix a failure: task art:build. See ADR 0082.
-      - name: Art freshness
-        run: bash scripts/art.sh check
+      # Checks deterministic project artwork and confirms palette agreement with Alacritty.
+      # To fix a failure: task brand:generate. See ADR 0084.
+      - name: Brand freshness
+        run: python3 -B scripts/brand_generate.py --check

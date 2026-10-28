@@ -37,7 +37,7 @@
 # sudo pacman -S chafa
 
 # --- Generated art, PNG rendering (pacman, extra repo) ---
-# Optional — `task art:build` renders a PNG beside each generated SVG with rsvg-convert.
+# Required for `task brand:generate`, which renders the social-preview PNG from SVG.
 # See: docs/guides/art-setup.md
 # sudo pacman -S librsvg
 

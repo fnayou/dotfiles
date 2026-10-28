@@ -32,14 +32,15 @@ temp/
 # Logs
 *.log
 
-# MkDocs build output
+# Zensical build output
 site/
+website/assets/generated-brand/
 
 # Local machine files
 *.local
 *.local.*
 
-# Generated at docs build (task art:build writes them locally); see ADR 0082
+# Generated at docs build; see ADR 0084
 website/assets/images/dotfiles-architecture.svg
 website/assets/images/dotfiles-architecture.png
 website/assets/images/.art-*

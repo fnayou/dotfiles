@@ -11,8 +11,7 @@ governance, the source of truth, deployment, the machine, and delivery.
     This diagram is not drawn by hand. `scripts/art/architecture.py` reads the repository itself, so
     the packages and where they link, the files Stow ignores, the tasks by group, the zsh layers, the
     CI steps and the counts follow the repository. It is generated each time the site is built, and is
-    not committed. To see it locally, rebuild the art as described in
-    [Scripts](../features/scripts.md#generated-art).
+    not committed. To see it locally, run `task docs:build`.
 
 !!! info "How to read it"
     - **Filled blue dot** on a package: its files carry the Macchiato palette. **Hollow dot**: it has no
@@ -20,5 +19,4 @@ governance, the source of truth, deployment, the machine, and delivery.
     - **Orange text**: a file kept out of Stow and propagated by a task instead.
     - **Dashed arrow**: a manual step, run by you.
 
-Curated from `docs/guides/art-setup.md` and `AGENTS.md`. See also
-[Repository Structure](repository-structure.md) and [GNU Stow Workflow](stow.md).
+See also [Repository Structure](repository-structure.md) and [GNU Stow Workflow](stow.md).

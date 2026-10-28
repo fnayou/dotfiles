@@ -1,13 +1,9 @@
-"""Catppuccin Macchiato, the palette every generated image uses.
-
-The values are the official Macchiato ones. `check()` compares them with the Alacritty theme, which
-is the palette source of truth for the repository (ADR 0068), so an edit here that disagrees with the
-theme fails `art.sh check`.
-"""
+"""Read the project's Catppuccin Macchiato palette and compare it with Alacritty (ADR 0068)."""
+import json
 import tomllib
 from pathlib import Path
 
-COLORS = {
+DEFAULT_COLORS = {
     "rosewater": "#f4dbd6", "flamingo": "#f0c6c6", "pink": "#f5bde6", "mauve": "#c6a0f6",
     "red": "#ed8796", "maroon": "#ee99a0", "peach": "#f5a97f", "yellow": "#eed49f",
     "green": "#a6da95", "teal": "#8bd5ca", "sky": "#91d7e3", "sapphire": "#7dc4e4",
@@ -16,6 +12,19 @@ COLORS = {
     "surface2": "#5b6078", "surface1": "#494d64", "surface0": "#363a4f", "base": "#24273a",
     "mantle": "#1e2030", "crust": "#181926",
 }
+
+ROOT = Path(__file__).resolve().parents[2]
+BRAND_DATA = ROOT / "brand/data/brand.json"
+
+
+def colors():
+    """Read the brand palette; retain the legacy table only before brand data exists."""
+    if BRAND_DATA.is_file():
+        return json.loads(BRAND_DATA.read_text(encoding="utf-8"))["palette"]
+    return DEFAULT_COLORS
+
+
+COLORS = colors()
 
 # Alacritty theme slot -> palette name.
 THEME_SLOTS = {
@@ -51,7 +60,7 @@ THEME_SLOTS = {
 
 def check(theme_path, colors=None):
     """Return a list of problems; an empty list means the palette matches the theme."""
-    colors = colors if colors is not None else COLORS
+    colors = colors if colors is not None else globals()["colors"]()
     theme = tomllib.loads(Path(theme_path).read_text(encoding="utf-8"))["colors"]
     problems = []
     for slot, name in THEME_SLOTS.items():
