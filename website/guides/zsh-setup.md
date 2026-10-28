@@ -16,12 +16,18 @@ The `stow/common/zsh/` package manages files under `~/.config/zsh/`. After Stow,
 | `stow/common/zsh/.config/zsh/shared.zsh` | `~/.config/zsh/shared.zsh` | XDG vars + portable env (EDITOR, PAGER) only |
 | `stow/common/zsh/.config/zsh/path.zsh` | `~/.config/zsh/path.zsh` | PATH additions (safe, `$HOME`-relative) |
 | `stow/common/zsh/.config/zsh/history.zsh` | `~/.config/zsh/history.zsh` | HISTFILE, HISTSIZE, SAVEHIST, history setopts |
+| `stow/common/zsh/.config/zsh/plugins.zsh` | `~/.config/zsh/plugins.zsh` | Zinit guard, plugin order, and `compinit` (ADR-0049) |
+| `stow/common/zsh/.config/zsh/fzf.zsh` | `~/.config/zsh/fzf.zsh` | fzf shell integration — guarded, no-op without `fzf` |
 | `stow/common/zsh/.config/zsh/completions.zsh` | `~/.config/zsh/completions.zsh` | Completion styles only (compinit runs in `plugins.zsh` — ADR-0049) |
 | `stow/common/zsh/.config/zsh/taskfile.zsh` | `~/.config/zsh/taskfile.zsh` | go-task completion tuning — guarded, no-op without `task` |
+| `stow/common/zsh/.config/zsh/herdr.zsh` | `~/.config/zsh/herdr.zsh` | Herdr session-name completion — guarded, no-op without `herdr` |
+| `stow/common/zsh/.config/zsh/ssh.zsh` | `~/.config/zsh/ssh.zsh` | SSH host completion from `~/.ssh/config` — guarded, no-op without `ssh` and config |
+| `stow/common/zsh/.config/zsh/speedtest.zsh` | `~/.config/zsh/speedtest.zsh` | `speed` helpers — guarded, no-op without `cloudflare-speed-cli` |
+| `stow/common/zsh/.config/zsh/lms.zsh` | `~/.config/zsh/lms.zsh` | LM Studio CLI completion — guarded, no-op without `lms` |
+| `stow/common/zsh/.config/zsh/docker.zsh` | `~/.config/zsh/docker.zsh` | Docker Desktop completion shim — guarded, no-op without `docker` |
 | `stow/common/zsh/.config/zsh/keybindings.zsh` | `~/.config/zsh/keybindings.zsh` | Key bindings (autosuggest binding guarded by widget check) |
 | `stow/common/zsh/.config/zsh/aliases.zsh` | `~/.config/zsh/aliases.zsh` | Portable aliases (grep) |
-| `stow/common/zsh/.config/zsh/tools.zsh` | `~/.config/zsh/tools.zsh` | fzf, zoxide, eza guards |
-| `stow/common/zsh/.config/zsh/plugins.zsh` | `~/.config/zsh/plugins.zsh` | Zinit guarded source (no auto-clone); owns plugin order + compinit (ADR-0049) |
+| `stow/common/zsh/.config/zsh/tools.zsh` | `~/.config/zsh/tools.zsh` | zoxide integration — guarded, no-op without `zoxide` |
 | `stow/common/zsh/.config/zsh/prompt.zsh` | `~/.config/zsh/prompt.zsh` | Oh My Posh double-guarded (no-op if missing) |
 | `stow/common/zsh/.config/zsh/macos.zsh` | `~/.config/zsh/macos.zsh` | macOS-specific (brew guard, `alias o='open'`) |
 | `stow/common/zsh/.config/zsh/arch.zsh` | `~/.config/zsh/arch.zsh` | Arch-specific (AUR helper guard, systemctl aliases) |
@@ -57,7 +63,9 @@ The `stow/common/omp/` package manages `~/.config/omp/omp.toml`. Stow it separat
 - **`~/.zshrc` remains unmanaged.** This package never stows, symlinks, overwrites, or reads `~/.zshrc`. Your existing `~/.zshrc` is fully preserved. After Stow, you manually add one guarded include block to `~/.zshrc` (see Step 3).
 - **`~/.zshenv`, `~/.zprofile`, `~/.zlogin`** are not managed.
 - **`local.zsh`** is not a Stow symlink — you copy `local.zsh.example` to `~/.config/zsh/local.zsh` with your editor (see Step 5).
-- **No tool is installed** by this package. Zinit, fzf, zoxide, eza, and oh-my-posh are optional and must be installed separately if you want them.
+- **No tool is installed** by this package. Zinit, fzf, zoxide, eza, bat, chafa, go-task,
+  cloudflare-speed-cli, Herdr, LM Studio CLI (`lms`), Docker CLI, and Oh My Posh are installed
+  separately if you want their integrations.
 
 ---
 
@@ -76,13 +84,66 @@ Optional tools (not required to start; all integrations are guarded and are no-o
 | Tool | Integration in | Required by |
 |---|---|---|
 | Zinit | `plugins.zsh` — guarded source; no-op if absent | `zsh-syntax-highlighting`, `zsh-autosuggestions`, `fzf-tab` |
-| fzf (>= 0.48) | `tools.zsh`, `completions.zsh` — `fzf --zsh` guard; no-op if absent | fzf-tab previews |
+| fzf (>= 0.48) | `fzf.zsh`, `completions.zsh` — `fzf --zsh` guard; no-op if absent | fzf-tab previews |
 | zoxide | `tools.zsh` — `zoxide init --cmd cd zsh`; no-op if absent | `cd` smart jump (aliased to zoxide) |
-| eza | `tools.zsh`, `aliases.zsh`, `completions.zsh` — guarded; no-op if absent | `ls`/`ll`/`tree` aliases, fzf-tab previews |
+| eza | `aliases.zsh`, `completions.zsh` — guarded; no-op if absent | `ls`/`ll`/`tree` aliases, fzf-tab previews |
 | bat | `aliases.zsh` — suffix aliases (`.md`, `.txt`, `.log`) guarded by `command -v bat` | file preview in terminal |
 | chafa | `aliases.zsh` — image routing for `cat` and image suffix aliases, guarded by `command -v chafa` | image preview in terminal |
 | oh-my-posh | `prompt.zsh` — double-guarded; no-op if absent or if omp.toml missing | shell prompt theme |
 | go-task | `taskfile.zsh` — `command -v task` guard; no-op if absent | `task <Tab>` completion (needs brew/pacman install for the `_task` file) |
+| Herdr CLI | `herdr.zsh` — guarded; no-op if absent | session-name completion; `jq` is recommended for JSON parsing |
+| SSH client | `ssh.zsh` — guarded; no-op without `ssh` or readable `~/.ssh/config` | host completion for `ssh`, `scp`, `sftp`, `rsync`, and `ssh-copy-id` |
+| `lms` (LM Studio CLI) | `lms.zsh` — guarded; no-op if absent | command, option, and local model completion; dynamic model lists use `jq` |
+| Docker CLI | `docker.zsh` — guarded; no-op if absent | `docker desktop` completion; other commands use the shipped completion when available |
+| `jq` | Used by `lms.zsh` and `herdr.zsh` | optional; without it, LM Studio model lists are empty and Herdr uses its text fallback |
+
+### Command completions
+
+The Zsh package adds guarded completion for tools that do not ship a complete native Zsh
+completion, or tunes the native one. Start a command and press **Tab** to see candidates; selecting
+a candidate inserts it but does not run it.
+
+**LM Studio (`lms`)** — the authored completion lists top-level commands and nested `server`, `log`,
+`link`, and `runtime` commands. For example:
+
+```zsh
+lms load <Tab>
+```
+
+This offers installed model keys. `lms unload <Tab>` offers identifiers of models currently loaded
+in memory. These dynamic lists use read-only `lms ls --json` and `lms ps --json` queries and require
+`jq`; without `jq`, the lists are empty. `load` also completes `--auto`, `--gpu`, `--context-length`,
+`--ttl`, `--identifier`, and `--yes`. `unload` completes `--all`; `ls` completes `--llm`,
+`--embedding`, `--variants`, and `--json`; `ps` completes `--json`. Previews show command help or
+the matching model. Completion does not load or unload models and does not search the LM Studio Hub.
+
+**Docker Desktop** — the shim fills the missing `desktop` branch while delegating other Docker
+commands to the package-shipped `_docker` completion:
+
+```zsh
+docker desktop <Tab>
+```
+
+This offers `auth`, `kubernetes`, `disable`, `enable`, `diagnose`, `logs`, `restart`, `start`,
+`status`, `stop`, `update`, and `version`. Nested completion includes `auth status` and Kubernetes
+`images`, `reset-cluster`, and `status`. `logs` completes its boot, color, color-mode, and directory
+options; `update` completes `--check-only` and `--quiet`. The candidate tree is static. Previews read
+the selected command's `--help` output. Other Docker completion stays with the package `_docker`
+when available; without it, the shim provides the Docker Desktop tree.
+
+**SSH hosts** — `ssh`, `scp`, `sftp`, `rsync`, and `ssh-copy-id` complete only host aliases from
+`~/.ssh/config`. Wildcards are omitted; options and remote-path completion remain native. The preview
+uses `ssh -G` to print effective configuration and never opens a connection. This layer needs an
+existing readable `~/.ssh/config`; that private file is read locally and is not managed or published
+by this package.
+
+**Task and Herdr** — `task <Tab>` shows task names, descriptions, and a read-only summary preview.
+`herdr session attach <Tab>`, `herdr session stop <Tab>`, `herdr session delete <Tab>`, and
+`herdr --session <Tab>` offer real session names from read-only session listing. Selecting a
+candidate inserts it; neither preview runs a task nor starts, stops, or attaches to a session.
+
+See the [Shell feature overview](../features/shell.md#completions) for how these layers fit into the
+completion system.
 
 Verify required tools:
 
@@ -570,12 +631,18 @@ land in `/usr/bin`, which is already on PATH — then no `local.zsh` wiring is n
 | `shared.zsh` | Yes | No | XDG + env — committed directly |
 | `path.zsh` | Yes | No | PATH additions — committed directly |
 | `history.zsh` | Yes | No | History config — committed directly |
+| `plugins.zsh` | Yes | No | Zinit guard + compinit — committed directly |
+| `fzf.zsh` | Yes | No | fzf shell integration — guarded, committed directly |
 | `completions.zsh` | Yes | No | Completion styles — committed directly |
 | `taskfile.zsh` | Yes | No | go-task completion tuning — committed directly |
+| `herdr.zsh` | Yes | No | Herdr session completion — guarded, committed directly |
+| `ssh.zsh` | Yes | No | SSH host completion — reads local `~/.ssh/config` |
+| `speedtest.zsh` | Yes | No | `speed` helpers — guarded, committed directly |
+| `lms.zsh` | Yes | No | LM Studio CLI completion — guarded, committed directly |
+| `docker.zsh` | Yes | No | Docker Desktop completion shim — guarded, committed directly |
 | `keybindings.zsh` | Yes | No | Key bindings — committed directly |
 | `aliases.zsh` | Yes | No | Portable aliases — committed directly |
-| `tools.zsh` | Yes | No | Tool guards — committed directly |
-| `plugins.zsh` | Yes | No | Zinit guard + compinit — committed directly |
+| `tools.zsh` | Yes | No | zoxide integration — guarded, committed directly |
 | `prompt.zsh` | Yes | No | OMP double-guard — committed directly |
 | `macos.zsh` | Yes | No | macOS layer — committed directly |
 | `arch.zsh` | Yes | No | Arch layer — committed directly |
@@ -596,19 +663,25 @@ After all steps are complete, `~/.config/zsh/` should look like this:
 ├── shared.zsh         -> …/stow/common/zsh/.config/zsh/shared.zsh
 ├── path.zsh           -> …/stow/common/zsh/.config/zsh/path.zsh
 ├── history.zsh        -> …/stow/common/zsh/.config/zsh/history.zsh
-├── completions.zsh    -> …/stow/common/zsh/.config/zsh/completions.zsh
-├── taskfile.zsh       -> …/stow/common/zsh/.config/zsh/taskfile.zsh
-├── keybindings.zsh    -> …/stow/common/zsh/.config/zsh/keybindings.zsh
-├── aliases.zsh        -> …/stow/common/zsh/.config/zsh/aliases.zsh
-├── tools.zsh          -> …/stow/common/zsh/.config/zsh/tools.zsh
-├── plugins.zsh        -> …/stow/common/zsh/.config/zsh/plugins.zsh
-├── prompt.zsh         -> …/stow/common/zsh/.config/zsh/prompt.zsh
 ├── macos.zsh          -> …/stow/common/zsh/.config/zsh/macos.zsh
 ├── arch.zsh           -> …/stow/common/zsh/.config/zsh/arch.zsh
-├── local.zsh.example  -> …/stow/common/zsh/.config/zsh/local.zsh.example
-├── zshrc.example      -> …/stow/common/zsh/.config/zsh/zshrc.example
+├── plugins.zsh        -> …/stow/common/zsh/.config/zsh/plugins.zsh
+├── fzf.zsh            -> …/stow/common/zsh/.config/zsh/fzf.zsh
+├── completions.zsh    -> …/stow/common/zsh/.config/zsh/completions.zsh
+├── taskfile.zsh       -> …/stow/common/zsh/.config/zsh/taskfile.zsh
+├── herdr.zsh          -> …/stow/common/zsh/.config/zsh/herdr.zsh
+├── ssh.zsh            -> …/stow/common/zsh/.config/zsh/ssh.zsh
+├── speedtest.zsh      -> …/stow/common/zsh/.config/zsh/speedtest.zsh
+├── lms.zsh            -> …/stow/common/zsh/.config/zsh/lms.zsh
+├── docker.zsh         -> …/stow/common/zsh/.config/zsh/docker.zsh
+├── keybindings.zsh    -> …/stow/common/zsh/.config/zsh/keybindings.zsh
+├── aliases.zsh        -> …/stow/common/zsh/.config/zsh/aliases.zsh
+├── prompt.zsh         -> …/stow/common/zsh/.config/zsh/prompt.zsh
+├── tools.zsh          -> …/stow/common/zsh/.config/zsh/tools.zsh
 └── local.zsh                              (real file — created by you; NOT a symlink)
 ```
+
+`local.zsh.example` and `zshrc.example` stay in the repository; Stow excludes them.
 
 And after stowing the omp package:
 

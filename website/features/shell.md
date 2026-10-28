@@ -29,7 +29,10 @@ file owns a single job:
 | `completions.zsh` | Completion styles + fzf-tab previews |
 | `taskfile.zsh` | `task <Tab>` completion tuning (no-op without `task`) |
 | `herdr.zsh` | `herdr <Tab>` session-name completion (no-op without `herdr`) |
+| `ssh.zsh` | SSH-family host completion from `~/.ssh/config` (no-op without `ssh` and config) |
 | `speedtest.zsh` | `speed` / `speed-json` / `speed-log` / `speed-history` helpers (no-op without `cloudflare-speed-cli`) |
+| `lms.zsh` | LM Studio CLI completion, including local model candidates (no-op without `lms`) |
+| `docker.zsh` | Adds Docker Desktop commands to `docker <Tab>` and `docker desktop <Tab>` |
 | `keybindings.zsh` | Key bindings |
 | `aliases.zsh` | Portable aliases |
 | `tools.zsh` | zoxide integration (guarded) |
@@ -86,11 +89,21 @@ plugins are installed via Zinit, the setup adds:
   package, showing task descriptions and a read-only summary preview. No-op without `task`.
 - **`herdr` completion** — `herdr.zsh` authors session-name completion for `herdr <Tab>` (Herdr ships
   no native completion), using the read-only `herdr session list`. No-op without `herdr`.
+- **SSH host completion** — `ssh.zsh` offers only `Host` aliases from `~/.ssh/config` for `ssh`,
+  `scp`, `sftp`, `rsync`, and `ssh-copy-id`. The preview uses `ssh -G`; it never connects.
+- **LM Studio completion** — `lms.zsh` authors completion for the CLI and its nested commands.
+  `lms load <Tab>` offers installed model keys; `lms unload <Tab>` offers loaded identifiers.
+  `lms ls --json` and `lms ps --json` supply those lists when `jq` is installed. Previews use
+  read-only help and model queries; completion never loads a model or searches the Hub.
+- **Docker Desktop completion** — `docker.zsh` adds the `docker desktop` command tree, including
+  nested `auth` and `kubernetes` commands, while delegating other Docker completion to the shipped
+  `_docker` when available. Candidate generation is static; fzf-tab previews use `--help`.
 
 !!! note "All guarded, all read-only"
-    Each completion layer is gated behind `command -v` and is skipped when its tool is missing. The
-    `task` and `herdr` previews only read state — they never run a task or mutate a session. The
-    plugins themselves require Zinit and `fzf`; see [Shell Dependencies](../reference/shell-dependencies.md).
+    Each completion layer is guarded and skipped when its tool is missing. Completions only add
+    candidates; previews use help or read-only queries. They never run a task, mutate a session,
+    load a model, or connect to an SSH host. The plugins themselves require Zinit and `fzf`; see
+    [Shell Dependencies](../reference/shell-dependencies.md).
 
 ## Dependencies
 
@@ -130,4 +143,4 @@ and start a new shell.
 
 ## Related
 
-- [Shell Dependencies](../reference/shell-dependencies.md) · [GNU Stow Workflow](../reference/stow.md) · [Installation](../installation.md)
+- [Zsh setup guide](../guides/zsh-setup.md) · [Shell Dependencies](../reference/shell-dependencies.md) · [GNU Stow Workflow](../reference/stow.md) · [Installation](../installation.md)
