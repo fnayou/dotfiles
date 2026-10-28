@@ -47,10 +47,8 @@ file owns a single job:
     puts it after every `command -v <tool>` guard and after `compinit` has read `fpath`. So `PATH`,
     `FPATH`, and anything that produces them (`brew shellenv`) must be set in `~/.zshrc` above the
     managed block instead — otherwise the tool is invisible to its own layer and the completion only
-    starts working after `exec zsh`. See [ADR-0062] and
+    starts working after `exec zsh`. See
     [Troubleshooting](../reference/troubleshooting.md#a-completion-only-works-after-exec-zsh).
-
-    [ADR-0062]: https://github.com/fnayou/dotfiles/blob/main/docs/decisions/0062-path-affecting-setup-belongs-in-zshrc-above-the-managed-block.md
 
 ## Prompt
 

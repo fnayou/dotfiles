@@ -84,23 +84,22 @@ Add `--set-default` to also make it the default profile. See [Terminal](terminal
 
 The README banner, the social preview, the logo, the favicon and the [architecture
 diagram](../reference/architecture.md) are generated from the repository, in the Catppuccin Macchiato
-palette. Each SVG gets a PNG beside it when `rsvg-convert` (librsvg) is installed.
+palette. The social preview is the only raster output; it is rendered at 1280×640.
 
 ```bash
-task art:check     # read-only: are the committed SVGs and the palette current? (also runs in CI)
+task brand:check   # read-only: are generated brand assets and palette current? (also runs in CI)
 ```
 
 ⚠️  MANUAL STEP — review the diff afterwards
 
 ```bash
-task art:build     # every image, writes website/assets/images/
-task art:logo      # the logo, its PNG and the favicon only
+task brand:generate # regenerate banner, social preview, logo, and favicon
 ```
 
 A short reminder appears before `git commit`, `git push` and `gh pr create` when the art is stale and
 the change touches what it is built from. In Claude Code it comes from a project hook; in a plain
 terminal it comes from opt-in Git hooks (`task hooks:status`, then `task hooks:install`, a dry run by
-default). See `docs/guides/art-setup.md`.
+default). See the [art setup guide](../guides/art-setup.md).
 
 ## Related
 

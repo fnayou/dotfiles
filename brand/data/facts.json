@@ -1,0 +1,8 @@
+{
+  "name": "fnayou/dotfiles",
+  "tagline": "Personal dotfiles for macOS, EndeavourOS / Arch, and Debian.",
+  "platforms": "macOS · EndeavourOS / Arch · Debian",
+  "pillar_one": "Portable configuration",
+  "pillar_two": "Deliberate GNU Stow setup",
+  "pillar_three": "Shell and terminal tools"
+}

@@ -1,56 +1,58 @@
-name: docs
+name: Docs
 
 on:
+  pull_request:
+    branches: [main]
   push:
-    branches:
-      - main
+    branches: [main]
+    paths:
+      - "website/**"
+      - "overrides/**"
+      - "brand/**"
+      - "zensical.toml"
+      - "requirements-docs.txt"
+      - "scripts/art/**"
+      - "scripts/brand_generate.py"
+      - "scripts/check_docs.py"
+      - "scripts/prepare-site-assets.py"
+      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# Allow one concurrent deployment; cancel in-progress runs for the same ref.
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: pages-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          python-version: "3.x"
-
-      - name: Install MkDocs Material
-        run: pip install mkdocs-material
-
-      # The architecture diagram is not committed: it is generated here, SVG only (the runner has no
-      # rsvg-convert), so the page of the site is always current. See ADR 0082.
-      - name: Generate architecture diagram
-        run: python3 scripts/art/art.py build --only architecture --no-png
-
-      - name: Build site
-        run: mkdocs build --strict
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
+          python-version: "3.11"
+      - run: python -m pip install -r requirements-docs.txt
+      - run: python -B scripts/prepare-site-assets.py
+      - run: python -B scripts/art/art.py build --only architecture --no-png
+      - run: zensical build --strict
+      - run: python scripts/check_docs.py site --base-path /dotfiles/ --palette brand/data/brand.json --require-og-image
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        if: github.ref == 'refs/heads/main'
         with:
-          path: site
+          path: site/
 
   deploy:
     needs: build
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

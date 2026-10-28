@@ -352,7 +352,7 @@ def svg(f):
     y5 = y4 + h4 + gap
     i5 = len(out)
     chain = [("branch", C["lavender"]), ("pull request", C["lavender"]), ("CI  ci.yml", C["yellow"]),
-             ("merge to main", C["green"]), ("docs.yml", C["blue"]), ("mkdocs build --strict", C["blue"]),
+             ("merge to main", C["green"]), ("docs.yml", C["blue"]), ("zensical build --strict", C["blue"]),
              ("GitHub Pages", C["blue"])]
     cx = X + 40
     for i, (n, col) in enumerate(chain):

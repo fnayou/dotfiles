@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 480" role="img" aria-labelledby="title description">
+  <title id="title">{{NAME}} — {{TAGLINE}}</title>
+  <desc id="description">Cross-platform dotfiles with a blue terminal prompt and Git branch motif. Supports {{PLATFORMS}}.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{{BASE}}"/><stop offset="1" stop-color="{{CRUST}}"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{{ACCENT}}" stop-opacity=".2"/><stop offset="1" stop-color="{{LAVENDER}}" stop-opacity=".02"/></linearGradient>
+  </defs>
+  <rect width="1600" height="480" rx="28" fill="url(#background)"/>
+  <circle cx="1330" cy="72" r="260" fill="url(#glow)"/>
+  <path d="M44 24h1512" stroke="{{SURFACE1}}" stroke-width="2"/>
+  <circle cx="70" cy="52" r="7" fill="{{RED}}"/><circle cx="94" cy="52" r="7" fill="{{YELLOW}}"/><circle cx="118" cy="52" r="7" fill="{{GREEN}}"/>
+  <rect x="62" y="112" width="7" height="260" rx="3" fill="{{ACCENT}}"/>
+  <text x="102" y="170" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="23" fill="{{SUBTEXT0}}">cross-platform · deliberate · personal</text>
+  <text x="98" y="255" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="66" font-weight="700" letter-spacing="-3">
+    <tspan fill="{{LAVENDER}}">fnayou/</tspan><tspan fill="{{ACCENT}}">dotfiles</tspan>
+  </text>
+  <text x="102" y="305" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="23" fill="{{TEXT}}">{{TAGLINE}}</text>
+  <text x="102" y="356" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="17" fill="{{SUBTEXT1}}">{{PLATFORMS}}</text>
+  <g transform="translate(1030 119)">
+    <rect width="490" height="252" rx="18" fill="{{MANTLE}}" stroke="{{SURFACE1}}" stroke-width="2"/>
+    <rect x="0" y="0" width="490" height="42" rx="18" fill="{{SURFACE0}}"/>
+    <path d="M0 26v16h490V26" fill="{{SURFACE0}}"/>
+    <circle cx="25" cy="21" r="5" fill="{{RED}}"/><circle cx="43" cy="21" r="5" fill="{{YELLOW}}"/><circle cx="61" cy="21" r="5" fill="{{GREEN}}"/>
+    <text x="84" y="26" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="12" fill="{{SUBTEXT1}}">~/work/dotfiles</text>
+    <text x="28" y="92" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="19" fill="{{ACCENT}}">❯</text>
+    <text x="58" y="92" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="{{TEXT}}">task doctor</text>
+    <text x="28" y="132" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="14" fill="{{GREEN}}">✓ platform detected</text>
+    <text x="28" y="160" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="14" fill="{{GREEN}}">✓ managed tools available</text>
+    <text x="28" y="188" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="14" fill="{{SUBTEXT1}}">Stow changes: none</text>
+    <text x="28" y="223" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="15" fill="{{ACCENT}}">{{PACKAGE_COUNT}} packages · {{TASK_COUNT}} tasks</text>
+  </g>
+  <rect x="44" y="420" width="1512" height="2" fill="{{SURFACE1}}"/>
+  <text x="62" y="455" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="14" fill="{{SUBTEXT0}}">GNU Stow</text>
+  <text x="178" y="455" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="14" fill="{{ACCENT}}">●</text>
+  <text x="200" y="455" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="14" fill="{{SUBTEXT0}}">{{RELEASE}} · Macchiato Blue</text>
+</svg>

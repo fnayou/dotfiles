@@ -8,7 +8,7 @@ dotfiles/
 ├── README.md          # Repository overview + package table (GitHub landing)
 ├── AGENTS.md          # Internal operating contract (for automation; not part of this site)
 ├── Taskfile.yml       # go-task targets: list, dry-run, deps checks, bootstraps
-├── mkdocs.yml         # Configuration for this documentation site
+├── zensical.toml      # Native Zensical site configuration
 ├── stow/              # The actual dotfiles, as Stow packages (source of truth)
 │   ├── common/        # Works on macOS, Arch, and Debian
 │   ├── macos/         # macOS-specific

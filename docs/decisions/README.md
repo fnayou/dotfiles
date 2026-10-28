@@ -141,3 +141,4 @@ Use numbered filenames in sequence:
 | [0081](0081-terminal-app-profile-deployed-by-task-not-stow.md) | Terminal.app profile deployed by a Task, not by Stow | Accepted |
 | [0082](0082-generated-art-with-svg-png-sidecars.md) | Generated art with SVG and PNG sidecars, checked in CI, reminded locally | Accepted |
 | [0083](0083-github-community-standards-files.md) | GitHub community standards files | Accepted |
+| [0084](0084-project-presentation-and-zensical-site.md) | Rebuild public site with Zensical and shared brand sources | Accepted |

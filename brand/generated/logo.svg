@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 136" role="img" aria-labelledby="title">
+  <title id="title">fnayou/dotfiles logo</title>
+  <rect x="4" y="4" width="128" height="128" rx="28" fill="#181926"/>
+  <rect x="16" y="16" width="104" height="104" rx="20" fill="#1e2030" stroke="#494d64" stroke-width="2"/>
+  <path d="M38 54 57 68 38 82" fill="none" stroke="#8aadf4" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M69 82h20" stroke="#cad3f5" stroke-width="6" stroke-linecap="round"/>
+  <path d="M91 39v16m0 3v20m0 3v16" fill="none" stroke="#b7bdf8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M91 66c0-8 6-12 14-12h3" fill="none" stroke="#b7bdf8" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="91" cy="34" r="6" fill="#8aadf4"/>
+  <circle cx="112" cy="54" r="6" fill="#8aadf4"/>
+  <circle cx="91" cy="98" r="6" fill="#b7bdf8"/>
+  <text x="154" y="78" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="40" font-weight="700" letter-spacing="-1">
+    <tspan fill="#b7bdf8">fnayou/</tspan><tspan fill="#8aadf4">dotfiles</tspan>
+  </text>
+  <text x="156" y="106" font-family="JetBrains Mono, SFMono-Regular, Menlo, monospace" font-size="12" letter-spacing="3" fill="#b8c0e0">PERSONAL SYSTEM CONFIGURATION</text>
+</svg>

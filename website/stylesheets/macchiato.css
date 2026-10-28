@@ -1,0 +1,67 @@
+/* Catppuccin Macchiato for Zensical. Change only --project-accent per project. */
+[data-md-color-scheme="macchiato"] {
+  --project-accent: #8aadf4;
+  --project-accent-soft: rgba(138, 173, 244, 0.12);
+
+  color-scheme: dark;
+
+  --md-default-fg-color: #cad3f5;
+  --md-default-fg-color--light: #b8c0e0;
+  --md-default-fg-color--lighter: #a5adcb;
+  --md-default-fg-color--lightest: #6e738d;
+  --md-default-bg-color: #24273a;
+  --md-default-bg-color--light: #24273a;
+  --md-default-bg-color--lighter: #1e2030;
+  --md-default-bg-color--lightest: #181926;
+  --md-typeset-color: #cad3f5;
+  --md-typeset-a-color: var(--project-accent);
+
+  --md-code-fg-color: #cad3f5;
+  --md-code-bg-color: #1e2030;
+  --md-code-bg-color--light: #1e2030;
+  --md-code-bg-color--lighter: #181926;
+  --md-code-hl-color: var(--project-accent);
+  --md-code-hl-color--light: var(--project-accent-soft);
+  --md-code-hl-comment-color: #939ab7;
+  --md-code-hl-constant-color: #f5a97f;
+  --md-code-hl-function-color: #8aadf4;
+  --md-code-hl-keyword-color: #c6a0f6;
+  --md-code-hl-name-color: #cad3f5;
+  --md-code-hl-number-color: #f5a97f;
+  --md-code-hl-operator-color: var(--project-accent);
+  --md-code-hl-punctuation-color: #b8c0e0;
+  --md-code-hl-string-color: #a6da95;
+  --md-code-hl-variable-color: #ee99a0;
+
+  --md-primary-fg-color: var(--project-accent);
+  --md-primary-bg-color: #24273a;
+  --md-primary-bg-color--light: #24273a;
+  --md-accent-fg-color: var(--project-accent);
+  --md-accent-bg-color: #24273a;
+  --md-accent-bg-color--light: #24273a;
+  --md-accent-fg-color--transparent: var(--project-accent-soft);
+
+  --md-admonition-bg-color: #363a4f;
+  --md-admonition-fg-color: #cad3f5;
+  --md-footer-bg-color: #1e2030;
+  --md-footer-bg-color--dark: #181926;
+}
+
+[data-md-color-scheme="macchiato"] img {
+  max-width: 100%;
+  height: auto;
+}
+
+[data-md-color-scheme="macchiato"] a:focus-visible,
+[data-md-color-scheme="macchiato"] button:focus-visible {
+  outline: 2px solid var(--project-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

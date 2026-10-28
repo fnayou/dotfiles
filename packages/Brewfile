@@ -51,8 +51,8 @@ brew "cloudflare-speed-cli"
 brew "chafa"
 
 # --- Generated art (PNG rendering) ---
-# Optional — `task art:build` renders a PNG beside each generated SVG with rsvg-convert.
-# The SVGs and `task art:check` need only Python 3. See: docs/guides/art-setup.md
+# Required for `task brand:generate`, which renders the social-preview PNG from SVG.
+# Brand SVG generation and `task brand:check` use Python 3. See: website/guides/art-setup.md
 brew "librsvg"
 
 # --- Terminal workspace manager ---

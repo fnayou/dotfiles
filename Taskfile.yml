@@ -440,26 +440,39 @@ tasks:
     cmds:
       - bash scripts/terminal-sync.sh {{.ARGS}}
 
-  # Generated art (README banner, social preview, logo, favicon, architecture diagram). Python 3
-  # standard library only; a PNG is rendered beside every SVG when `rsvg-convert` is installed.
-  # Writes only inside website/assets/images/. See docs/guides/art-setup.md.
-  art:build:
-    desc: "Regenerate the art: each SVG, then its PNG beside it. Writes website/assets/images/ (ARGS='--only banner' or '--no-png')"
+  # Generated project brand assets; sources live in brand/src and outputs in brand/generated.
+  brand:generate:
+    desc: "Regenerate committed brand SVGs and social-preview PNG"
     silent: true
     cmds:
-      - bash scripts/art.sh build {{.ARGS}}
+      - python3 -B scripts/brand_generate.py --generate
 
-  art:check:
-    desc: "Check the committed SVGs and the palette are current — read-only, also runs in CI"
+  brand:check:
+    desc: "Check brand assets and palette are current — read-only"
     silent: true
     cmds:
-      - bash scripts/art.sh check
+      - python3 -B scripts/brand_generate.py --check
 
-  art:logo:
-    desc: "Rebuild the logo, its PNG and the favicon only. Writes website/assets/images/"
+  docs:prepare:
+    desc: "Stage generated brand assets and architecture diagram for the site build"
     silent: true
     cmds:
-      - bash scripts/art.sh logo
+      - python3 -B scripts/prepare-site-assets.py
+      - python3 -B scripts/art/art.py build --only architecture --no-png
+
+  docs:build:
+    desc: "Build the Zensical site into site/"
+    silent: true
+    cmds:
+      - task docs:prepare
+      - zensical build --strict
+
+  docs:check:
+    desc: "Build site and check links, accessibility basics, palette, and social metadata"
+    silent: true
+    cmds:
+      - task docs:build
+      - python3 -B scripts/check_docs.py site --base-path /dotfiles/ --palette brand/data/brand.json --require-og-image
 
   art:remind:
     desc: "Print the reminder to regenerate the art, if it is due — read-only (ARGS='--staged' or '--range A..B')"

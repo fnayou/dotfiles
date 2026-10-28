@@ -1,7 +1,7 @@
 # dotfiles
 
 <p align="center">
-  <img src="website/assets/images/dotfiles-readme-banner.svg" alt="fnayou/dotfiles banner" />
+  <img src="brand/generated/readme-banner.svg" alt="fnayou/dotfiles banner in Catppuccin Macchiato Blue" />
 </p>
 
 <p align="center">
@@ -84,15 +84,16 @@ anything outside the repository are a dry run until you add `ARGS='--apply'`.
 | `task list` · `task dry-run AREA=common PACKAGE=zsh` | list Stow packages · dry-run one of them |
 | `task deps:brew` · `deps:arch` · `deps:debian` | print the install commands for your platform; they never install |
 | `task codex:sync` · `task terminal:sync` | merge the Codex template / import the Terminal.app profile — dry run by default |
-| `task art:check` · `task art:build` | check / regenerate the banner, social preview, logo and diagram (see [the art guide](docs/guides/art-setup.md)) |
+| `task brand:check` · `task brand:generate` | check / regenerate brand assets (see [the art guide](website/guides/art-setup.md)) |
+| `task docs:build` · `task docs:check` | build the Zensical site · build and validate links and accessibility basics |
 | `task check:decisions` | validate the ADR record, also run in CI |
 | `task changelog` | regenerate `CHANGELOG.md` from Conventional Commits |
 | `task hooks:status` | show whether the opt-in Git hooks (the art reminder) are enabled |
 
 ## Documentation
 
-The public documentation site — overview, installation, features, usage, and reference — lives at
-<https://fnayou.github.io/dotfiles/> (built with MkDocs Material from `website/`), including the
+The public documentation site — overview, installation, features, usage, reference, and setup guides — lives at
+<https://fnayou.github.io/dotfiles/> (built with Zensical from `website/`), including the
 [architecture diagram](https://fnayou.github.io/dotfiles/reference/architecture/).
 
 Setup guides are written for a human operator, not for agents.
@@ -136,10 +137,9 @@ overwrites existing files. See the [Stow usage guide](docs/stow-usage.md) for fu
 
 ## Generated art
 
-The banner above, the social preview, the logo, the favicon and the architecture diagram are generated
-from this repository by a small Python program, with a PNG rendered beside each SVG. CI fails a pull
-request whose committed SVGs are stale, and a short reminder appears before you commit, push or open a
-pull request when the art needs rebuilding. See the [art guide](docs/guides/art-setup.md).
+The banner above, social preview, logo, and favicon are generated into `brand/generated/`. The
+architecture diagram is built into the ignored site output. CI checks brand freshness; the existing
+non-blocking reminder points to `task brand:generate`. See the [art guide](website/guides/art-setup.md).
 
 ## For Claude Code
 
@@ -170,7 +170,8 @@ docs/
   prd/            Product requirements documents
   reviews/        Review reports
   claude/         Agent guides and workflow documentation
-website/          The MkDocs site and its images
+website/          The Zensical site and visitor documentation
+brand/            Palette, SVG templates, and generated project artwork
 Taskfile.yml      Every task, the only entry point
 AGENTS.md         Main operating contract — read this first
 CLAUDE.md         Claude Code entry point
@@ -182,10 +183,10 @@ Two GitHub Actions workflows:
 
 - **CI** runs on every push and pull request with non-destructive hygiene checks only: expected files
   and directories exist, Markdown is present, `bash -n` on shell scripts, a scan for obvious secret
-  patterns, the ADR record is consistent, the status-line tests pass, and the committed SVG art is
+  patterns, the ADR record is consistent, the status-line tests pass, and generated brand assets are
   current. It never runs Stow, creates symlinks, modifies `$HOME`, uses secrets, or deploys anything.
-- **Docs** runs on `main`: it generates the architecture diagram, builds the site with
-  `mkdocs build --strict`, and deploys it to GitHub Pages.
+- **Docs** checks pull requests and deploys the default branch: it builds the site with
+  `zensical build --strict`, checks routes and accessibility basics, and deploys it to GitHub Pages.
 
 ## License
 

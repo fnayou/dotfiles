@@ -35,11 +35,11 @@ Do **not** use this to bypass review — the change must already be reviewed (se
 3. **Check the generated art, then stage the change**
 
    A change to a package, task, ADR, guide, CI step, install list or the release heading can make the
-   committed banner and social preview stale (CI fails the pull request on a stale SVG). Check first:
+   committed banner and social preview stale (CI fails the pull request on stale generated assets). Check first:
    ```bash
-   task art:check
+   task brand:check
    ```
-   If it reports stale files, run `task art:build`, review `git diff --stat website/assets/images/`, and
+   If it reports stale files, run `task brand:generate`, review `git diff --stat brand/generated/`, and
    stage the images with the change. A reminder for this also appears before `git commit`, `git push` and
    `gh pr create` when it is due (see `docs/guides/art-setup.md`).
    ```bash
