@@ -29,7 +29,7 @@ nav = [
 [project.theme]
 language = "en"
 custom_dir = "overrides"
-logo = "assets/generated-brand/favicon.svg"
+logo = "assets/generated-brand/header-icon.png"
 favicon = "assets/generated-brand/favicon.svg"
 palette = [{ scheme = "macchiato", primary = "custom", accent = "custom" }]
 

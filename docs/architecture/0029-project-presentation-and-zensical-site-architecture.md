@@ -34,7 +34,7 @@ overrides/main.html               # Open Graph and Twitter card metadata
 brand/
 ├── data/brand.json              # Macchiato palette and Blue project accent
 ├── data/facts.json              # Verified tagline and descriptive facts
-├── src/                          # Canonical SVG templates for banner, social, logo, favicon
+├── src/                          # Canonical SVG templates for banner, social, logo, favicon, header icon
 └── generated/                    # Committed SVGs and required raster derivatives
 scripts/brand_generate.py        # Deterministic generator from the shared skill
 scripts/check_docs.py             # Offline accessibility, link, base-path, and contrast checker
@@ -92,15 +92,17 @@ wordmark, and supporting artwork around Blue. `brand.json` holds the shared Macc
 accent. `facts.json` holds verified descriptive claims. Repository-derived counts and architecture
 facts continue to come from repository files, not timestamps, Git history, or manual artwork edits.
 
-Use SVG for the README banner, logo, and favicon. Generate the social-preview PNG at the platform's
-required dimensions from its canonical SVG. This revises ADR 0082's PNG-sidecar-for-every-SVG rule;
-implementation must update the decision record after this architecture is approved.
+Use SVG for the README banner, wordmark logo, and favicon. Generate the social-preview PNG at the
+platform's required dimensions from its canonical SVG. The Zensical header uses a separate 256×256 PNG
+rendered from a square SVG template of the logo mark; this avoids shrinking the wordmark and tagline
+beside the site's own title. This revises ADR 0082's PNG-sidecar-for-every-SVG rule; implementation must
+update the decision record after this architecture is approved.
 
 Generated SVG assets and required PNG derivatives live only under `brand/generated/`. The README points
-to the generated banner there. A build preparation step copies the logo, SVG favicon, and social-preview
-image into the ignored `website/assets/generated-brand/` directory for Zensical and page metadata. These
-copies are temporary build inputs, not a second committed source of truth. The architecture SVG remains
-a build-only output because it changes with repository structure.
+to the generated banner there. A build preparation step copies the square header icon PNG, SVG favicon,
+and social-preview image into the ignored `website/assets/generated-brand/` directory for Zensical and
+page metadata. These copies are temporary build inputs, not a second committed source of truth. The
+architecture SVG remains a build-only output because it changes with repository structure.
 
 ### Decision 3: Make the new website the visitor-facing documentation surface
 

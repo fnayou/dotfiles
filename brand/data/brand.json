@@ -29,6 +29,7 @@
     "accent": "#8aadf4"
   },
   "rasters": [
+    { "source": "header-icon.svg", "width": 256, "height": 256 },
     { "source": "social-preview.svg", "width": 1280, "height": 640 }
   ]
 }

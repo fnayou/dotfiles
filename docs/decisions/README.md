@@ -142,3 +142,4 @@ Use numbered filenames in sequence:
 | [0082](0082-generated-art-with-svg-png-sidecars.md) | Generated art with SVG and PNG sidecars, checked in CI, reminded locally | Accepted |
 | [0083](0083-github-community-standards-files.md) | GitHub community standards files | Accepted |
 | [0084](0084-project-presentation-and-zensical-site.md) | Rebuild public site with Zensical and shared brand sources | Accepted |
+| [0085](0085-square-png-for-zensical-header-icon.md) | Use a standalone square PNG for the Zensical header icon | Accepted |
