@@ -442,7 +442,7 @@ tasks:
 
   # Generated project brand assets; sources live in brand/src and outputs in brand/generated.
   brand:generate:
-    desc: "Regenerate committed brand SVGs and social-preview PNG"
+    desc: "Regenerate committed brand SVGs and PNG derivatives"
     silent: true
     cmds:
       - python3 -B scripts/brand_generate.py --generate
