@@ -20,6 +20,7 @@ stow/
 │   ├── ghostty/     # Ghostty terminal config + Catppuccin theme
 │   ├── git/         # Git config templates
 │   ├── herdr/       # Herdr multiplexer config + Catppuccin overrides
+│   ├── rex/         # Rex terminal Catppuccin theme (import source, not stowed by default)
 │   └── zsh/         # Zsh config (shared + macOS / Arch per-OS layer, runtime OS detection)
 ├── macos/           # macOS-specific config only
 │   ├── ghostty/     # Ghostty macOS-only options (macos.ghostty)
@@ -117,7 +118,7 @@ stow --dir=stow/common --target="$HOME" --no-folding --restow <package>
 !!! info "`--no-folding` only where needed"
     Use `--no-folding` for packages whose target directories must stay real directories, including
     `zsh`, `alacritty`, `ghostty` (common and macOS), `herdr`, `codex`, `claude`, `bat`, `btop`,
-    `eza`, `git`, and `nvim`. `omp` does not require it. For `codex`, `.stow-local-ignore` excludes `config.toml` from Stow; that
+    `eza`, `git`, `nvim`, and `rex`. `omp` does not require it. For `codex`, `.stow-local-ignore` excludes `config.toml` from Stow; that
     template is propagated with `task codex:sync`.
 
 ## Forbidden

@@ -29,8 +29,8 @@ palette with a blue accent.
 ```
 Claude Code operating layer:  complete
 GNU Stow packages:            see stow/common/ and stow/macos/ (source of truth; arch/ and debian/ are empty)
-Stowed to $HOME:              all stow/common/ packages, plus stow/macos/ghostty on macOS
-Not stowed:                   other stow/macos/ packages (the Terminal.app profile is deployed with a task)
+Stowed to $HOME:              all stow/common/ packages except rex, plus stow/macos/ghostty on macOS
+Not stowed:                   stow/common/rex (theme imported into Rex by hand), other stow/macos/ packages (the Terminal.app profile is deployed with a task)
 Home directory:               changed only by those symlinks and by tasks you run yourself
 ```
 
@@ -69,6 +69,7 @@ are currently empty.
 | **herdr** | Herdr agent multiplexer — theme, terminal, UI, toast | [README](stow/common/herdr/README.md) | [guide](docs/guides/herdr-setup.md) |
 | **nvim** | Neovim config — Catppuccin Macchiato (Lua), managed plugins | [README](stow/common/nvim/README.md) | — |
 | **omp** | Oh My Posh prompt — segments + Catppuccin Macchiato palette | [README](stow/common/omp/README.md) | — |
+| **rex** | Rex terminal theme — Catppuccin Macchiato with blue accent, imported by hand (not stowed by default) | [README](stow/common/rex/README.md) | [guide](docs/guides/rex-setup.md) |
 | **terminal** | macOS Terminal.app profile — Catppuccin Macchiato colors and JetBrainsMono Nerd Font Mono; not stowed, deployed with `task terminal:sync` | [macOS README](stow/macos/terminal/README.md) | [guide](docs/guides/terminal-app-setup.md) |
 | **zsh** | Layered Zsh config — path, history, plugins, tools, prompt, per-OS layers, go-task completion | [README](stow/common/zsh/README.md) | [guide](docs/guides/zsh-setup.md) |
 
@@ -101,7 +102,7 @@ Setup guides are written for a human operator, not for agents.
 - [Doctor](docs/guides/doctor.md) — `task doctor`, a read-only health check answering "is this machine set up the way the repo intends?".
 - [Packages setup](docs/guides/packages-setup.md) — install the tools every package depends on (`git`, `stow`, `go-task`, …).
 - [GNU Stow usage](docs/stow-usage.md) — dry-run workflow, install steps, conflict handling, adding packages.
-- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [art](docs/guides/art-setup.md) · [bat](docs/guides/bat-setup.md) · [btop](docs/guides/btop-setup.md) · [claude](docs/guides/claude-setup.md) · [codex](docs/guides/codex-setup.md) · [eza](docs/guides/eza-setup.md) · [ghostty](docs/guides/ghostty-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [terminal-app](docs/guides/terminal-app-setup.md) · [zsh](docs/guides/zsh-setup.md).
+- Per-package setup guides — [alacritty](docs/guides/alacritty-setup.md) · [art](docs/guides/art-setup.md) · [bat](docs/guides/bat-setup.md) · [btop](docs/guides/btop-setup.md) · [claude](docs/guides/claude-setup.md) · [codex](docs/guides/codex-setup.md) · [eza](docs/guides/eza-setup.md) · [ghostty](docs/guides/ghostty-setup.md) · [git](docs/guides/git-setup.md) · [herdr](docs/guides/herdr-setup.md) · [rex](docs/guides/rex-setup.md) · [terminal-app](docs/guides/terminal-app-setup.md) · [zsh](docs/guides/zsh-setup.md).
 - [Speed test setup](docs/guides/speedtest-setup.md) — optional `cloudflare-speed-cli` helpers (`speed`, `speed-json`, `speed-log`, `speed-history`) shipped by the zsh package.
 - [Agent tooling setup](docs/guides/agent-tooling-setup.md) — optional `rtk`, `caveman`, and Matt Pocock's skills, and how each is activated in Claude Code, opencode, and Codex CLI. Not Stow packages.
 - [Shell dependencies](docs/shell-dependencies.md) · [Zsh migration notes](docs/zsh-migration.md).
@@ -127,7 +128,7 @@ overwrites existing files. See the [Stow usage guide](docs/stow-usage.md) for fu
 
 ## Safety
 
-- All `stow/common/` packages, plus `stow/macos/ghostty` on macOS, are stowed; symlinks point from `$HOME` into the repo.
+- All `stow/common/` packages except `rex`, plus `stow/macos/ghostty` on macOS, are stowed; symlinks point from `$HOME` into the repo.
 - Stow and symlink operations happen only with explicit per-session approval and a reviewed plan.
 - Tasks that write outside the repository (`codex:sync`, `terminal:sync`, `hooks:install`) are a dry run first and need `--apply`.
 - No secrets, credentials, or private hostnames are committed.

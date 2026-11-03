@@ -1,0 +1,39 @@
+# Catppuccin Macchiato (blue accent) — Ghostty-format theme for Rex
+# Imported into Rex by the user (see docs/guides/rex-setup.md); Rex does not read this path by itself.
+# Palette lines are identical to stow/common/ghostty/.config/ghostty/themes/catppuccin-macchiato
+# (ADR 0068). Only cursor-color and selection-background differ: Blue #8aadf4 instead of rosewater.
+# Written for Rex Beta 0.1.0.
+
+background = #24273a
+foreground = #cad3f5
+
+cursor-color = #8aadf4
+cursor-text = #24273a
+
+selection-background = #8aadf4
+selection-foreground = #24273a
+
+search-background = #a5adcb
+search-foreground = #24273a
+search-selected-background = #a6da95
+search-selected-foreground = #24273a
+
+# Normal colors: black, red, green, yellow, blue, magenta, cyan, white
+palette = 0=#494d64
+palette = 1=#ed8796
+palette = 2=#a6da95
+palette = 3=#eed49f
+palette = 4=#8aadf4
+palette = 5=#f5bde6
+palette = 6=#8bd5ca
+palette = 7=#b8c0e0
+
+# Bright colors: black, red, green, yellow, blue, magenta, cyan, white
+palette = 8=#5b6078
+palette = 9=#ed8796
+palette = 10=#a6da95
+palette = 11=#eed49f
+palette = 12=#8aadf4
+palette = 13=#f5bde6
+palette = 14=#8bd5ca
+palette = 15=#a5adcb
