@@ -20,7 +20,7 @@ nav = [
     { eza = "guides/eza-setup.md" }, { Ghostty = "guides/ghostty-setup.md" },
     { Git = "guides/git-setup.md" }, { Herdr = "guides/herdr-setup.md" },
     { "OS maintenance" = "guides/os-maintenance.md" }, { Packages = "guides/packages-setup.md" },
-    { Speedtest = "guides/speedtest-setup.md" }, { "Terminal app" = "guides/terminal-app-setup.md" },
+    { Rex = "guides/rex-setup.md" }, { Speedtest = "guides/speedtest-setup.md" }, { "Terminal app" = "guides/terminal-app-setup.md" },
     { Zsh = "guides/zsh-setup.md" },
   ] },
   { Screenshots = "screenshots.md" },

@@ -1,6 +1,6 @@
 # Terminal
 
-Three tools shape the terminal: **Alacritty** and **Ghostty** (two emulators, configured alike) and
+Four tools shape the terminal: **Alacritty** and **Ghostty** (two emulators, configured alike), **Rex** (a beta terminal, theme only) and
 **Herdr** (an agent-oriented multiplexer). All ship a Catppuccin Macchiato look with a blue accent,
 consistent with the rest of the setup.
 
@@ -163,6 +163,21 @@ stow --dir=stow/common --target="$HOME" --no-folding --simulate herdr
 ```bash
 stow --dir=stow/common --target="$HOME" --no-folding herdr
 ```
+
+## Rex
+
+The `stow/common/rex/` package holds a Catppuccin Macchiato theme with a blue accent for
+[Rex](https://www.superlogical.com/rex/), a beta terminal. Rex keeps imported themes in its own
+preferences and has no config key for a theme, so the file is an **import source**: import it in
+Rex, then set the active pane highlight and the shell icon accent by hand. Stowing it is optional and
+does not change Rex.
+
+⚠️  MANUAL STEP — review dry-run output before running
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding --simulate rex
+```
+
+See the [Rex setup guide](../guides/rex-setup.md) for the import steps and rollback.
 
 ## Related
 
