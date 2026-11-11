@@ -17,6 +17,7 @@ The `stow/common/zsh/` package manages files under `~/.config/zsh/`. After Stow,
 | `stow/common/zsh/.config/zsh/path.zsh` | `~/.config/zsh/path.zsh` | PATH additions (safe, `$HOME`-relative) |
 | `stow/common/zsh/.config/zsh/history.zsh` | `~/.config/zsh/history.zsh` | HISTFILE, HISTSIZE, SAVEHIST, history setopts |
 | `stow/common/zsh/.config/zsh/completions.zsh` | `~/.config/zsh/completions.zsh` | Completion styles only (compinit runs in `plugins.zsh` — ADR-0049) |
+| `stow/common/zsh/.config/zsh/pi.zsh` | `~/.config/zsh/pi.zsh` | pi coding agent CLI completion — guarded, no-op without `pi` (ADR-0088) |
 | `stow/common/zsh/.config/zsh/taskfile.zsh` | `~/.config/zsh/taskfile.zsh` | go-task completion tuning — guarded, no-op without `task` |
 | `stow/common/zsh/.config/zsh/keybindings.zsh` | `~/.config/zsh/keybindings.zsh` | Key bindings (autosuggest binding guarded by widget check) |
 | `stow/common/zsh/.config/zsh/aliases.zsh` | `~/.config/zsh/aliases.zsh` | Portable aliases (grep) |
@@ -347,6 +348,41 @@ Because `~/.config/zsh/` is a real directory (not a symlink into the repo), `loc
 
 ---
 
+## pi command completion
+
+`pi.zsh` authors the completion because pi ships none (validated against pi 1.5.2). Start a command and
+press **Tab**; selecting a candidate inserts it but does not run it.
+
+```zsh
+pi <Tab>                  # install remove uninstall update list config auth mcp
+pi --model <Tab>          # provider/id from `pi --list-models`
+pi --thinking <Tab>       # off minimal low medium high xhigh max
+pi mcp remove <Tab>       # server names from ~/.pi/agent/mcp.json
+pi remove <Tab>           # installed package sources from `pi list`
+```
+
+It also completes the other top-level options and the flags of `install`, `update`, `list`, `config`,
+`auth` and `mcp`. Live lists use only read-only calls: `pi --list-models`, `pi list`, and `jq` reading
+the **key names** of `mcp.json` (without `jq` the server list is empty). It never runs `pi mcp list`
+(it starts servers), `pi auth`, `install`, `update` or `remove`, and it never reads credentials,
+sessions or server values. Flags added by pi extensions (for example `--plan`) are not completed.
+Tested on macOS; Arch and Debian are untested. Decision: ADR-0088.
+
+`pi.zsh` is a new file in the already stowed package, so re-stow after you pull it:
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding --simulate zsh
+```
+
+⚠️  MANUAL STEP — run only after approving the dry-run output
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding zsh
+```
+
+Open a new terminal afterwards. To roll back, delete the `pi.zsh` source line in `index.zsh` and revert
+the commit, or run the same stow command with `--delete` after a `--simulate`.
+
 ## Delete a history entry from the Ctrl+R picker
 
 In the fzf Ctrl+R history picker, `ctrl-x` removes the highlighted entry from your history file
@@ -650,6 +686,7 @@ land in `/usr/bin`, which is already on PATH — then no `local.zsh` wiring is n
 | `path.zsh` | Yes | No | PATH additions — committed directly |
 | `history.zsh` | Yes | No | History config — committed directly |
 | `completions.zsh` | Yes | No | Completion styles — committed directly |
+| `pi.zsh` | Yes | No | pi CLI completion — guarded, committed directly |
 | `taskfile.zsh` | Yes | No | go-task completion tuning — committed directly |
 | `keybindings.zsh` | Yes | No | Key bindings — committed directly |
 | `aliases.zsh` | Yes | No | Portable aliases — committed directly |
@@ -678,6 +715,7 @@ After all steps are complete, `~/.config/zsh/` should look like this:
 ├── path.zsh           -> …/stow/common/zsh/.config/zsh/path.zsh
 ├── history.zsh        -> …/stow/common/zsh/.config/zsh/history.zsh
 ├── completions.zsh    -> …/stow/common/zsh/.config/zsh/completions.zsh
+├── pi.zsh             -> …/stow/common/zsh/.config/zsh/pi.zsh
 ├── taskfile.zsh       -> …/stow/common/zsh/.config/zsh/taskfile.zsh
 ├── keybindings.zsh    -> …/stow/common/zsh/.config/zsh/keybindings.zsh
 ├── aliases.zsh        -> …/stow/common/zsh/.config/zsh/aliases.zsh

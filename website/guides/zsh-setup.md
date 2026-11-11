@@ -26,6 +26,7 @@ The `stow/common/zsh/` package manages files under `~/.config/zsh/`. After Stow,
 | `stow/common/zsh/.config/zsh/speedtest.zsh` | `~/.config/zsh/speedtest.zsh` | `speed` helpers — guarded, no-op without `cloudflare-speed-cli` |
 | `stow/common/zsh/.config/zsh/lms.zsh` | `~/.config/zsh/lms.zsh` | LM Studio CLI completion — guarded, no-op without `lms` |
 | `stow/common/zsh/.config/zsh/docker.zsh` | `~/.config/zsh/docker.zsh` | Docker Desktop completion shim — guarded, no-op without `docker` |
+| `stow/common/zsh/.config/zsh/pi.zsh` | `~/.config/zsh/pi.zsh` | pi coding agent CLI completion — guarded, no-op without `pi` (ADR-0088) |
 | `stow/common/zsh/.config/zsh/keybindings.zsh` | `~/.config/zsh/keybindings.zsh` | Key bindings (autosuggest binding guarded by widget check) |
 | `stow/common/zsh/.config/zsh/aliases.zsh` | `~/.config/zsh/aliases.zsh` | Portable aliases (grep) |
 | `stow/common/zsh/.config/zsh/tools.zsh` | `~/.config/zsh/tools.zsh` | zoxide integration — guarded, no-op without `zoxide` |
@@ -95,6 +96,7 @@ Optional tools (not required to start; all integrations are guarded and are no-o
 | Herdr CLI | `herdr.zsh` — guarded; no-op if absent | session-name completion; `jq` is recommended for JSON parsing |
 | SSH client | `ssh.zsh` — guarded; no-op without `ssh` or readable `~/.ssh/config` | host completion for `ssh`, `scp`, `sftp`, `rsync`, and `ssh-copy-id` |
 | `lms` (LM Studio CLI) | `lms.zsh` — guarded; no-op if absent | command, option, and local model completion; dynamic model lists use `jq` |
+| `pi` (coding agent CLI) | `pi.zsh` — guarded; no-op if absent | command, option, model, package and MCP server completion; server names use `jq` |
 | Docker CLI | `docker.zsh` — guarded; no-op if absent | `docker desktop` completion; other commands use the shipped completion when available |
 | `jq` | Used by `lms.zsh` and `herdr.zsh` | optional; without it, LM Studio model lists are empty and Herdr uses its text fallback |
 
@@ -117,6 +119,39 @@ in memory. These dynamic lists use read-only `lms ls --json` and `lms ps --json`
 `--ttl`, `--identifier`, and `--yes`. `unload` completes `--all`; `ls` completes `--llm`,
 `--embedding`, `--variants`, and `--json`; `ps` completes `--json`. Previews show command help or
 the matching model. Completion does not load or unload models and does not search the LM Studio Hub.
+
+**pi coding agent (`pi`)** — `pi.zsh` authors the completion because pi ships none (validated against pi 1.5.2). Start a command and
+press **Tab**; selecting a candidate inserts it but does not run it.
+
+```zsh
+pi <Tab>                  # install remove uninstall update list config auth mcp
+pi --model <Tab>          # provider/id from `pi --list-models`
+pi --thinking <Tab>       # off minimal low medium high xhigh max
+pi mcp remove <Tab>       # server names from ~/.pi/agent/mcp.json
+pi remove <Tab>           # installed package sources from `pi list`
+```
+
+It also completes the other top-level options and the flags of `install`, `update`, `list`, `config`,
+`auth` and `mcp`. Live lists use only read-only calls: `pi --list-models`, `pi list`, and `jq` reading
+the **key names** of `mcp.json` (without `jq` the server list is empty). It never runs `pi mcp list`
+(it starts servers), `pi auth`, `install`, `update` or `remove`, and it never reads credentials,
+sessions or server values. Flags added by pi extensions (for example `--plan`) are not completed.
+Tested on macOS; Arch and Debian are untested. Decision: ADR-0088.
+
+`pi.zsh` is a new file in the already stowed package, so re-stow after you pull it:
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding --simulate zsh
+```
+
+⚠️  MANUAL STEP — run only after approving the dry-run output
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding zsh
+```
+
+Open a new terminal afterwards. To roll back, delete the `pi.zsh` source line in `index.zsh` and revert
+the commit, or run the same stow command with `--delete` after a `--simulate`.
 
 **Docker Desktop** — the shim fills the missing `desktop` branch while delegating other Docker
 commands to the package-shipped `_docker` completion:
@@ -719,6 +754,7 @@ land in `/usr/bin`, which is already on PATH — then no `local.zsh` wiring is n
 | `speedtest.zsh` | Yes | No | `speed` helpers — guarded, committed directly |
 | `lms.zsh` | Yes | No | LM Studio CLI completion — guarded, committed directly |
 | `docker.zsh` | Yes | No | Docker Desktop completion shim — guarded, committed directly |
+| `pi.zsh` | Yes | No | pi CLI completion — guarded, committed directly |
 | `keybindings.zsh` | Yes | No | Key bindings — committed directly |
 | `aliases.zsh` | Yes | No | Portable aliases — committed directly |
 | `tools.zsh` | Yes | No | zoxide integration — guarded, committed directly |
@@ -755,6 +791,7 @@ After all steps are complete, `~/.config/zsh/` should look like this:
 ├── speedtest.zsh      -> …/stow/common/zsh/.config/zsh/speedtest.zsh
 ├── lms.zsh            -> …/stow/common/zsh/.config/zsh/lms.zsh
 ├── docker.zsh         -> …/stow/common/zsh/.config/zsh/docker.zsh
+├── pi.zsh             -> …/stow/common/zsh/.config/zsh/pi.zsh
 ├── keybindings.zsh    -> …/stow/common/zsh/.config/zsh/keybindings.zsh
 ├── aliases.zsh        -> …/stow/common/zsh/.config/zsh/aliases.zsh
 ├── prompt.zsh         -> …/stow/common/zsh/.config/zsh/prompt.zsh

@@ -52,6 +52,9 @@ fi
 # 6g) docker desktop completion shim — guarded; no-op without `docker`.
 [[ -r "$HOME/.config/zsh/docker.zsh" ]] && source "$HOME/.config/zsh/docker.zsh"
 
+# 6h) pi (coding agent CLI) completion — guarded; no-op without `pi`.
+[[ -r "$HOME/.config/zsh/pi.zsh" ]] && source "$HOME/.config/zsh/pi.zsh"
+
 # 7) Key bindings.
 [[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
 
