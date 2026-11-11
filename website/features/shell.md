@@ -25,7 +25,7 @@ file owns a single job:
 | `path.zsh` | PATH additions (`$HOME`-relative, safe) |
 | `history.zsh` | HISTFILE, HISTSIZE, SAVEHIST, history options |
 | `plugins.zsh` | Zinit guarded source; owns plugin order + `compinit` |
-| `fzf.zsh` | fzf shell integration (no-op without `fzf`) |
+| `fzf.zsh` | fzf shell integration (no-op without `fzf`); `ctrl-x` in the Ctrl+R picker deletes the highlighted history entry |
 | `completions.zsh` | Completion styles + fzf-tab previews |
 | `taskfile.zsh` | `task <Tab>` completion tuning (no-op without `task`) |
 | `herdr.zsh` | `herdr <Tab>` session-name completion (no-op without `herdr`) |

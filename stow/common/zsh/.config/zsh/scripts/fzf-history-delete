@@ -1,0 +1,108 @@
+#!/usr/bin/env zsh
+# fzf-history-delete — remove one entry from the zsh history file.
+#
+# Usage: fzf-history-delete <item-file>
+#   <item-file> holds the fzf Ctrl+R picker item exactly as fzf passes it with the {f} placeholder:
+#   "N<TAB>command", with a TAB added after every newline of a multi-line command.
+# Environment: HISTFILE (default ~/.zsh_history).
+#
+# Edits the raw history file; it never rewrites it through zsh's own history (fc -W loses entries).
+# Every kept line is copied unchanged. The previous file is kept as "$HISTFILE.bak".
+# Prints nothing, ever: the command text is private. Result is the exit status only:
+#   0  removed one or more entries
+#   1  no entry matches; nothing changed
+#   2  bad input, or the history file cannot be read
+#   3  could not write; the original is untouched
+# Used by FZF_CTRL_R_OPTS in ../fzf.zsh (ADR-0087). Tested by scripts/test-fzf-history-delete.sh.
+
+emulate -L zsh
+setopt extendedglob
+exec 2>/dev/null
+umask 077
+export LC_ALL=C   # byte semantics: the history file escapes bytes, not characters
+
+item_file=${1-}
+[[ -n $item_file && -r $item_file ]] || exit 2
+hist=${HISTFILE:-$HOME/.zsh_history}
+[[ -f $hist && -r $hist ]] || exit 2
+
+# --- The command text from the picker item ---
+item=$(<"$item_file") || exit 2
+prefix='[[:space:]]#<->\*#'$'\t'
+[[ $item == ${~prefix}* ]] || exit 2
+item=${item#${~prefix}}
+cmd=${item//$'\n\t'/$'\n'}            # undo the TAB the widget adds after each newline
+[[ -n $cmd ]] || exit 2
+
+# --- The raw form zsh writes: newline -> backslash+newline; bytes 0x83..0xa2 -> 0x83, byte^0x20 ---
+encode() {
+  local s=${1//$'\n'/$'\\\n'} out= c
+  integer i n
+  if [[ $s == *[$'\x83'-$'\xa2']* ]]; then
+    for (( i = 1; i <= ${#s}; i++ )); do
+      c=$s[i]
+      n=$(( #c ))
+      if (( n >= 131 && n <= 162 )); then
+        out+=$'\x83'${(#)$(( n ^ 32 ))}
+      else
+        out+=$c
+      fi
+    done
+    s=$out
+  fi
+  REPLY=$s
+}
+
+encode "$cmd"; want1=$REPLY
+want2=
+# zsh stores a command that ends in a backslash with one space added.
+[[ $cmd == *\\ ]] && { encode "$cmd "; want2=$REPLY; }
+
+# --- Copy the history to a temporary file in the same directory, dropping matching entries ---
+tmp=$(mktemp "$hist.XXXXXX") || exit 3
+trap '[[ -n $tmp ]] && rm -f -- "$tmp"' EXIT
+exec {out}>"$tmp" || exit 3
+
+integer total=0 removed=0
+local -a cur
+
+flush() {
+  (( ${#cur} )) || return 0
+  total+=1
+  local raw first l
+  if [[ ${cur[1]} == ': '<->':'<->';'* ]]; then first=${cur[1]#*;}; else first=${cur[1]}; fi
+  raw=$first
+  for l in "${(@)cur[2,-1]}"; do raw+=$'\n'$l; done
+  if [[ $raw == "$want1" || ( -n $want2 && $raw == "$want2" ) ]]; then
+    removed+=1
+  else
+    print -rl -u $out -- "${(@)cur}" || return 3
+  fi
+  cur=()
+}
+
+continues() { # zsh adds a space after a command's own trailing backslash, so any line that ends in one continues
+  [[ $1 == *\\ ]]
+}
+
+while IFS= read -r line || [[ -n $line ]]; do
+  if (( ${#cur} )) && continues "${cur[-1]}"; then
+    cur+=("$line")
+  else
+    flush || exit 3
+    cur=("$line")
+  fi
+done <"$hist"
+flush || exit 3
+exec {out}>&-
+
+(( removed > 0 )) || exit 1
+
+# --- Check, keep a backup, replace in one step ---
+zmodload zsh/stat || exit 3
+zstat -A st +mode -- "$hist" || exit 3
+chmod "$(printf '%o' $(( st[1] & 8#7777 )))" "$tmp" || exit 3
+cp -p -- "$hist" "$hist.bak" || exit 3
+mv -f -- "$tmp" "$hist" || exit 3
+tmp=
+exit 0
