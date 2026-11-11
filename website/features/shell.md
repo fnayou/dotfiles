@@ -33,6 +33,7 @@ file owns a single job:
 | `speedtest.zsh` | `speed` / `speed-json` / `speed-log` / `speed-history` helpers (no-op without `cloudflare-speed-cli`) |
 | `lms.zsh` | LM Studio CLI completion, including local model candidates (no-op without `lms`) |
 | `docker.zsh` | Adds Docker Desktop commands to `docker <Tab>` and `docker desktop <Tab>` |
+| `pi.zsh` | pi coding agent CLI completion: commands, options, models, packages and MCP server names (no-op without `pi`) |
 | `keybindings.zsh` | Key bindings |
 | `aliases.zsh` | Portable aliases |
 | `tools.zsh` | zoxide integration (guarded) |
@@ -98,6 +99,9 @@ plugins are installed via Zinit, the setup adds:
 - **Docker Desktop completion** — `docker.zsh` adds the `docker desktop` command tree, including
   nested `auth` and `kubernetes` commands, while delegating other Docker completion to the shipped
   `_docker` when available. Candidate generation is static; fzf-tab previews use `--help`.
+- **pi completion** — `pi.zsh` authors completion for the pi CLI. `pi --model <Tab>` offers
+  `provider/id` from `pi --list-models`; `pi mcp remove <Tab>` offers server names read from
+  `mcp.json` (names only, with `jq`). It never runs `pi mcp list`, `pi auth`, install, update or remove.
 
 !!! note "All guarded, all read-only"
     Each completion layer is guarded and skipped when its tool is missing. Completions only add

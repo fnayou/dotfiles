@@ -145,3 +145,4 @@ Use numbered filenames in sequence:
 | [0085](0085-square-png-for-zensical-header-icon.md) | Use a standalone square PNG for the Zensical header icon | Accepted |
 | [0086](0086-rex-theme-imported-manually.md) | Rex theme tracked as an import source and activated by hand | Accepted |
 | [0087](0087-fzf-history-delete-ctrl-x-exclude.md) | Delete fzf Ctrl+R history entries with `ctrl-x` and `exclude` | Accepted |
+| [0088](0088-pi-agent-zsh-completion.md) | Author a read-only zsh completion for the pi CLI | Accepted |
