@@ -21,6 +21,8 @@ The `stow/common/zsh/` package manages files under `~/.config/zsh/`. After Stow,
 | `stow/common/zsh/.config/zsh/keybindings.zsh` | `~/.config/zsh/keybindings.zsh` | Key bindings (autosuggest binding guarded by widget check) |
 | `stow/common/zsh/.config/zsh/aliases.zsh` | `~/.config/zsh/aliases.zsh` | Portable aliases (grep) |
 | `stow/common/zsh/.config/zsh/tools.zsh` | `~/.config/zsh/tools.zsh` | fzf, zoxide, eza guards |
+| `stow/common/zsh/.config/zsh/fzf.zsh` | `~/.config/zsh/fzf.zsh` | `fzf --zsh` integration; sets the `ctrl-x` delete key for the Ctrl+R picker (ADR-0087) |
+| `stow/common/zsh/.config/zsh/scripts/fzf-history-delete` | `~/.config/zsh/scripts/fzf-history-delete` | Helper that removes one entry from the history file; called by the `ctrl-x` key |
 | `stow/common/zsh/.config/zsh/plugins.zsh` | `~/.config/zsh/plugins.zsh` | Zinit guarded source (no auto-clone); owns plugin order + compinit (ADR-0049) |
 | `stow/common/zsh/.config/zsh/prompt.zsh` | `~/.config/zsh/prompt.zsh` | Oh My Posh double-guarded (no-op if missing) |
 | `stow/common/zsh/.config/zsh/macos.zsh` | `~/.config/zsh/macos.zsh` | macOS-specific (brew guard, `alias o='open'`) |
@@ -345,6 +347,83 @@ Because `~/.config/zsh/` is a real directory (not a symlink into the repo), `loc
 
 ---
 
+## Delete a history entry from the Ctrl+R picker
+
+In the fzf Ctrl+R history picker, `ctrl-x` removes the highlighted entry from your history file
+(`~/.zsh_history`, or `$HISTFILE`). The picker stays open and the entry disappears from the list.
+Enter, the other fzf keys and multi-select behave as before. `ctrl-d` is deliberately not used: in fzf it
+means delete-a-character or quit.
+
+**Requirements.** The key is registered only when all of these are present; otherwise there is no key
+and nothing changes:
+
+- fzf 0.60.0 or newer (the `exclude` action). Check with `fzf --version`.
+- `perl` (the fzf widget then lists numbered records, which the helper needs).
+- `~/.config/zsh/scripts/fzf-history-delete`, linked by Stow.
+
+**Setup.** The helper is a new file, so stow the zsh package again. `--no-folding` keeps
+`~/.config/zsh/` a real directory.
+
+[macOS] [Arch] [Debian] Dry run first:
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding --simulate zsh
+```
+
+The output should list a link for `.config/zsh/scripts/fzf-history-delete` and no conflict. If it
+reports a conflict, stop and resolve it by hand. Never use `stow --adopt`.
+
+⚠️  MANUAL STEP — run only after reviewing the dry-run output
+
+```bash
+stow --dir=stow/common --target="$HOME" --no-folding zsh
+```
+
+Open a new terminal. Check that the key is registered:
+
+```bash
+print -r -- "$FZF_CTRL_R_OPTS"
+```
+
+**What it does.**
+
+- It removes every history entry whose command text is exactly the highlighted one, including
+  multi-line commands, and nothing else. A command that only contains the same text is kept.
+- Before it changes the file, it copies it to `~/.zsh_history.bak` (one rolling backup, overwritten on
+  each delete). It writes the new file next to the old one and swaps it in with one step; if anything
+  fails, your history file is left as it was.
+- If it cannot find an exact match, it deletes nothing. This can happen for a command you typed in the
+  current shell that ends in a backslash or has a backslash before a newline, because zsh writes those
+  to the file slightly differently.
+- It prints and logs nothing. The helper receives the highlighted entry through a temporary file that
+  fzf creates for the key press.
+
+**Limits.**
+
+- **The running shell keeps the entry in memory.** `ctrl-x` hides it in that picker and removes it from
+  the file, but the entry can show up again in the next Ctrl+R in the same shell, or with the up arrow,
+  until you open a new terminal. zsh cannot remove a single entry from a running shell's memory.
+- **Other open shells.** With `SHARE_HISTORY`, another open shell can write an entry back to the file
+  after you delete it, or append at the moment the file is replaced. Delete in the shell you use most,
+  and check a new shell afterwards.
+- **`local.zsh`.** It is sourced after `fzf.zsh`. If it sets `FZF_CTRL_R_OPTS`, append with `+=`
+  instead of overwriting, or the key is lost.
+- **Tested** on macOS with fzf 0.74.5. Arch and Debian were not tested. After an fzf update, press
+  Ctrl+R and check that the key still works.
+
+**Restore a deleted entry.** The backup holds the history as it was before your last delete.
+
+⚠️  MANUAL STEP — this overwrites your history file with the backup; entries added since are lost
+
+```bash
+cp -p ~/.zsh_history.bak ~/.zsh_history
+```
+
+**Roll back the feature.** Revert `fzf.zsh` (or remove the lines that set `FZF_CTRL_R_OPTS`) and open a
+new terminal. The helper file can stay linked; nothing calls it.
+
+---
+
 ## Verification
 
 After stowing and adding the include block, verify the setup with these commands:
@@ -575,6 +654,8 @@ land in `/usr/bin`, which is already on PATH — then no `local.zsh` wiring is n
 | `keybindings.zsh` | Yes | No | Key bindings — committed directly |
 | `aliases.zsh` | Yes | No | Portable aliases — committed directly |
 | `tools.zsh` | Yes | No | Tool guards — committed directly |
+| `fzf.zsh` | Yes | No | fzf integration + Ctrl+R `ctrl-x` delete key — committed directly |
+| `scripts/fzf-history-delete` | Yes | No | Helper for the delete key; run by fzf, never sourced |
 | `plugins.zsh` | Yes | No | Zinit guard + compinit — committed directly |
 | `prompt.zsh` | Yes | No | OMP double-guard — committed directly |
 | `macos.zsh` | Yes | No | macOS layer — committed directly |
@@ -601,6 +682,9 @@ After all steps are complete, `~/.config/zsh/` should look like this:
 ├── keybindings.zsh    -> …/stow/common/zsh/.config/zsh/keybindings.zsh
 ├── aliases.zsh        -> …/stow/common/zsh/.config/zsh/aliases.zsh
 ├── tools.zsh          -> …/stow/common/zsh/.config/zsh/tools.zsh
+├── fzf.zsh            -> …/stow/common/zsh/.config/zsh/fzf.zsh
+├── scripts/                               (real directory — created by Stow)
+│   └── fzf-history-delete -> …/stow/common/zsh/.config/zsh/scripts/fzf-history-delete
 ├── plugins.zsh        -> …/stow/common/zsh/.config/zsh/plugins.zsh
 ├── prompt.zsh         -> …/stow/common/zsh/.config/zsh/prompt.zsh
 ├── macos.zsh          -> …/stow/common/zsh/.config/zsh/macos.zsh

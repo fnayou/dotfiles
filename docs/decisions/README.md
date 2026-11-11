@@ -144,3 +144,4 @@ Use numbered filenames in sequence:
 | [0084](0084-project-presentation-and-zensical-site.md) | Rebuild public site with Zensical and shared brand sources | Accepted |
 | [0085](0085-square-png-for-zensical-header-icon.md) | Use a standalone square PNG for the Zensical header icon | Accepted |
 | [0086](0086-rex-theme-imported-manually.md) | Rex theme tracked as an import source and activated by hand | Accepted |
+| [0087](0087-fzf-history-delete-ctrl-x-exclude.md) | Delete fzf Ctrl+R history entries with `ctrl-x` and `exclude` | Accepted |
